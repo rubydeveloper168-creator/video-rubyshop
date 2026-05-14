@@ -1,0 +1,103 @@
+<?php
+
+namespace App\Models\Course;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
+
+class SectionLesson extends Model implements HasMedia
+{
+    use HasFactory, InteractsWithMedia;
+
+    protected $fillable = [
+        'title',
+        'sort',
+        'status',
+        'lesson_type',
+        'lesson_provider',
+        'lesson_src',
+        'embed_source',
+        'thumbnail',
+        'duration',
+        'is_free',
+        'description',
+        'summary',
+        'course_id',
+        'lesson_number',
+        'course_section_id',
+        'hls_playlist_path',
+        'original_video_path',
+        'processing_status',
+        'processing_error',
+        'video_segments',
+        'video_resolution',
+        'processed_at',
+    ];
+
+    protected $casts = [
+        'status' => 'boolean',
+        'is_free' => 'boolean',
+        'video_segments' => 'integer',
+        'processed_at' => 'datetime',
+    ];
+
+    // Check if video is HLS format
+    public function isHLS(): bool
+    {
+        return !empty($this->hls_playlist_path) && $this->processing_status === 'completed';
+    }
+
+    // Check if video is being processed
+    public function isProcessing(): bool
+    {
+        return in_array($this->processing_status, ['pending', 'processing']);
+    }
+
+    // Get video URL (HLS or original)
+    public function getVideoUrl(): ?string
+    {
+        if ($this->isHLS()) {
+            return asset($this->hls_playlist_path);
+        }
+        
+        return $this->lesson_src;
+    }
+
+    // Get thumbnail URL
+    public function getThumbnailUrl(): string
+    {
+        if ($this->thumbnail) {
+            return asset($this->thumbnail);
+        }
+        
+        return asset('assets/images/default-video-thumbnail.jpg');
+    }
+
+    // Relationships
+    public function course()
+    {
+        return $this->belongsTo(Course::class);
+    }
+
+    public function course_section()
+    {
+        return $this->belongsTo(CourseSection::class);
+    }
+
+    public function forums(): HasMany
+    {
+        return $this->hasMany(CourseForum::class)->orderBy('created_at', 'desc');
+    }
+
+    protected static function booted()
+    {
+        static::creating(function ($lesson) {
+            $lastLesson = self::orderBy('lesson_number', 'desc')->first();
+
+            $lesson->lesson_number = $lastLesson ? $lastLesson->lesson_number + 1 : 1;
+        });
+    }
+}

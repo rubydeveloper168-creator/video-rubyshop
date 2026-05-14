@@ -1,0 +1,67 @@
+import { jsxs, jsx } from "react/jsx-runtime";
+import { T as Table, a as TableHeader, b as TableBody, c as TableRow, d as TableCell } from "./table-header-DWitEfum.js";
+import { c as cn } from "./utils-BmtPBcb0.js";
+import { usePage } from "@inertiajs/react";
+import { useReactTable, getFilteredRowModel, getSortedRowModel, getCoreRowModel, flexRender } from "@tanstack/react-table";
+import * as React from "react";
+import CoursesTableColumn from "./courses-table-columns-Ddn0Q5n-.js";
+import TableFilter from "./table-filter-BfBC8k9t.js";
+import TableFooter from "./table-footer-CbqUzH_n.js";
+import "clsx";
+import "tailwind-merge";
+import "./button-jZyzwgdo.js";
+import "@radix-ui/react-slot";
+import "class-variance-authority";
+import "lucide-react";
+import "./table-page-size-Cwe1Bz4B.js";
+import "./dropdown-menu-CECYoeyz.js";
+import "@radix-ui/react-dropdown-menu";
+import "./route-DlE7FdTW.js";
+import "./debounce-ZFxqVthq.js";
+import "./scroll-area-DPHRDnwL.js";
+import "@radix-ui/react-scroll-area";
+const Courses = ({ courses, selectedIds = [], onCourseSelect }) => {
+  var _a;
+  const page = usePage();
+  const routeName = page.props.type === "demo" ? "home.demo" : "home";
+  const [sorting, setSorting] = React.useState([]);
+  const table = useReactTable({
+    data: courses.data,
+    columns: CoursesTableColumn,
+    onSortingChange: setSorting,
+    getCoreRowModel: getCoreRowModel(),
+    getSortedRowModel: getSortedRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
+    state: { sorting }
+  });
+  return /* @__PURE__ */ jsxs("div", { children: [
+    /* @__PURE__ */ jsx(
+      TableFilter,
+      {
+        data: courses,
+        title: "Courses",
+        globalSearch: true,
+        searchKey: "course",
+        tablePageSizes: [10, 15, 20, 25],
+        routeName
+      }
+    ),
+    /* @__PURE__ */ jsxs(Table, { className: "border-border border-y", children: [
+      /* @__PURE__ */ jsx(TableHeader, { table }),
+      /* @__PURE__ */ jsx(TableBody, { children: ((_a = table.getRowModel().rows) == null ? void 0 : _a.length) ? table.getRowModel().rows.map((row) => /* @__PURE__ */ jsx(
+        TableRow,
+        {
+          "data-state": row.getIsSelected() && "selected",
+          className: cn("hover:bg-muted cursor-pointer", (selectedIds == null ? void 0 : selectedIds.includes(Number(row.original.id))) && "bg-secondary-light"),
+          onClick: () => onCourseSelect && onCourseSelect(Number(row.original.id)),
+          children: row.getVisibleCells().map((cell) => /* @__PURE__ */ jsx(TableCell, { children: flexRender(cell.column.columnDef.cell, cell.getContext()) }, cell.id))
+        },
+        row.id
+      )) : /* @__PURE__ */ jsx(TableRow, { children: /* @__PURE__ */ jsx(TableCell, { className: "h-24 text-center", children: "No results." }) }) })
+    ] }),
+    /* @__PURE__ */ jsx(TableFooter, { className: "p-4", routeName, paginationInfo: courses })
+  ] });
+};
+export {
+  Courses as default
+};
