@@ -15,8 +15,10 @@
 /public/hls/
 *.mp4
 *.m3u8
-*.ts
 *.key
+# HLS transport stream segments (video only, not TypeScript)
+public/hls/**/*.ts
+storage/**/*.ts
 
 # Compiled / built assets
 /public/build/
