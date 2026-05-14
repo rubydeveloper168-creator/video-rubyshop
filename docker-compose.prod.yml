@@ -21,8 +21,6 @@ services:
   mysql:
     image: mysql:8.0
     container_name: video_mysql
-    ports:
-      - "3306:3306"
     environment:
       MYSQL_ROOT_PASSWORD: ${DB_PASSWORD:-root258369}
       MYSQL_DATABASE: ${DB_DATABASE:-rubyshop_video}
