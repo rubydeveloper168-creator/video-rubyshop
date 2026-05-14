@@ -56,3 +56,7 @@ composer.phar
 
 # Docker
 /docker/data/
+
+# Local env (copy from .env.docker.local to get started)
+/.env
+!/.env.docker.local

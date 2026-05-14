@@ -1,0 +1,78 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    container_name: video_app
+    ports:
+      - "8080:80"
+    volumes:
+      - .:/var/www/html
+      - vendor_cache:/var/www/html/vendor
+      - node_modules_cache:/var/www/html/node_modules
+    environment:
+      APP_ENV: local
+      APP_DEBUG: "true"
+    env_file:
+      - .env
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - video_network
+    restart: unless-stopped
+
+  mysql:
+    image: mysql:8.0
+    container_name: video_mysql
+    ports:
+      - "3307:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: root258369
+      MYSQL_DATABASE: video_lms
+      MYSQL_USER: video_user
+      MYSQL_PASSWORD: video_pass
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - video_network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  redis:
+    image: redis:7-alpine
+    container_name: video_redis
+    ports:
+      - "6380:6379"
+    networks:
+      - video_network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+    restart: unless-stopped
+
+  mailhog:
+    image: mailhog/mailhog
+    container_name: video_mailhog
+    ports:
+      - "1025:1025"
+      - "8025:8025"
+    networks:
+      - video_network
+
+volumes:
+  mysql_data:
+  vendor_cache:
+  node_modules_cache:
+
+networks:
+  video_network:
+    driver: bridge
