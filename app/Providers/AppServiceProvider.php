@@ -6,6 +6,7 @@ use App\Models\Page;
 use App\Models\Setting;
 use App\Models\User;
 use Illuminate\Auth\Notifications\ResetPassword;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Schema;
 
@@ -54,6 +55,11 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        if (app()->environment('production')) {
+            URL::forceScheme('https');
+            URL::forceRootUrl(config('app.url'));
+        }
+
         ResetPassword::createUrlUsing(function (User $user, string $token) {
             return env('FRONTEND_URL') . '/reset-password?token=' . $token . '&email=' . $user->email;
         });

@@ -66,7 +66,7 @@ class HandleInertiaRequests extends Middleware
             'notifications' => $user ? $this->notificationService->notifications(['unread' => true]) : [],
             'ziggy' => fn(): array => [
                 ...(new Ziggy)->toArray(),
-                'location' => $request->url(),
+                'location' => config('app.url'),
             ],
             'flash' => [
                 'error' => fn() => $request->session()->get('error'),

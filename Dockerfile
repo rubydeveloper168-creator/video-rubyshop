@@ -112,9 +112,11 @@ ENV COMPOSER_MEMORY_LIMIT=2G
 RUN composer update --lock --no-dev --optimize-autoloader --no-interaction --verbose
 
 # Set permissions
-RUN chown -R www-data:www-data /var/www/html \
+RUN www_uid="$(id -u www-data)" \
+    && www_gid="$(id -g www-data)" \
+    && chown -R "$www_uid:$www_gid" /var/www/html \
     && chmod -R 755 /var/www/html/storage \
-    && chmod -R 755 /var/www/html/bootstrap/cache
+    && chmod -R 775 /var/www/html/bootstrap/cache
 
 # Create necessary directories
 RUN mkdir -p /var/www/html/storage/logs \
@@ -126,8 +128,11 @@ RUN mkdir -p /var/www/html/storage/logs \
     && mkdir -p /var/log/supervisor \
     && mkdir -p /var/log/nginx \
     && mkdir -p /var/run \
-    && chown -R www-data:www-data /tmp/nginx \
-    && chown -R www-data:www-data /var/www/html/storage
+    && www_uid="$(id -u www-data)" \
+    && www_gid="$(id -g www-data)" \
+    && chown -R "$www_uid:$www_gid" /tmp/nginx \
+    && chown -R "$www_uid:$www_gid" /var/www/html/storage \
+    && chown -R "$www_uid:$www_gid" /var/www/html/bootstrap/cache
 
 # Create storage symlink and test files
 RUN php artisan storage:link || echo "Storage link creation failed, but continuing..." \
