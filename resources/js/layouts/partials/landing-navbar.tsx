@@ -89,14 +89,14 @@ const LandingNavbar = () => {
                               )}
                            </DropdownMenuTrigger>
                            <DropdownMenuContent align="end" className="hidden w-[160px] md:block">
-                              {(user.role === 'admin' || user.role === 'instructor') && (
+                              {(user?.role === 'admin' || user?.role === 'instructor') && (
                                  <DropdownMenuItem className="cursor-pointer px-3" onClick={() => router.get(route('dashboard'))}>
                                     <LayoutDashboard className="mr-1 h-4 w-4" />
                                     <span>Dashboard</span>
                                  </DropdownMenuItem>
                               )}
 
-                              {(user.role === 'student' || user.role === 'instructor') &&
+                              {(user?.role === 'student' || user?.role === 'instructor') &&
                                  studentMenuItems.map(({ id, name, Icon, slug }) => (
                                     <DropdownMenuItem
                                        key={id}
@@ -150,7 +150,7 @@ const LandingNavbar = () => {
                         ))}
 
                      {user ? (
-                        user.role === 'admin' ? (
+                        user?.role === 'admin' ? (
                            <>
                               <Link href={route('dashboard')} className="text-sm font-normal">
                                  Dashboard
@@ -163,7 +163,7 @@ const LandingNavbar = () => {
                            </>
                         ) : (
                            <>
-                              {user.role === 'instructor' && props.system.sub_type === 'collaborative' && (
+                              {user?.role === 'instructor' && props.system.sub_type === 'collaborative' && (
                                  <Link href={route('dashboard')} className="text-sm font-normal">
                                     Dashboard
                                  </Link>

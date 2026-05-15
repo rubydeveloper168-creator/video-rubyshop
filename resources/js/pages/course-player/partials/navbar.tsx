@@ -16,7 +16,7 @@ const Navbar = () => {
    const user = props.auth.user;
 
    // Check if user can edit the course (instructor who owns the course or admin)
-   const canEditCourse = user.role === 'admin' || (user.role === 'instructor' && props.course.instructor_id === user.id);
+   const canEditCourse = user?.role === 'admin' || (user?.role === 'instructor' && props.course.instructor_id === user?.id);
 
    const handleBackToCourseEdit = () => {
       router.get(route('courses.edit', { course: props.course.id, tab: 'curriculum' }));
@@ -50,7 +50,7 @@ const Navbar = () => {
             <p className="hidden font-semibold sm:block">{props.course.title}</p>
 
             <div className="mr-0 flex items-center gap-2">
-               <Notification />
+               {user && <Notification />}
 
                {screen > 768 && (
                   <Button
@@ -63,43 +63,54 @@ const Navbar = () => {
                   </Button>
                )}
 
-               <DropdownMenu>
-                  <DropdownMenuTrigger className="cursor-pointer outline-none">
-                     {user && user.photo ? (
-                        <Avatar className="h-9 w-9">
-                           <AvatarImage src={user.photo} alt={user.name ?? ''} className="h-full w-full content-center object-cover" />
-                           <AvatarFallback>{user.name?.charAt(0)}</AvatarFallback>
-                        </Avatar>
-                     ) : (
-                        <UserCircle className="text-muted-foreground h-9 w-9 rounded-full" />
-                     )}
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end">
-                     {(user.role === 'admin' || user.role === 'instructor') && (
-                        <DropdownMenuItem className="cursor-pointer px-3" onClick={() => router.get(route('dashboard'))}>
-                           <LayoutDashboard className="mr-1 h-4 w-4" />
-                           <span>Dashboard</span>
-                        </DropdownMenuItem>
-                     )}
-
-                     {(user.role === 'student' || user.role === 'instructor') &&
-                        studentMenuItems.map(({ id, name, Icon, slug }) => (
-                           <DropdownMenuItem
-                              key={id}
-                              className="cursor-pointer px-3"
-                              onClick={() => router.get(route('student.index', { tab: slug }))}
-                           >
-                              <Icon className="mr-1 h-4 w-4" />
-                              <span>{name}</span>
+               {user ? (
+                  <DropdownMenu>
+                     <DropdownMenuTrigger className="cursor-pointer outline-none">
+                        {user.photo ? (
+                           <Avatar className="h-9 w-9">
+                              <AvatarImage src={user.photo} alt={user.name ?? ''} className="h-full w-full content-center object-cover" />
+                              <AvatarFallback>{user.name?.charAt(0)}</AvatarFallback>
+                           </Avatar>
+                        ) : (
+                           <UserCircle className="text-muted-foreground h-9 w-9 rounded-full" />
+                        )}
+                     </DropdownMenuTrigger>
+                     <DropdownMenuContent align="end">
+                        {(user.role === 'admin' || user.role === 'instructor') && (
+                           <DropdownMenuItem className="cursor-pointer px-3" onClick={() => router.get(route('dashboard'))}>
+                              <LayoutDashboard className="mr-1 h-4 w-4" />
+                              <span>Dashboard</span>
                            </DropdownMenuItem>
-                        ))}
+                        )}
 
-                     <DropdownMenuItem className="cursor-pointer px-3" onClick={() => router.post('/logout')}>
-                        <LogOut className="mr-1 h-4 w-4" />
-                        <span>Log Out</span>
-                     </DropdownMenuItem>
-                  </DropdownMenuContent>
-               </DropdownMenu>
+                        {(user.role === 'student' || user.role === 'instructor') &&
+                           studentMenuItems.map(({ id, name, Icon, slug }) => (
+                              <DropdownMenuItem
+                                 key={id}
+                                 className="cursor-pointer px-3"
+                                 onClick={() => router.get(route('student.index', { tab: slug }))}
+                              >
+                                 <Icon className="mr-1 h-4 w-4" />
+                                 <span>{name}</span>
+                              </DropdownMenuItem>
+                           ))}
+
+                        <DropdownMenuItem className="cursor-pointer px-3" onClick={() => router.post('/logout')}>
+                           <LogOut className="mr-1 h-4 w-4" />
+                           <span>Log Out</span>
+                        </DropdownMenuItem>
+                     </DropdownMenuContent>
+                  </DropdownMenu>
+               ) : (
+                  <div className="flex items-center gap-2">
+                     <Button asChild variant="secondary" className="rounded-full">
+                        <Link href={route('register')}>Sign Up</Link>
+                     </Button>
+                     <Button asChild variant="secondary" className="rounded-full">
+                        <Link href={route('login')}>Log In</Link>
+                     </Button>
+                  </div>
+               )}
 
                {screen < 768 && (
                   <Button
