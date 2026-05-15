@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Course\CourseController;
+use App\Http\Controllers\Course\PlayerController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\InstructorController;
 use App\Http\Controllers\JobCircularController;
@@ -23,6 +24,11 @@ Route::get('install/refresh', [InstallerController::class, 'refresh'])->name('in
 Route::controller(CourseController::class)->group(function () {
     Route::get('courses/{category}/{category_child?}', 'category_courses')->name('category.courses');
     Route::get('courses/details/{slug}/{id}', 'show')->name('course.details');
+});
+
+Route::controller(PlayerController::class)->group(function () {
+    Route::get('play-course/{type}/{watch_history}/{lesson_id}', 'course_player')->name('course.player');
+    Route::get('play-course/finish/{watch_history}', 'finish_course')->name('course.player.finish');
 });
 
 Route::get('instructors/{instructor}', [InstructorController::class, 'show'])->name('instructors.show');

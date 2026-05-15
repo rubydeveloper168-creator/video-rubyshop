@@ -51,13 +51,20 @@ class PlayerController extends Controller
             $watching_id = $lesson_id ?? $watch_history->current_watching_id;
             $watching_type = $type; // Use the route parameter, not old watch history
 
-            $course = $this->courseService->getUserCourseById($watch_history->course_id, $user);
-            $watching = $this->coursePlay->getWatchingLesson($watching_id, $type);
+            $course = $user
+                ? $this->courseService->getUserCourseById($watch_history->course_id, $user)
+                : $this->courseService->getGuestCourseById($watch_history->course_id);
+
+            if (!$course || !$course->exists()) {
+                abort(404, 'Requested course could not be found.');
+            }
+
+            $watching = $this->coursePlay->getWatchingLesson($watching_id, $type, $user?->id);
             if (!$watching) {
                 abort(404, 'Requested lesson or quiz could not be found.');
             }
             $reviews = $this->reviewService->getReviews(['course_id' => $course->id, ...$request->all()], true);
-            $userReview = $this->reviewService->userReview($course->id, $user->id);
+            $userReview = $user ? $this->reviewService->userReview($course->id, $user->id) : null;
             $totalReviews = $this->reviewService->totalReviews($course->id);
             $zoomConfig = $this->zoomLiveService->zoomConfig;
 
@@ -72,7 +79,9 @@ class PlayerController extends Controller
                 }
             }
 
-            $watchHistory = $this->coursePlay->watchHistory($course, $watching_id, $watching_type, $user->id);
+            $watchHistory = $user
+                ? $this->coursePlay->watchHistory($course, $watching_id, $watching_type, $user->id)
+                : $watch_history;
 
             return Inertia::render('course-player/index', [
                 'type' => $type,

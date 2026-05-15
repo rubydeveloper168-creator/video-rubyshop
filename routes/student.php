@@ -8,7 +8,6 @@ use App\Http\Controllers\Course\CourseForumController;
 use App\Http\Controllers\Course\CourseForumReplyController;
 use App\Http\Controllers\Course\CourseReviewController;
 use App\Http\Controllers\Course\CourseWishlistController;
-use App\Http\Controllers\Course\PlayerController;
 use App\Http\Controllers\Course\QuizSubmissionController;
 use App\Http\Controllers\InstructorController;
 use App\Http\Controllers\LiveClassController;
@@ -32,12 +31,7 @@ Route::post('enrollments', [CourseEnrollmentController::class, 'store'])->name('
 Route::resource('course-wishlists', CourseWishlistController::class)->only(['store', 'destroy']);
 
 Route::resource('quiz-submissions', QuizSubmissionController::class)->only(['store']);
-
-Route::controller(PlayerController::class)->middleware(['checkEnroll'])->group(function () {
-    Route::post('player/init/watch-history', 'intWatchHistory')->name('player.init.watch-history');
-    Route::get('play-course/{type}/{watch_history}/{lesson_id}', 'course_player')->name('course.player');
-    Route::get('play-course/finish/{watch_history}', 'finish_course')->name('course.player.finish');
-});
+Route::post('player/init/watch-history', [\App\Http\Controllers\Course\PlayerController::class, 'intWatchHistory'])->name('player.init.watch-history');
 
 Route::resource('notifications', NotificationController::class)->only(['index', 'show']);
 Route::put('notifications/mark-as-read/all', [NotificationController::class, 'markAllAsRead'])->name('notifications.mark-all-as-read');

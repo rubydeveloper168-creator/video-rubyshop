@@ -8,14 +8,11 @@ use App\Models\Course\SectionLesson;
 use App\Models\Course\SectionQuiz;
 use App\Models\Course\WatchHistory;
 use App\Models\User;
-use Illuminate\Support\Facades\Auth;
 
 class CoursePlayerService
 {
-   function getWatchingLesson(string $lesson_id, string $watching_type): SectionLesson | SectionQuiz | null
+   function getWatchingLesson(string $lesson_id, string $watching_type, ?string $user_id = null): SectionLesson | SectionQuiz | null
    {
-      $user = Auth::user();
-
       return $watching_type === 'lesson' ?
          SectionLesson::with([
             'forums' => function ($query) {
@@ -29,8 +26,10 @@ class CoursePlayerService
          ])->find($lesson_id) :
          SectionQuiz::with([
             'quiz_questions',
-            'quiz_submissions' => function ($query) use ($user) {
-               $query->where('user_id', $user->id);
+            'quiz_submissions' => function ($query) use ($user_id) {
+               if ($user_id) {
+                  $query->where('user_id', $user_id);
+               }
             }
          ])->find($lesson_id);
    }
