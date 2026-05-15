@@ -1,6 +1,6 @@
 // Ensure this file is treated as a module
 interface Auth {
-   user: User;
+   user: User | null;
 }
 
 interface BreadcrumbItem {
