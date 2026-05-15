@@ -122,9 +122,11 @@ RUN mkdir -p /var/www/html/storage/logs \
     && mkdir -p /var/www/html/storage/framework/sessions \
     && mkdir -p /var/www/html/storage/framework/views \
     && mkdir -p /var/www/html/storage/app/public \
+    && mkdir -p /tmp/nginx/client_body \
     && mkdir -p /var/log/supervisor \
     && mkdir -p /var/log/nginx \
     && mkdir -p /var/run \
+    && chown -R www-data:www-data /tmp/nginx \
     && chown -R www-data:www-data /var/www/html/storage
 
 # Create storage symlink and test files

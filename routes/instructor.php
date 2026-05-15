@@ -19,6 +19,12 @@ Route::prefix('dashboard')->group(function () {
    // dashboard
    Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
 
+   // Courses — quick create/upload (must be before resource to avoid {course} wildcard conflict)
+   Route::get('courses/quick-create', [CourseController::class, 'quickCreate'])->name('courses.quick-create');
+   Route::post('courses/quick-store', [CourseController::class, 'quickStore'])->name('courses.quick-store');
+   Route::get('courses/{id}/quick-poster', [CourseController::class, 'quickPoster'])->name('courses.quick-poster');
+   Route::get('courses/{id}/quick-upload', [CourseController::class, 'quickUpload'])->name('courses.quick-upload');
+
    // Courses
    Route::resource('courses', CourseController::class)->except(['update', 'destroy']);
    Route::post('courses/{id}', [CourseController::class, 'update'])->name('courses.update');

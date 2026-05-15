@@ -152,6 +152,141 @@ brew install ffmpeg
 
 ---
 
+## Recent Implementation Notes
+
+---
+
+### Quick Create Course Flow
+
+A streamlined course creation flow was added alongside the standard create page.
+
+**Entry point:** `http://localhost:8080/dashboard/courses/quick-create`
+**Sidebar link:** Courses → Quick Create
+
+#### Routes (all under `dashboard/` prefix, defined before the resource to avoid `{course}` wildcard conflict)
+
+| Method | URI | Name | Handler |
+|--------|-----|------|---------|
+| GET | `courses/quick-create` | `courses.quick-create` | `CourseController::quickCreate` |
+| POST | `courses/quick-store` | `courses.quick-store` | `CourseController::quickStore` |
+| GET | `courses/{id}/quick-poster` | `courses.quick-poster` | `CourseController::quickPoster` |
+| GET | `courses/{id}/quick-upload` | `courses.quick-upload` | `CourseController::quickUpload` |
+
+#### User Flow
+
+```
+Quick Create page
+  → fill Title (only required field)
+  → "Show details" toggle reveals: Short Description, Description, Category
+  → submit
+      ↓
+  quickStore creates:
+    - Course (pricing=free, level=beginner, status=approved, language=th, expiry=lifetime)
+    - Section named after the course title (sort=1)
+      ↓
+  Quick Upload page (dropzone UI)
+    → select or drag-drop video file
+    → Save & Finish
+        ↓
+  Quick Poster page
+    → shows QR poster (default target: current player link)
+    → export SVG / PNG / JPG / Print
+    → [Edit Course] or [Upload First Video]
+```
+
+#### Files
+
+| File | Purpose |
+|------|---------|
+| `app/Http/Requests/StoreQuickCourseRequest.php` | Simplified validation; auto-fills short_description, description, pricing_type, status, level, language, expiry_type |
+| `app/Http/Controllers/Course/CourseController.php` | Added `quickCreate`, `quickStore`, `quickPoster`, `quickUpload` methods |
+| `routes/instructor.php` | 4 new named routes added before resource declaration |
+| `resources/js/pages/dashboard/courses/quick-create.tsx` | Title-only form; Short Description / Description / Category hidden behind "Show details" toggle; defaults badges shown |
+| `resources/js/pages/dashboard/courses/quick-upload.tsx` | Dropzone video uploader; on success → quick-poster |
+| `resources/js/pages/dashboard/courses/quick-poster.tsx` | Wraps `CourseQrPoster`; success banner; Edit Course / Upload First Video buttons |
+| `resources/js/layouts/dashboard/partials/routes.tsx` | "Quick Create" added under Courses sidebar group |
+
+#### Key Defaults (StoreQuickCourseRequest)
+- `pricing_type` = `free`
+- `status` = `approved` (course is live immediately, no approval step needed)
+- `level` = `beginner`
+- `language` = `th`
+- `expiry_type` = `lifetime`
+- `short_description` = title (when not provided)
+- `description` = title (when not provided)
+
+---
+
+### ChunkedUploaderInput — Dropzone Mode
+
+Added a `dropzone` prop to `resources/js/components/chunked-uploader-input.tsx`.
+
+**Props added:**
+- `dropzone?: boolean` — enables the custom dashed-box UI
+- `dropzoneHint?: string` — subtitle text (default: `"MP4, MOV, AVI · Max 2 GB"`)
+
+**Dropzone UI states:**
+- **Idle** — dashed border, upload icon, "Click to upload or drag video here" text
+- **File selected** — shows filename + size, "click to change"
+- **Uploading** — progress bar + percentage + cancel button inside the box
+- **Completed** — green checkmark
+
+Drag-and-drop is handled via `onDragOver` / `onDragLeave` / `onDrop` events. A shared `processFile()` helper is used by both the file input `onChange` and the drop handler to avoid duplication.
+
+The original plain-input UI is unchanged when `dropzone` is not passed.
+
+---
+
+### Course QR Poster
+- Added a new QR poster builder in `resources/js/pages/dashboard/courses/partials/course-qr-poster.tsx`
+- Supports two layouts:
+  - `Warning poster` for industrial / safety-sign style handouts
+  - `Catalog poster` for RubyShop-style product/branding layouts
+- Supports three target modes:
+  - course overview URL
+  - current lesson player URL, when `watchHistory` exists
+  - custom URL
+- The poster uses RubyShop branding, including the live logo URL:
+  - `https://www.rubyshop.co.th/storage/logo/rubyshop-no-bg-250pxx100px.jpg`
+- Poster controls include:
+  - `Copy URL`
+  - `Open target`
+  - `Print`
+  - `Download SVG`
+  - `Download PNG`
+  - `Download JPG`
+- Export size presets:
+  - `A4 Print`
+  - `HD Poster`
+- `Download PNG` / `Download JPG` are generated from the poster SVG, not from a fragile DOM screenshot path.
+- **Default target** is `player` when `watchHistory` exists, otherwise falls back to `overview`
+- **Settings panel** (Target, Poster Layout, Poster Title, Poster Note, Export) is collapsed by default behind a "Show settings ▾" toggle
+- **Resolved URL** display was removed from the UI
+
+### Poster Export Notes
+- SVG export is generated from `buildPosterSvg(...)`
+- Raster export inlines the logo and QR assets, then renders the SVG into a canvas before downloading PNG/JPG
+- This avoids the earlier `html2canvas` failure path
+- If raster export fails again, the first thing to check is whether the QR/logo remote assets are still reachable or need to be inlined differently
+
+### Branding Updates
+- Default app logo fallback now points to the live RubyShop logo
+- `logo_dark` and `logo_light` in system settings were updated to the RubyShop logo URL
+- Seed defaults were aligned so fresh installs use the same branding
+
+### Course Route Compatibility
+- `CourseController::show()` was updated to support both:
+  - public course detail routes
+  - dashboard resource routes
+- The controller now redirects to the canonical slugged URL when needed
+
+### Upload / nginx Fixes
+- Multipart course uploads were failing behind nginx because the temp body path was not writable
+- nginx was updated to use a writable temp directory inside the container
+- The Docker images now create and own that temp directory correctly
+
+---
+
 ## Project Structure (key directories)
 
 ```

@@ -44,6 +44,12 @@ const dashboardRoutes: DashboardRoute[] = [
                   path: route('courses.create'),
                   access: ['admin', 'instructor', 'collaborative', 'administrative'],
                },
+               {
+                  name: 'Quick Create',
+                  slug: 'quick-create',
+                  path: route('courses.quick-create'),
+                  access: ['admin', 'instructor', 'collaborative', 'administrative'],
+               },
             ],
          },
          {

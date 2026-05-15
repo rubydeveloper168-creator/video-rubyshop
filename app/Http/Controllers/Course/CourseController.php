@@ -10,6 +10,7 @@ use App\Enums\ExpiryLimitType;
 use App\Services\InstructorService;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreCourseRequest;
+use App\Http\Requests\StoreQuickCourseRequest;
 use App\Http\Requests\UpdateCourseRequest;
 use App\Http\Requests\UpdateCourseStatusRequest;
 use App\Services\Course\CourseCategoryService;
@@ -22,6 +23,7 @@ use App\Services\Course\CourseEnrollmentService;
 use App\Services\LiveClass\ZoomLiveService;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\Log;
 
 class CourseController extends Controller
 {
@@ -152,22 +154,45 @@ class CourseController extends Controller
 
     public function store(StoreCourseRequest $request)
     {
-        $this->courseService->createCourse($request->validated());
+        Log::info('[DEBUG] store() called', ['validated' => $request->validated()]);
+        try {
+            $this->courseService->createCourse($request->validated());
+            Log::info('[DEBUG] createCourse() succeeded');
+        } catch (\Throwable $e) {
+            Log::error('[DEBUG] createCourse() failed', [
+                'message' => $e->getMessage(),
+                'file'    => $e->getFile(),
+                'line'    => $e->getLine(),
+                'trace'   => $e->getTraceAsString(),
+            ]);
+            throw $e;
+        }
 
         return redirect(route('courses.index'))->with('success', 'Course added successfully');
     }
 
-    public function show(Request $request, $slug, $id)
+    public function show(Request $request, string $slugOrId, ?string $id = null)
     {
-        // validate slug
-        if (empty($slug)) {
-            return redirect()->back();
-        }
+        $slug = $id === null ? null : $slugOrId;
+        $courseId = $id ?? $slugOrId;
 
         $user = Auth::user() ? Auth::user() : null;
 
         // course details
-        $course = $this->courseService->getGuestCourseById($id);
+        $course = $this->courseService->getGuestCourseById($courseId);
+
+        if (!$course || !$course->exists()) {
+            return redirect()->back();
+        }
+
+        // Keep the public URL canonical when a slug is present.
+        if ($slug && $slug !== $course->slug) {
+            return redirect()->route('course.details', [
+                'slug' => $course->slug,
+                'id' => $course->id,
+            ]);
+        }
+
         $enrollment = $this->courseService->getCourseEnroll($course->id);
         $wishlists = $this->wishlistService->getWishlists(['user_id' => $user ? $user->id : null]);
         $watchHistory = $this->coursePlayerService->getWatchHistory($course->id, Auth::user() ? Auth::user()->id : null);
@@ -185,48 +210,44 @@ class CourseController extends Controller
             }
         }
 
-        if ($course->exists()) {
-            // Generate meta tags for SEO and social sharing
-            $system = app('system_settings');
-            $siteName = $system->fields['name'] ?? 'Mentor Learning Management System';
-            $pageTitle = $course->meta_title ?? ($course->title . ' | ' . $siteName);
-            $pageDescription = $course->meta_description ?? $course->short_description ?? $course->description ?? 'Learn with our comprehensive course';
-            $pageKeywords = $course->meta_keywords ?? ($course->title . ', online course, learning, ' . ($system->fields['keywords'] ?? 'LMS'));
-            $ogTitle = $course->og_title ?? $course->title;
-            $ogDescription = $course->og_description ?? $pageDescription;
+        // Generate meta tags for SEO and social sharing
+        $system = app('system_settings');
+        $siteName = $system->fields['name'] ?? 'Mentor Learning Management System';
+        $pageTitle = $course->meta_title ?? ($course->title . ' | ' . $siteName);
+        $pageDescription = $course->meta_description ?? $course->short_description ?? $course->description ?? 'Learn with our comprehensive course';
+        $pageKeywords = $course->meta_keywords ?? ($course->title . ', online course, learning, ' . ($system->fields['keywords'] ?? 'LMS'));
+        $ogTitle = $course->og_title ?? $course->title;
+        $ogDescription = $course->og_description ?? $pageDescription;
 
-            // Prioritize course images: thumbnail > banner > system banner
-            $courseImage = $course->thumbnail ?? $course->banner ?? $system->fields['banner'] ?? '';
-            $siteUrl = request()->url();
+        // Prioritize course images: thumbnail > banner > system banner
+        $courseImage = $course->thumbnail ?? $course->banner ?? $system->fields['banner'] ?? '';
+        $siteUrl = request()->url();
 
-            return Inertia::render(
-                'courses/show',
-                [
-                    'course' => $course,
-                    'enrollment' => $enrollment,
-                    'watchHistory' => $watchHistory,
-                    'approvalStatus' => $approvalStatus,
-                    'wishlists' => $wishlists,
-                    'reviews' => $reviews,
-                    'totalReviews' => $totalReviews,
-                ]
-            )->withViewData([
-                'metaTitle' => $pageTitle,
-                'metaDescription' => $pageDescription,
-                'metaKeywords' => $pageKeywords,
-                'ogTitle' => $ogTitle,
-                'ogDescription' => $ogDescription,
-                'ogImage' => $courseImage,
-                'ogUrl' => $siteUrl,
-                'ogType' => 'article',
-                'twitterCard' => 'summary_large_image',
-                'twitterTitle' => $ogTitle,
-                'twitterDescription' => $ogDescription,
-                'twitterImage' => $courseImage,
-            ]);
-        } else {
-            return redirect()->back();
-        }
+        return Inertia::render(
+            'courses/show',
+            [
+                'course' => $course,
+                'enrollment' => $enrollment,
+                'watchHistory' => $watchHistory,
+                'approvalStatus' => $approvalStatus,
+                'wishlists' => $wishlists,
+                'reviews' => $reviews,
+                'totalReviews' => $totalReviews,
+            ]
+        )->withViewData([
+            'metaTitle' => $pageTitle,
+            'metaDescription' => $pageDescription,
+            'metaKeywords' => $pageKeywords,
+            'ogTitle' => $ogTitle,
+            'ogDescription' => $ogDescription,
+            'ogImage' => $courseImage,
+            'ogUrl' => $siteUrl,
+            'ogType' => 'article',
+            'twitterCard' => 'summary_large_image',
+            'twitterTitle' => $ogTitle,
+            'twitterDescription' => $ogDescription,
+            'twitterImage' => $courseImage,
+        ]);
     }
 
     public function edit(Request $request, string $id)
@@ -239,6 +260,7 @@ class CourseController extends Controller
         $prices = CoursePricingType::cases();
         $expiries = ExpiryLimitType::cases();
         $course = $this->courseService->getUserCourseById($id, $user);
+        abort_if(is_null($course), 404);
         $watchHistory = $this->coursePlayerService->getWatchHistory($course->id, $user->id);
         $approvalStatus = $this->courseService->validateCourseForApproval($course);
         $lastSortValues = $this->courseService->lastSectionLessonSort($course);
@@ -285,5 +307,59 @@ class CourseController extends Controller
         $this->courseService->deleteCourse($id);
 
         return redirect(route('courses.index'))->with('success', 'Course deleted successfully');
+    }
+
+    public function quickCreate()
+    {
+        $categories = $this->categoryService->getCategories()['categories'];
+        $instructors = $this->instructorService->getInstructors(['status' => 'approved'], false);
+
+        return Inertia::render('dashboard/courses/quick-create', compact('categories', 'instructors'));
+    }
+
+    public function quickStore(StoreQuickCourseRequest $request)
+    {
+        $course = $this->courseService->createCourse($request->validated());
+
+        $this->courseSectionService->createSection([
+            'title'     => $course->title,
+            'sort'      => 1,
+            'course_id' => $course->id,
+        ], Auth::user()->id);
+
+        return redirect(route('courses.quick-upload', ['id' => $course->id]))
+            ->with('success', 'Course created — now upload your first video.');
+    }
+
+    public function quickPoster(string $id)
+    {
+        $user   = Auth::user();
+        $course = $this->courseService->getUserCourseById($id, $user);
+        abort_if(is_null($course), 404);
+
+        // Load category relations needed by the QR poster
+        $course->load('course_category', 'course_category_child');
+        $watchHistory = $this->coursePlayerService->getWatchHistory($course->id, $user->id);
+
+        return Inertia::render('dashboard/courses/quick-poster', [
+            'course'       => $course,
+            'watchHistory' => $watchHistory,
+        ]);
+    }
+
+    public function quickUpload(string $id)
+    {
+        $user  = Auth::user();
+        $course = $this->courseService->getUserCourseById($id, $user);
+        abort_if(is_null($course), 404);
+
+        $lastSortValues = $this->courseService->lastSectionLessonSort($course);
+        $prices = CoursePricingType::cases();
+
+        return Inertia::render('dashboard/courses/quick-upload', [
+            ...$lastSortValues,
+            'course'  => $course,
+            'prices'  => $prices,
+        ]);
     }
 }

@@ -16,6 +16,8 @@ RUN pecl install redis && docker-php-ext-enable redis
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 RUN mkdir -p /var/log/supervisor /var/run
+RUN mkdir -p /tmp/nginx/client_body \
+    && chown -R www-data:www-data /tmp/nginx
 
 WORKDIR /var/www/html
 

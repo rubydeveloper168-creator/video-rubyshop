@@ -81,28 +81,40 @@ export const getFileMetadata = (file: File): Promise<FileMetadata> => {
             // Handle image files
             else if (fileType === 'image') {
                 const img = new Image();
-                const imageUrl = URL.createObjectURL(file);
+                const reader = new FileReader();
 
-                img.onload = () => {
-                    URL.revokeObjectURL(imageUrl);
-                    resolve({
-                        dimensions: {
-                            width: img.width,
-                            height: img.height,
-                        },
-                        size,
-                        thumbnail: imageUrl,
-                        name: file.name,
-                        type: file.type,
-                    });
+                reader.onload = () => {
+                    const imageUrl = reader.result;
+                    if (typeof imageUrl !== 'string') {
+                        reject(new Error('Error loading image metadata'));
+                        return;
+                    }
+
+                    img.onload = () => {
+                        resolve({
+                            dimensions: {
+                                width: img.width,
+                                height: img.height,
+                            },
+                            size,
+                            thumbnail: imageUrl,
+                            name: file.name,
+                            type: file.type,
+                        });
+                    };
+
+                    img.onerror = () => {
+                        reject(new Error('Error loading image metadata'));
+                    };
+
+                    img.src = imageUrl;
                 };
 
-                img.onerror = () => {
-                    URL.revokeObjectURL(imageUrl);
-                    reject(new Error('Error loading image metadata'));
+                reader.onerror = () => {
+                    reject(new Error('Error reading image metadata'));
                 };
 
-                img.src = imageUrl;
+                reader.readAsDataURL(file);
             }
             // Handle other file types
             else {

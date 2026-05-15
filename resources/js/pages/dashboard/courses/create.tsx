@@ -15,7 +15,7 @@ import courseLanguages from '@/data/course-languages';
 import DashboardLayout from '@/layouts/dashboard/layout';
 import { onHandleChange } from '@/lib/inertia';
 import { SharedData } from '@/types/global';
-import { useForm } from '@inertiajs/react';
+import { router, useForm } from '@inertiajs/react';
 import { ReactNode, useMemo } from 'react';
 
 interface Props extends SharedData {
@@ -54,7 +54,29 @@ const Index = (props: Props) => {
    const handleSubmit = (e: React.FormEvent) => {
       e.preventDefault();
 
-      post(route('courses.store'));
+      // Serialize form data — convert Date to ISO string for safe FormData transmission
+      const payload = new FormData();
+      Object.entries(data).forEach(([key, value]) => {
+         if (value instanceof File) {
+            payload.append(key, value, value.name);
+         } else if (value instanceof Date) {
+            payload.append(key, value.toISOString());
+         } else if (value === null || value === undefined) {
+            // skip nulls
+         } else {
+            payload.append(key, String(value));
+         }
+      });
+
+      console.log('[DEBUG] Submitting payload keys:', [...payload.keys()]);
+      console.log('[DEBUG] expiry_duration value:', payload.get('expiry_duration'));
+
+      router.post(route('courses.store'), payload, {
+         onBefore: () => console.log('[DEBUG] Before POST'),
+         onSuccess: () => console.log('[DEBUG] POST succeeded ✅'),
+         onError: (errors) => console.error('[DEBUG] Validation errors ❌', errors),
+         onFinish: () => console.log('[DEBUG] POST finished'),
+      });
    };
 
    const transformedCategories = useMemo(() => {
@@ -318,8 +340,8 @@ const Index = (props: Props) => {
                   </Accordion>
 
                   <div>
-                     <Label>Thumbnail</Label>
-                     <Input type="file" name="thumbnail" onChange={(e) => onHandleChange(e, setData)} />
+                     <Label>Thumbnail <span className="text-muted-foreground text-xs">(JPG, PNG, WEBP — max 2MB)</span></Label>
+                     <Input type="file" name="thumbnail" accept="image/jpeg,image/png,image/webp,image/gif" onChange={(e) => onHandleChange(e, setData)} />
                      <InputError message={errors.thumbnail} />
                   </div>
                </div>

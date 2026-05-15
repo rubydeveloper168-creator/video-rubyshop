@@ -25,8 +25,15 @@ const ImageButton = () => {
             const target = e.target
             const file = target.files?.[0]
             if (file?.type.startsWith('image/')) {
-                const url = URL.createObjectURL(file)
-                editor.chain().setImage({ src: url }).focus().run()
+                // Use a data URL so the inserted image survives rerenders/navigation.
+                const reader = new FileReader()
+                reader.onload = () => {
+                    const url = reader.result
+                    if (typeof url === 'string') {
+                        editor.chain().setImage({ src: url }).focus().run()
+                    }
+                }
+                reader.readAsDataURL(file)
             }
         },
         [editor],
