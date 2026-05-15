@@ -1,8 +1,9 @@
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { cn } from '@/lib/utils';
 import axios from 'axios';
-import { CheckCircle, Loader2 } from 'lucide-react';
-import { ChangeEvent, FC, useEffect, useRef, useState } from 'react';
+import { CheckCircle, Loader2, Upload } from 'lucide-react';
+import { ChangeEvent, DragEvent, FC, useEffect, useRef, useState } from 'react';
 import { toast } from 'sonner';
 import InputError from './input-error';
 
@@ -13,6 +14,8 @@ interface ChunkedUploaderInputProps {
    courseId?: string | number;
    sectionId?: string | number;
    delayUpload?: boolean;
+   dropzone?: boolean;
+   dropzoneHint?: string;
    onError?: (message: string) => void;
    onCancelUpload?: () => void;
    onFileSelected?: (file: File) => void;
@@ -35,17 +38,19 @@ const ChunkedUploaderInput: FC<ChunkedUploaderInputProps> = ({
    sectionId,
    filetype,
    delayUpload = false,
+   dropzone = false,
+   dropzoneHint,
    onError,
    onCancelUpload,
    onFileSelected,
    onFileUploaded,
 }) => {
-   // Use external file if provided, or manage internally
    const [file, setFile] = useState<File | null>(null);
    const [uploadId, setUploadId] = useState<number | null>(null);
    const [errorMessage, setErrorMessage] = useState<string>('');
    const [uploadProgress, setUploadProgress] = useState<number>(0);
    const [uploadStatus, setUploadStatus] = useState<'idle' | 'initializing' | 'uploading' | 'completing' | 'completed' | 'error'>('idle');
+   const [isDragging, setIsDragging] = useState(false);
 
    const fileInputRef = useRef<HTMLInputElement>(null);
    const abortControllerRef = useRef<AbortController | null>(null);
@@ -81,31 +86,43 @@ const ChunkedUploaderInput: FC<ChunkedUploaderInputProps> = ({
       }
    }, [isSubmit]);
 
+   const processFile = (selectedFile: File) => {
+      if (selectedFile.size > maxFileSize) {
+         setErrorMessage(`File is too large. Maximum file size is ${maxFileSize / (1024 * 1024)} MB`);
+         return;
+      }
+      setFile(selectedFile);
+      setErrorMessage('');
+      setUploadStatus('idle');
+      setUploadProgress(0);
+      if (delayUpload) {
+         onFileSelected?.(selectedFile);
+      } else {
+         initiateUpload();
+      }
+   };
+
    const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
       if (event.target.files && event.target.files.length > 0) {
-         const selectedFile = event.target.files[0];
-
-         // Validate file size
-         if (selectedFile.size > maxFileSize) {
-            setErrorMessage(`File is too large. Maximum file size is ${maxFileSize / (1024 * 1024)} MB`);
-            return;
-         }
-
-         setFile(selectedFile);
-         setErrorMessage('');
-         setUploadStatus('idle');
-         setUploadProgress(0);
-
-         // If using delayed upload, notify parent but don't upload yet
-         if (delayUpload) {
-            if (onFileSelected) {
-               onFileSelected(selectedFile);
-            }
-         } else {
-            // Upload immediately if not using delayed upload
-            initiateUpload();
-         }
+         processFile(event.target.files[0]);
       }
+   };
+
+   const handleDragOver = (e: DragEvent<HTMLDivElement>) => {
+      e.preventDefault();
+      setIsDragging(true);
+   };
+
+   const handleDragLeave = (e: DragEvent<HTMLDivElement>) => {
+      e.preventDefault();
+      setIsDragging(false);
+   };
+
+   const handleDrop = (e: DragEvent<HTMLDivElement>) => {
+      e.preventDefault();
+      setIsDragging(false);
+      const droppedFile = e.dataTransfer.files[0];
+      if (droppedFile) processFile(droppedFile);
    };
 
    const initiateUpload = async () => {
@@ -347,21 +364,106 @@ const ChunkedUploaderInput: FC<ChunkedUploaderInputProps> = ({
       }
    };
 
+   const isActive = ['initializing', 'uploading', 'completing'].includes(uploadStatus);
+   const hint = dropzoneHint ?? 'MP4, MOV, AVI · Max 2 GB';
+
+   if (dropzone) {
+      return (
+         <div>
+            <div
+               role="button"
+               tabIndex={0}
+               onClick={() => !isActive && fileInputRef.current?.click()}
+               onKeyDown={(e) => e.key === 'Enter' && !isActive && fileInputRef.current?.click()}
+               onDragOver={handleDragOver}
+               onDragLeave={handleDragLeave}
+               onDrop={handleDrop}
+               className={cn(
+                  'relative flex min-h-[140px] cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed px-6 py-10 text-center transition-colors select-none',
+                  isDragging
+                     ? 'border-primary bg-primary/5'
+                     : 'border-gray-300 hover:border-primary/60 hover:bg-muted/40 dark:border-gray-600',
+                  uploadStatus === 'completed' && 'border-green-400 bg-green-50/50 dark:bg-green-950/20',
+                  isActive && 'cursor-default',
+               )}
+            >
+               <input
+                  ref={fileInputRef}
+                  type="file"
+                  className="hidden"
+                  onChange={handleFileChange}
+               />
+
+               {/* Idle / file selected */}
+               {!isActive && uploadStatus !== 'completed' && (
+                  <div className="flex flex-col items-center gap-3">
+                     <Upload className="text-muted-foreground h-8 w-8" />
+                     {file ? (
+                        <div className="space-y-0.5">
+                           <p className="text-sm font-medium">{file.name}</p>
+                           <p className="text-muted-foreground text-xs">{(file.size / (1024 * 1024)).toFixed(2)} MB — click to change</p>
+                        </div>
+                     ) : (
+                        <div className="space-y-1">
+                           <p className="text-sm">
+                              <span className="text-primary font-semibold">Click to upload</span>
+                              {' '}or drag video here
+                           </p>
+                           <p className="text-muted-foreground text-xs">{hint}</p>
+                        </div>
+                     )}
+                  </div>
+               )}
+
+               {/* Uploading */}
+               {isActive && file && (
+                  <div className="w-full space-y-3">
+                     <div className="flex items-center justify-center gap-2">
+                        <Loader2 className="text-primary h-5 w-5 animate-spin" />
+                        <span className="text-sm font-medium">{renderStatus()}</span>
+                     </div>
+                     <div className="h-2 w-full overflow-hidden rounded-full bg-gray-200 dark:bg-gray-700">
+                        <div
+                           className="bg-primary h-full rounded-full transition-all duration-300"
+                           style={{ width: `${uploadProgress}%` }}
+                        />
+                     </div>
+                     <div className="text-muted-foreground flex justify-between text-xs">
+                        <span>{uploadProgress}%</span>
+                        <span>{(file.size / (1024 * 1024)).toFixed(2)} MB</span>
+                     </div>
+                     <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        onClick={(e) => { e.stopPropagation(); cancelUpload(); }}
+                     >
+                        Cancel
+                     </Button>
+                  </div>
+               )}
+
+               {/* Completed */}
+               {uploadStatus === 'completed' && (
+                  <div className="flex flex-col items-center gap-2">
+                     <CheckCircle className="h-8 w-8 text-green-500" />
+                     <p className="text-sm font-medium text-green-700 dark:text-green-400">Upload complete</p>
+                  </div>
+               )}
+            </div>
+
+            {errorMessage && <InputError message={errorMessage} />}
+         </div>
+      );
+   }
+
    return (
       <div>
          <div className="relative overflow-hidden rounded-sm">
             <Input
                type="file"
                name="file"
-               onChange={(e) => {
-                  handleFileChange(e);
-                  const file = e.target.files?.[0];
-
-                  if (file) {
-                     setFile(file);
-                     onFileSelected?.(file);
-                  }
-               }}
+               onChange={handleFileChange}
             />
 
             {uploadStatus === 'uploading' && file && (

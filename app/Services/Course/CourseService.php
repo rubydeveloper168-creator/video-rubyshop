@@ -2,12 +2,14 @@
 
 namespace App\Services\Course;
 
+use Illuminate\Http\UploadedFile;
 use App\Models\Course\Course;
 use App\Models\Course\CourseEnrollment;
 use App\Models\Instructor;
 use App\Models\User;
 use App\Notifications\CourseApprovalNotification;
 use App\Services\MediaService;
+use Illuminate\Support\Arr;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Auth;
@@ -17,14 +19,23 @@ class CourseService extends MediaService
 {
    function createCourse(array $data): Course
    {
+      $user = Auth::user();
+      $instructorId = ($data['instructor_id'] ?? '') !== ''
+         ? $data['instructor_id']
+         : $user?->instructor_id;
+
+      // Do not persist the raw upload object in the initial insert.
+      // The thumbnail is attached after the row exists.
       $course = Course::create([
-         ...$data,
-         'slug' => Str::slug($data['title']),
-         'user_id' => Auth::user()->id,
-         'course_type' => 'general',
+         ...Arr::except($data, ['thumbnail']),
+         'slug'                     => Str::slug($data['title']),
+         'user_id'                  => $user?->id,
+         'course_type'              => 'general',
+         'course_category_child_id' => ($data['course_category_child_id'] ?? '') !== '' ? $data['course_category_child_id'] : null,
+         'instructor_id'            => $instructorId,
       ]);
 
-      if ($data['thumbnail']) {
+      if (($data['thumbnail'] ?? null) instanceof UploadedFile) {
          $course->update([
             'thumbnail' => $this->addNewDeletePrev($course, $data['thumbnail'], "thumbnail")
          ]);

@@ -38,7 +38,7 @@ const Update = (props: CourseUpdateProps) => {
          <CourseUpdateHeader />
 
          <Tabs value={tab ?? tabs[0].slug} className="grid grid-rows-1 gap-5 md:grid-cols-4">
-            <div>
+            <div className="self-start">
                <TabsList className="horizontal-tabs-list space-y-1">
                   {tabs.map(({ id, name, slug, Icon }) => (
                      <TabsTrigger

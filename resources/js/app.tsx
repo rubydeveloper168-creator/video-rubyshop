@@ -1,9 +1,24 @@
 import '../css/app.css';
 
 import { createInertiaApp } from '@inertiajs/react';
+import axios from 'axios';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { createRoot } from 'react-dom/client';
 import { initializeTheme } from './hooks/use-appearance';
+
+// Global Axios interceptor — logs every 4xx/5xx response body to console
+axios.interceptors.response.use(
+   (response) => response,
+   (error) => {
+      if (error.response) {
+         console.error(
+            `[HTTP ${error.response.status}] ${error.config?.method?.toUpperCase()} ${error.config?.url}`,
+            '\nResponse:', error.response.data,
+         );
+      }
+      return Promise.reject(error);
+   },
+);
 
 const appName = import.meta.env.VITE_APP_NAME;
 
