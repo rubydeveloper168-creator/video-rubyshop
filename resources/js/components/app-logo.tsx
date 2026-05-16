@@ -2,7 +2,7 @@ import { cn } from '@/lib/utils';
 import { SharedData } from '@/types/global';
 import { usePage } from '@inertiajs/react';
 
-const defaultBrandLogo = 'https://www.rubyshop.co.th/storage/logo/rubyshop-no-bg-250pxx100px.jpg';
+const defaultBrandLogo = '/assets/logos/rubyshop-no-bg-removebg-preview.png';
 
 const AppLogo = ({ className, theme }: { theme?: 'light' | 'dark'; className?: string }) => {
    const { system } = usePage<SharedData>().props;
