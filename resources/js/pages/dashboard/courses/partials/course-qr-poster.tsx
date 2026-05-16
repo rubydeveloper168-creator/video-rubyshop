@@ -13,9 +13,9 @@ import { toast } from 'sonner';
 
 type QrTargetMode = 'overview' | 'player' | 'custom';
 type PosterLayout = 'warning' | 'catalog';
-type ExportPreset = 'a4' | 'poster' | 'sticker';
+type ExportPreset = 'sticker';
 
-const defaultBrandLogo = 'https://www.rubyshop.co.th/storage/logo/rubyshop-no-bg-250pxx100px.jpg';
+const defaultBrandLogo = '/assets/logos/rubyshop-no-bg-removebg-preview.png';
 
 const rubyShopHighlights = ['Airless Sprayer', 'Wall Cutter / Chaser', 'Mortar Sprayer', 'Skim Coat Machine', 'Sandpaper & Spare Parts', 'Waterproof Injection'];
 
@@ -36,7 +36,6 @@ const CourseQrPoster = () => {
 
    const [targetMode, setTargetMode] = useState<QrTargetMode>(!!watchHistory ? 'player' : 'overview');
    const [posterLayout, setPosterLayout] = useState<PosterLayout>('warning');
-   const [exportPreset, setExportPreset] = useState<ExportPreset>('a4');
    const [customUrl, setCustomUrl] = useState('');
    const [posterTitle, setPosterTitle] = useState('SCAN TO OPEN');
    const [posterNote, setPosterNote] = useState('Open this course on your phone');
@@ -137,7 +136,7 @@ const CourseQrPoster = () => {
       let stage = 'init';
 
       try {
-         const preset = EXPORT_PRESETS[exportPreset];
+         const preset = EXPORT_PRESET;
          stage = 'inline assets';
          const [brandLogo, qrDataUrl] = await Promise.all([inlineImageAsDataUrl(posterExport.brandLogo), inlineImageAsDataUrl(posterExport.qrUrl)]);
          const svg = buildPosterSvg({
@@ -208,9 +207,10 @@ const CourseQrPoster = () => {
                <title>${escapeXml(posterExport.courseTitle)} - RubyShop Poster</title>
                <meta name="viewport" content="width=device-width, initial-scale=1" />
                <style>
-                  html, body { margin: 0; padding: 0; background: #fff; }
-                  body { display: flex; align-items: center; justify-content: center; min-height: 100vh; }
-                  svg { width: 100%; max-width: 1080px; height: auto; display: block; }
+                  @page { size: 60mm 85mm; margin: 0; }
+                  html, body { margin: 0; padding: 0; background: #fff; width: 60mm; height: 85mm; }
+                  body { display: flex; align-items: center; justify-content: center; overflow: hidden; }
+                  svg { width: 60mm; height: 85mm; display: block; }
                </style>
             </head>
             <body>${svg}<script>setTimeout(function(){ window.focus(); window.print(); }, 400);</script></body>
@@ -313,18 +313,11 @@ const CourseQrPoster = () => {
                      <div className="flex items-center justify-between gap-3">
                         <div className="space-y-1">
                            <Label>Export</Label>
-                           <p className="text-muted-foreground text-xs">Choose a size, then export the poster as SVG, PNG, JPG, or print.</p>
+                           <p className="text-muted-foreground text-xs">Sticker size is fixed for print and downloads.</p>
                         </div>
-                        <Select value={exportPreset} onValueChange={(value) => setExportPreset(value as ExportPreset)}>
-                           <SelectTrigger className="w-[140px]">
-                              <SelectValue placeholder="Select size" />
-                           </SelectTrigger>
-                           <SelectContent>
-                              <SelectItem value="a4">A4 Print</SelectItem>
-                              <SelectItem value="poster">HD Poster</SelectItem>
-                              <SelectItem value="sticker">Sticker</SelectItem>
-                           </SelectContent>
-                        </Select>
+                        <div className="rounded-md border border-border/60 bg-background px-3 py-2 text-sm font-medium">
+                           Sticker
+                        </div>
                      </div>
 
                      <div className="grid gap-2 sm:grid-cols-2">
@@ -633,7 +626,7 @@ const buildPosterSvg = (props: {
       props.targetMode === 'player' ? 'Opens the lesson player directly on your device' : 'Opens the public course overview page',
       'Use for posters, packaging inserts, and showroom displays',
       "Keep the QR scannable at arm's length",
-      'Print A4 or larger for clean scanning',
+      'Print on sticker paper for clean scanning',
       'Switch to player link only when a watch session exists',
       `${rubyShopContact.phone} • ${rubyShopContact.hours}`,
    ];
@@ -722,7 +715,7 @@ const buildPosterSvg = (props: {
     <polygon points="586,0 662,0 604,112 528,112" fill="#ffd633"/>
     <polygon points="664,0 728,0 670,112 606,112" fill="#111"/>
 
-    ${props.brandLogo ? `<rect x="24" y="22" width="120" height="46" rx="6" fill="#fff"/><image href="${escapeXml(props.brandLogo)}" x="30" y="28" width="108" height="34" preserveAspectRatio="xMidYMid meet"/>` : ''}
+    ${props.brandLogo ? `<rect x="20" y="20" width="104" height="44" rx="6" fill="#fff"/><image href="${escapeXml(props.brandLogo)}" x="26" y="28" width="92" height="28" preserveAspectRatio="xMidYMid meet"/>` : ''}
     <text x="162" y="46" font-family="Arial, Helvetica, sans-serif" font-size="34" font-weight="900" fill="#fff" letter-spacing="4">RUBYSHOP</text>
     <text x="162" y="76" font-family="Arial, Helvetica, sans-serif" font-size="14" font-weight="700" fill="#fff" letter-spacing="2">AIRLESS SPRAYER AND POWER TOOLS</text>
 
@@ -745,13 +738,13 @@ const buildPosterSvg = (props: {
     ${warningItemsSvg}
 
     <rect x="92" y="1148" width="840" height="260" rx="22" fill="#f6f4ee" stroke="#111" stroke-width="4"/>
-    <rect x="118" y="1172" width="254" height="214" rx="16" fill="#fff" stroke="#d61f1f" stroke-width="4"/>
-    ${props.qrUrl ? `<image href="${escapeXml(props.qrUrl)}" x="128" y="1182" width="234" height="194" preserveAspectRatio="xMidYMid meet"/>` : ''}
-    <circle cx="660" cy="1234" r="36" fill="#e43b24"/>
-    <path d="M 646 1218 L 646 1250 L 674 1234 Z" fill="#fff"/>
-    <text x="706" y="1282" font-family="Arial, Helvetica, sans-serif" font-size="30" font-weight="900" fill="#111" text-anchor="middle">SCAN TO VIEW</text>
-    <text x="706" y="1332" font-family="Arial, Helvetica, sans-serif" font-size="28" font-weight="900" fill="#e43b24" text-anchor="middle">COURSE ACCESS</text>
-    <line x1="608" y1="1360" x2="804" y2="1360" stroke="#111" stroke-width="3"/>
+    <rect x="118" y="1172" width="212" height="214" rx="16" fill="#fff" stroke="#d61f1f" stroke-width="4"/>
+    ${props.qrUrl ? `<image href="${escapeXml(props.qrUrl)}" x="129" y="1182" width="190" height="194" preserveAspectRatio="xMidYMid meet"/>` : ''}
+    <text x="394" y="1238" font-family="Arial, Helvetica, sans-serif" font-size="26" font-weight="900" fill="#111" text-anchor="start">SCAN TO VIEW</text>
+    <text x="394" y="1284" font-family="Arial, Helvetica, sans-serif" font-size="24" font-weight="900" fill="#e43b24" text-anchor="start">COURSE ACCESS</text>
+    <text x="394" y="1318" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="700" fill="#2b2b2b" text-anchor="start">Open the course overview or player on your phone.</text>
+    <text x="394" y="1340" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="700" fill="#2b2b2b" text-anchor="start">Best for sticker paper, inserts, and showroom displays.</text>
+    <line x1="394" y1="1356" x2="780" y2="1356" stroke="#111" stroke-width="3"/>
 
     <rect x="0" y="1418" width="${width}" height="118" fill="#111"/>
     <rect x="${width - 232}" y="1418" width="232" height="118" fill="url(#footerRed)"/>
@@ -813,10 +806,11 @@ const blobToDataUrl = (blob: Blob) =>
       reader.readAsDataURL(blob);
    });
 
-const EXPORT_PRESETS: Record<ExportPreset, { width: number; height: number; scale: number; filename: string }> = {
-   a4: { width: 300, height: 424, scale: 2, filename: 'rubyshop-poster-a4' },
-   poster: { width: 240, height: 340, scale: 2, filename: 'rubyshop-poster-hd' },
-   sticker: { width: 160, height: 227, scale: 2, filename: 'rubyshop-sticker' },
+const EXPORT_PRESET: { width: number; height: number; scale: number; filename: string } = {
+   width: 160,
+   height: 227,
+   scale: 2,
+   filename: 'rubyshop-sticker',
 };
 
 const slugify = (value: string) =>
