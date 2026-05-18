@@ -41,6 +41,8 @@ const CourseQrPoster = () => {
    const [posterNote, setPosterNote] = useState('Open this course on your phone');
    const [previewOpen, setPreviewOpen] = useState(false);
    const [showSettings, setShowSettings] = useState(false);
+   const [previewSeed, setPreviewSeed] = useState(0);
+   const [previewObjectUrl, setPreviewObjectUrl] = useState('');
 
    const overviewUrl = useMemo(() => absoluteUrl(route('course.details', { slug: course.slug, id: course.id })), [course.id, course.slug]);
 
@@ -86,7 +88,12 @@ const CourseQrPoster = () => {
          setPreviewSvgUrl('');
          return;
       }
+      if (previewObjectUrl) {
+         URL.revokeObjectURL(previewObjectUrl);
+         setPreviewObjectUrl('');
+      }
       let cancelled = false;
+      let nextObjectUrl = '';
       (async () => {
          const [brandLogo, qrDataUrl] = await Promise.all([
             inlineImageAsDataUrl(posterExport.brandLogo),
@@ -98,10 +105,18 @@ const CourseQrPoster = () => {
             brandLogo: brandLogo || posterExport.brandLogo,
             qrUrl: qrDataUrl || posterExport.qrUrl,
          });
-         setPreviewSvgUrl(`data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`);
+         const blob = new Blob([svg], { type: 'image/svg+xml;charset=utf-8' });
+         nextObjectUrl = URL.createObjectURL(blob);
+         setPreviewObjectUrl(nextObjectUrl);
+         setPreviewSvgUrl(nextObjectUrl);
       })();
-      return () => { cancelled = true; };
-   }, [posterExport, resolvedUrl]);
+      return () => {
+         cancelled = true;
+         if (nextObjectUrl) {
+            URL.revokeObjectURL(nextObjectUrl);
+         }
+      };
+   }, [posterExport, previewSeed, resolvedUrl]);
 
    const copyUrl = async () => {
       if (!resolvedUrl) return;
@@ -112,6 +127,16 @@ const CourseQrPoster = () => {
       } catch {
          toast.error('Unable to copy URL.');
       }
+   };
+
+   const regeneratePreview = () => {
+      if (!resolvedUrl) {
+         toast.error('Add a URL before regenerating the poster preview.');
+         return;
+      }
+
+      setPreviewSeed((seed) => seed + 1);
+      toast.success('Poster preview regenerated.');
    };
 
    const downloadPosterSvg = () => {
@@ -322,7 +347,7 @@ const CourseQrPoster = () => {
                   )}
 
                   <div className="space-y-2">
-                     <Label>Poster Title</Label>
+                     <Label>Section Title</Label>
                      <Input value={posterTitle} onChange={(e) => setPosterTitle(e.target.value)} />
                   </div>
 
@@ -365,9 +390,14 @@ const CourseQrPoster = () => {
                   <p className="font-medium">Poster Preview</p>
                   <p className="text-muted-foreground text-xs">Open the full QR poster in a modal to view, print, or download it.</p>
                </div>
-               <Button type="button" className="mt-3 w-full justify-start" onClick={() => setPreviewOpen(true)} disabled={!resolvedUrl}>
-                  Open poster preview
-               </Button>
+               <div className="mt-3 grid gap-2 sm:grid-cols-2">
+                  <Button type="button" className="w-full justify-start" onClick={() => setPreviewOpen(true)} disabled={!resolvedUrl}>
+                     Open poster preview
+                  </Button>
+                  <Button type="button" variant="outline" className="w-full justify-start" onClick={regeneratePreview} disabled={!resolvedUrl}>
+                     Regenerate preview
+                  </Button>
+               </div>
             </div>
          </div>
 
@@ -382,7 +412,12 @@ const CourseQrPoster = () => {
                   <div className="flex-1 overflow-auto bg-neutral-100 p-4">
                      <div className="mx-auto w-full max-w-[380px]">
                         {previewSvgUrl ? (
-                           <img src={previewSvgUrl} alt="Poster preview" className="h-auto w-full rounded-2xl shadow-md" />
+                           <img
+                              key={`${previewSeed}-${posterTitle}-${posterNote}-${targetMode}-${posterLayout}-${resolvedUrl}`}
+                              src={previewSvgUrl}
+                              alt="Poster preview"
+                              className="h-auto w-full rounded-2xl shadow-md"
+                           />
                         ) : (
                            <div className="flex h-64 items-center justify-center rounded-2xl border border-dashed border-black/20 text-sm text-black/40">
                               Add a URL to preview poster
@@ -395,6 +430,9 @@ const CourseQrPoster = () => {
                      <div className="flex flex-wrap items-center justify-between gap-3">
                         <p className="text-muted-foreground text-xs">Use the buttons below to export the current poster layout.</p>
                         <div className="flex flex-wrap gap-2">
+                           <Button type="button" variant="outline" size="sm" onClick={regeneratePreview} disabled={!resolvedUrl}>
+                              Regenerate
+                           </Button>
                            <Button type="button" variant="outline" size="sm" onClick={printPoster} disabled={!resolvedUrl}>
                               Print
                            </Button>
@@ -469,13 +507,13 @@ const WarningPoster = ({
          </div>
 
          {/* WARNING banner */}
-         <div className="mx-4 mt-4 flex items-center gap-3 rounded-2xl bg-black px-5 py-4">
+         <div className="mx-4 mt-1 flex items-center gap-3 rounded-2xl bg-black px-5 py-1.5">
             <AlertTriangle className="h-9 w-9 shrink-0 text-[#ffd633]" />
-            <p className="text-4xl font-black tracking-widest text-[#ffd633]">{posterTitle}</p>
+            <p className="-mt-1 text-3xl font-black tracking-widest text-[#ffd633]">{posterTitle}</p>
          </div>
 
          {/* Bullet items */}
-         <div className="mx-4 mt-4">
+         <div className="mx-4 mt-12">
             {items.map((item, i) => (
                <div key={i}>
                   <div className="flex items-start gap-4 py-3">
@@ -644,18 +682,18 @@ const buildPosterSvg = (props: {
 
    // Warning poster items
    const warningItems = [
-      props.posterNote || 'Open this course on your phone',
       props.targetMode === 'player' ? 'Opens the lesson player directly on your device' : 'Opens the public course overview page',
       'Use for posters, packaging inserts, and showroom displays',
       "Keep the QR scannable at arm's length",
+      'Print on sticker paper for clean scanning',
    ];
-   const ITEM_Y = 268;
-   const ITEM_GAP = 148;
+   const ITEM_Y = 460;
+   const ITEM_GAP = 130;
    const warningItemsSvg = warningItems
       .map((item, i) => {
          const yBase = ITEM_Y + i * ITEM_GAP;
          const ccy = yBase + 32;
-         const lines = splitLines(item, 34);
+         const lines = splitLines(item, 32);
          const sepY = yBase + ITEM_GAP - 20;
         return [
             `<circle cx="92" cy="${ccy}" r="32" fill="#111" stroke="#ffd633" stroke-width="4"/>`,
@@ -740,11 +778,11 @@ const buildPosterSvg = (props: {
     <text x="${width - 110}" y="49" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="800" fill="#fff" text-anchor="middle" letter-spacing="3">SCAN FOR</text>
     <text x="${width - 110}" y="72" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="800" fill="#fff" text-anchor="middle" letter-spacing="3">COURSE ACCESS</text>
 
-    <rect x="132" y="132" width="760" height="148" rx="24" fill="#111" stroke="#000" stroke-width="4"/>
+    <rect x="132" y="124" width="760" height="140" rx="24" fill="#111" stroke="#000" stroke-width="4"/>
     <polygon points="160,160 192,160 176,190" fill="none" stroke="#ffd633" stroke-width="6" stroke-linejoin="round"/>
     <line x1="176" y1="170" x2="176" y2="180" stroke="#ffd633" stroke-width="8" stroke-linecap="round"/>
     <circle cx="176" cy="186" r="4" fill="#ffd633"/>
-    <text x="512" y="264" font-family="Arial, Helvetica, sans-serif" font-size="54" font-weight="900" fill="#ffd633" text-anchor="middle">${escapeXml(props.posterTitle.toUpperCase())}</text>
+   <text x="512" y="228" font-family="Arial, Helvetica, sans-serif" font-size="50" font-weight="900" fill="#ffd633" text-anchor="middle">${escapeXml(props.posterTitle.toUpperCase())}</text>
 
     <text x="120" y="356" font-family="Arial, Helvetica, sans-serif" font-size="34" font-weight="900" fill="#111">${escapeXml(courseLines[0] || props.courseTitle)}</text>
     <text x="120" y="388" font-family="Arial, Helvetica, sans-serif" font-size="14" font-weight="800" fill="#2b2b2b" letter-spacing="6">${escapeXml(category.toUpperCase())}</text>
@@ -754,9 +792,9 @@ const buildPosterSvg = (props: {
     <rect x="62" y="1044" width="900" height="368" rx="22" fill="#f6f4ee" stroke="#111" stroke-width="4"/>
     <rect x="86" y="1062" width="332" height="300" rx="16" fill="#fff" stroke="#d61f1f" stroke-width="4"/>
     ${props.qrUrl ? `<image href="${escapeXml(props.qrUrl)}" x="100" y="1076" width="304" height="272" preserveAspectRatio="xMidYMid meet"/>` : ''}
-    <text x="436" y="1128" font-family="Arial, Helvetica, sans-serif" font-size="40" font-weight="900" fill="#111" text-anchor="start">SCAN TO VIEW</text>
-    <text x="436" y="1180" font-family="Arial, Helvetica, sans-serif" font-size="38" font-weight="900" fill="#e43b24" text-anchor="start">COURSE ACCESS</text>
-    <text x="436" y="1226" font-family="Arial, Helvetica, sans-serif" font-size="14" font-weight="700" fill="#2b2b2b" text-anchor="start">Open the course overview or player on your phone.</text>
+    <text x="722" y="1140" font-family="Arial, Helvetica, sans-serif" font-size="40" font-weight="900" fill="#111" text-anchor="middle">SCAN TO VIEW</text>
+    <text x="722" y="1192" font-family="Arial, Helvetica, sans-serif" font-size="38" font-weight="900" fill="#e43b24" text-anchor="middle">COURSE ACCESS</text>
+    <text x="722" y="1240" font-family="Arial, Helvetica, sans-serif" font-size="14" font-weight="700" fill="#2b2b2b" text-anchor="middle">Open the course overview or player on your phone.</text>
   </g>
 </svg>`;
 };
