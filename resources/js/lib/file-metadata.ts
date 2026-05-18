@@ -54,9 +54,9 @@ export const getFileMetadata = (file: File): Promise<FileMetadata> => {
                 video.preload = 'metadata';
 
                 video.onloadedmetadata = () => {
-                    URL.revokeObjectURL(videoUrl);
                     const duration = formatDuration(video.duration);
                     createVideoThumbnail(video).then((thumbnailUrl) => {
+                        URL.revokeObjectURL(videoUrl);
                         resolve({
                             duration,
                             dimensions: {
@@ -68,6 +68,9 @@ export const getFileMetadata = (file: File): Promise<FileMetadata> => {
                             name: file.name,
                             type: file.type,
                         });
+                    }).catch((error) => {
+                        URL.revokeObjectURL(videoUrl);
+                        reject(error);
                     });
                 };
 
