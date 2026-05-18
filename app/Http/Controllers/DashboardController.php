@@ -16,6 +16,11 @@ class DashboardController extends Controller
     public function index()
     {
         $user = Auth::user();
+
+        if ($user->role !== 'admin') {
+            return redirect()->route('student.index', ['tab' => 'courses']);
+        }
+
         $currentYear = Carbon::now()->year;
         $data = $this->dashboardService->getDashboard($user, $currentYear);
 

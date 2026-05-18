@@ -34,7 +34,7 @@ const TabLists = ({ tabs }: TabListsProps) => {
             <p className="text-muted-foreground text-sm">{auth.user.email}</p>
          </div>
 
-         {instructor && instructor.status === 'approved' && (
+         {auth.user.role === 'admin' && (
             <Button
                variant="ghost"
                className="text-muted-foreground h-11 w-full justify-start gap-3 rounded-none px-5 py-3 text-start"
