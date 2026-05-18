@@ -18,6 +18,7 @@ const EditForm = ({ user, actionComponent }: Props) => {
    const { data, put, setData, processing, errors, reset } = useForm({
       name: user.name,
       status: user.status,
+      role: user.role,
    });
 
    const handleSubmit = (e: React.FormEvent) => {
@@ -65,6 +66,21 @@ const EditForm = ({ user, actionComponent }: Props) => {
                         </SelectContent>
                      </Select>
                      <InputError message={errors.status} />
+                  </div>
+
+                  <div>
+                     <Label>Role *</Label>
+                     <Select required value={data.role} onValueChange={(value) => setData('role', value)}>
+                        <SelectTrigger>
+                           <SelectValue placeholder="Select the role" />
+                        </SelectTrigger>
+                        <SelectContent>
+                           <SelectItem value="student">Student</SelectItem>
+                           <SelectItem value="instructor">Instructor</SelectItem>
+                           <SelectItem value="admin">Admin</SelectItem>
+                        </SelectContent>
+                     </Select>
+                     <InputError message={errors.role} />
                   </div>
 
                   <LoadingButton loading={processing} className="w-full">
