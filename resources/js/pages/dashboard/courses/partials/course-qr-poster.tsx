@@ -207,13 +207,35 @@ const CourseQrPoster = () => {
                <title>${escapeXml(posterExport.courseTitle)} - RubyShop Poster</title>
                <meta name="viewport" content="width=device-width, initial-scale=1" />
                <style>
-                  @page { size: 60mm 85mm; margin: 0; }
-                  html, body { margin: 0; padding: 0; background: #fff; width: 60mm; height: 85mm; }
-                  body { display: flex; align-items: center; justify-content: center; overflow: hidden; }
-                  svg { width: 60mm; height: 85mm; display: block; }
+                  @page { size: 60mm 92mm portrait; margin: 0; }
+                  html, body {
+                     margin: 0;
+                     padding: 0;
+                     width: 60mm;
+                     height: 92mm;
+                     background: #fff;
+                     overflow: hidden;
+                     -webkit-print-color-adjust: exact;
+                     print-color-adjust: exact;
+                  }
+                  body {
+                     display: block;
+                  }
+                  .print-sheet {
+                     width: 60mm;
+                     height: 92mm;
+                     overflow: hidden;
+                     page-break-after: avoid;
+                     break-inside: avoid;
+                  }
+                  svg {
+                     width: 100%;
+                     height: 100%;
+                     display: block;
+                  }
                </style>
             </head>
-            <body>${svg}<script>setTimeout(function(){ window.focus(); window.print(); }, 400);</script></body>
+            <body><div class="print-sheet">${svg}</div><script>setTimeout(function(){ window.focus(); window.print(); }, 400);</script></body>
          </html>`);
       popup.document.close();
       toast.success('Print preview opened.');
@@ -470,7 +492,7 @@ const WarningPoster = ({
          {/* QR card */}
          <div className="mx-4 mb-5 mt-4 flex items-center justify-center rounded-2xl bg-white p-4">
             {qrUrl ? (
-               <img src={qrUrl} alt="Course QR code" className="h-40 w-40 rounded-xl" crossOrigin="anonymous" />
+               <img src={qrUrl} alt="Course QR code" className="h-56 w-56 rounded-xl" crossOrigin="anonymous" />
             ) : (
                <div className="flex h-40 w-40 items-center justify-center rounded-xl border border-dashed border-black/30 text-xs text-black/50">
                   QR code
@@ -547,7 +569,7 @@ const CatalogPoster = ({
 
                <div className="mt-3 rounded-[18px] border-2 border-black bg-[#f6f2e8] p-2">
                   {qrUrl ? (
-                     <img src={qrUrl} alt="Course QR code" className="mx-auto h-[244px] w-[244px] rounded-xl bg-white p-1" crossOrigin="anonymous" />
+                     <img src={qrUrl} alt="Course QR code" className="mx-auto h-[320px] w-[320px] rounded-xl bg-white p-1" crossOrigin="anonymous" />
                   ) : (
                      <div className="mx-auto flex h-[244px] w-[244px] items-center justify-center rounded-xl border border-dashed border-black/40 bg-white text-sm text-black/70">
                         Add a URL to preview QR
@@ -612,7 +634,7 @@ const buildPosterSvg = (props: {
    qrUrl: string;
 }) => {
    const width = props.layout === 'catalog' ? 1080 : 1024;
-   const height = props.layout === 'catalog' ? 1500 : 1536;
+   const height = props.layout === 'catalog' ? 1500 : 1448;
    const renderWidth = width;
    const renderHeight = height;
    const category = props.childTitle ? `${props.categoryTitle} • ${props.childTitle}` : props.categoryTitle;
@@ -626,22 +648,19 @@ const buildPosterSvg = (props: {
       props.targetMode === 'player' ? 'Opens the lesson player directly on your device' : 'Opens the public course overview page',
       'Use for posters, packaging inserts, and showroom displays',
       "Keep the QR scannable at arm's length",
-      'Print on sticker paper for clean scanning',
-      'Switch to player link only when a watch session exists',
-      `${rubyShopContact.phone} • ${rubyShopContact.hours}`,
    ];
-   const ITEM_Y = 286;
-   const ITEM_GAP = 128;
+   const ITEM_Y = 268;
+   const ITEM_GAP = 148;
    const warningItemsSvg = warningItems
       .map((item, i) => {
          const yBase = ITEM_Y + i * ITEM_GAP;
          const ccy = yBase + 32;
-         const lines = splitLines(item, 42);
-         const sepY = yBase + ITEM_GAP - 16;
-         return [
-            `<circle cx="92" cy="${ccy}" r="28" fill="#111" stroke="#ffd633" stroke-width="4"/>`,
-            `<text x="92" y="${ccy + 8}" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="900" fill="#ffd633" text-anchor="middle">${i + 1}</text>`,
-            svgTextLines(lines, 152, yBase + 28, 24, 33, '#111', 800),
+         const lines = splitLines(item, 34);
+         const sepY = yBase + ITEM_GAP - 20;
+        return [
+            `<circle cx="92" cy="${ccy}" r="32" fill="#111" stroke="#ffd633" stroke-width="4"/>`,
+            `<text x="92" y="${ccy + 10}" font-family="Arial, Helvetica, sans-serif" font-size="26" font-weight="900" fill="#ffd633" text-anchor="middle">${i + 1}</text>`,
+            svgTextLines(lines, 154, yBase + 34, 30, 40, '#111', 800),
             i < warningItems.length - 1
                ? `<line x1="46" y1="${sepY}" x2="${width - 46}" y2="${sepY}" stroke="#111" stroke-width="2" stroke-dasharray="8,8" opacity="0.25"/>`
                : '',
@@ -654,14 +673,11 @@ const buildPosterSvg = (props: {
 <svg xmlns="http://www.w3.org/2000/svg" width="${renderWidth}" height="${renderHeight}" viewBox="0 0 ${width} ${height}">
   <rect width="${width}" height="${height}" rx="36" fill="#f6c51a"/>
   <rect x="0" y="0" width="${width}" height="140" rx="36" fill="#111"/>
-  <rect x="40" y="34" width="170" height="64" rx="12" fill="#fff"/>
-  ${props.brandLogo ? `<image href="${escapeXml(props.brandLogo)}" x="50" y="43" width="150" height="44" preserveAspectRatio="xMidYMid meet"/>` : ''}
   <text x="230" y="66" font-family="Arial, Helvetica, sans-serif" font-size="34" font-weight="800" fill="#fff" letter-spacing="5">RUBYSHOP</text>
   <text x="230" y="98" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="500" fill="#fff" letter-spacing="4">INDUSTRIAL TOOLS AND CONSTRUCTION EQUIPMENT</text>
   <text x="${width - 42}" y="66" font-family="Arial, Helvetica, sans-serif" font-size="18" font-weight="800" fill="#ffd633" text-anchor="end" letter-spacing="4">SCAN FOR COURSE ACCESS</text>
   <rect x="46" y="180" width="${width - 92}" height="118" rx="28" fill="#111" stroke="#000" stroke-width="4"/>
-  <text x="72" y="226" font-family="Arial, Helvetica, sans-serif" font-size="18" font-weight="800" fill="#fff" letter-spacing="6">WARNING</text>
-  <text x="72" y="264" font-family="Arial, Helvetica, sans-serif" font-size="58" font-weight="900" fill="#ffd633">${escapeXml(props.posterTitle.toUpperCase())}</text>
+  <text x="72" y="268" font-family="Arial, Helvetica, sans-serif" font-size="58" font-weight="900" fill="#ffd633">${escapeXml(props.posterTitle.toUpperCase())}</text>
   <text x="64" y="372" font-family="Arial, Helvetica, sans-serif" font-size="54" font-weight="900" fill="#111">${escapeXml(courseLines[0] || props.courseTitle)}</text>
   <text x="64" y="416" font-family="Arial, Helvetica, sans-serif" font-size="18" font-weight="700" fill="#2b2b2b" letter-spacing="5">${escapeXml(category.toUpperCase())}</text>
   <rect x="64" y="464" width="456" height="360" rx="24" fill="#f5f0e3" stroke="#111" stroke-width="4"/>
@@ -715,7 +731,6 @@ const buildPosterSvg = (props: {
     <polygon points="586,0 662,0 604,112 528,112" fill="#ffd633"/>
     <polygon points="664,0 728,0 670,112 606,112" fill="#111"/>
 
-    ${props.brandLogo ? `<rect x="20" y="20" width="104" height="44" rx="6" fill="#fff"/><image href="${escapeXml(props.brandLogo)}" x="26" y="28" width="92" height="28" preserveAspectRatio="xMidYMid meet"/>` : ''}
     <text x="162" y="46" font-family="Arial, Helvetica, sans-serif" font-size="34" font-weight="900" fill="#fff" letter-spacing="4">RUBYSHOP</text>
     <text x="162" y="76" font-family="Arial, Helvetica, sans-serif" font-size="14" font-weight="700" fill="#fff" letter-spacing="2">AIRLESS SPRAYER AND POWER TOOLS</text>
 
@@ -725,53 +740,23 @@ const buildPosterSvg = (props: {
     <text x="${width - 110}" y="49" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="800" fill="#fff" text-anchor="middle" letter-spacing="3">SCAN FOR</text>
     <text x="${width - 110}" y="72" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="800" fill="#fff" text-anchor="middle" letter-spacing="3">COURSE ACCESS</text>
 
-    <rect x="132" y="132" width="760" height="132" rx="24" fill="#111" stroke="#000" stroke-width="4"/>
+    <rect x="132" y="132" width="760" height="148" rx="24" fill="#111" stroke="#000" stroke-width="4"/>
     <polygon points="160,160 192,160 176,190" fill="none" stroke="#ffd633" stroke-width="6" stroke-linejoin="round"/>
     <line x1="176" y1="170" x2="176" y2="180" stroke="#ffd633" stroke-width="8" stroke-linecap="round"/>
     <circle cx="176" cy="186" r="4" fill="#ffd633"/>
-    <text x="214" y="204" font-family="Arial, Helvetica, sans-serif" font-size="28" font-weight="900" fill="#ffd633" letter-spacing="4">WARNING</text>
-    <text x="340" y="206" font-family="Arial, Helvetica, sans-serif" font-size="72" font-weight="900" fill="#ffd633" letter-spacing="2">${escapeXml(props.posterTitle.toUpperCase())}</text>
+    <text x="512" y="264" font-family="Arial, Helvetica, sans-serif" font-size="54" font-weight="900" fill="#ffd633" text-anchor="middle">${escapeXml(props.posterTitle.toUpperCase())}</text>
 
-    <text x="120" y="342" font-family="Arial, Helvetica, sans-serif" font-size="34" font-weight="900" fill="#111">${escapeXml(courseLines[0] || props.courseTitle)}</text>
-    <text x="120" y="374" font-family="Arial, Helvetica, sans-serif" font-size="14" font-weight="800" fill="#2b2b2b" letter-spacing="6">${escapeXml(category.toUpperCase())}</text>
+    <text x="120" y="356" font-family="Arial, Helvetica, sans-serif" font-size="34" font-weight="900" fill="#111">${escapeXml(courseLines[0] || props.courseTitle)}</text>
+    <text x="120" y="388" font-family="Arial, Helvetica, sans-serif" font-size="14" font-weight="800" fill="#2b2b2b" letter-spacing="6">${escapeXml(category.toUpperCase())}</text>
 
     ${warningItemsSvg}
 
-    <rect x="92" y="1148" width="840" height="260" rx="22" fill="#f6f4ee" stroke="#111" stroke-width="4"/>
-    <rect x="118" y="1172" width="212" height="214" rx="16" fill="#fff" stroke="#d61f1f" stroke-width="4"/>
-    ${props.qrUrl ? `<image href="${escapeXml(props.qrUrl)}" x="129" y="1182" width="190" height="194" preserveAspectRatio="xMidYMid meet"/>` : ''}
-    <text x="394" y="1238" font-family="Arial, Helvetica, sans-serif" font-size="26" font-weight="900" fill="#111" text-anchor="start">SCAN TO VIEW</text>
-    <text x="394" y="1284" font-family="Arial, Helvetica, sans-serif" font-size="24" font-weight="900" fill="#e43b24" text-anchor="start">COURSE ACCESS</text>
-    <text x="394" y="1318" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="700" fill="#2b2b2b" text-anchor="start">Open the course overview or player on your phone.</text>
-    <text x="394" y="1340" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="700" fill="#2b2b2b" text-anchor="start">Best for sticker paper, inserts, and showroom displays.</text>
-    <line x1="394" y1="1356" x2="780" y2="1356" stroke="#111" stroke-width="3"/>
-
-    <rect x="0" y="1418" width="${width}" height="118" fill="#111"/>
-    <rect x="${width - 232}" y="1418" width="232" height="118" fill="url(#footerRed)"/>
-    <line x1="238" y1="1432" x2="238" y2="1516" stroke="#fff" stroke-width="2" opacity="0.75"/>
-    <line x1="430" y1="1432" x2="430" y2="1516" stroke="#fff" stroke-width="2" opacity="0.75"/>
-    <line x1="658" y1="1432" x2="658" y2="1516" stroke="#fff" stroke-width="2" opacity="0.75"/>
-
-    <circle cx="96" cy="1476" r="24" fill="#1f1f1f" stroke="#fff" stroke-width="2"/>
-    <path d="M 84 1472 h 20 M 82 1479 h 24 M 86 1486 h 16" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/>
-    <text x="150" y="1470" font-family="Arial, Helvetica, sans-serif" font-size="18" font-weight="900" fill="#fff">จัดส่งทั่วประเทศ</text>
-    <text x="150" y="1494" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="700" fill="#fff" opacity="0.85">บริการส่งและติดตั้งหน้างาน</text>
-
-    <circle cx="292" cy="1476" r="24" fill="#1f1f1f" stroke="#fff" stroke-width="2"/>
-    <path d="M 282 1476 l 8 8 l 16 -16" stroke="#fff" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-    <text x="344" y="1470" font-family="Arial, Helvetica, sans-serif" font-size="18" font-weight="900" fill="#fff">รับประกัน 1 ปีเต็ม</text>
-    <text x="344" y="1494" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="700" fill="#fff" opacity="0.85">มั่นใจในคุณภาพสินค้า</text>
-
-    <circle cx="524" cy="1476" r="24" fill="#1f1f1f" stroke="#fff" stroke-width="2"/>
-    <path d="M 514 1471 c 3 -5 16 -5 20 0 c 2 4 2 10 0 14 h -20 c -2 -4 -2 -10 0 -14z" stroke="#fff" stroke-width="2" fill="none"/>
-    <circle cx="519" cy="1479" r="1.8" fill="#fff"/>
-    <circle cx="525" cy="1479" r="1.8" fill="#fff"/>
-    <circle cx="531" cy="1479" r="1.8" fill="#fff"/>
-    <text x="578" y="1470" font-family="Arial, Helvetica, sans-serif" font-size="18" font-weight="900" fill="#fff">บริการหลังการขาย</text>
-    <text x="578" y="1494" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="700" fill="#fff" opacity="0.85">ดูแลตลอดการใช้งาน</text>
-
-    <text x="${width - 186}" y="1472" font-family="Arial, Helvetica, sans-serif" font-size="24" font-weight="900" fill="#fff">RUBYSHOP</text>
-    <text x="${width - 186}" y="1500" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="700" fill="#fff" opacity="0.9">INDUSTRIAL TOOLS</text>
+    <rect x="62" y="1044" width="900" height="368" rx="22" fill="#f6f4ee" stroke="#111" stroke-width="4"/>
+    <rect x="86" y="1062" width="332" height="300" rx="16" fill="#fff" stroke="#d61f1f" stroke-width="4"/>
+    ${props.qrUrl ? `<image href="${escapeXml(props.qrUrl)}" x="100" y="1076" width="304" height="272" preserveAspectRatio="xMidYMid meet"/>` : ''}
+    <text x="436" y="1128" font-family="Arial, Helvetica, sans-serif" font-size="40" font-weight="900" fill="#111" text-anchor="start">SCAN TO VIEW</text>
+    <text x="436" y="1180" font-family="Arial, Helvetica, sans-serif" font-size="38" font-weight="900" fill="#e43b24" text-anchor="start">COURSE ACCESS</text>
+    <text x="436" y="1226" font-family="Arial, Helvetica, sans-serif" font-size="14" font-weight="700" fill="#2b2b2b" text-anchor="start">Open the course overview or player on your phone.</text>
   </g>
 </svg>`;
 };
@@ -807,8 +792,8 @@ const blobToDataUrl = (blob: Blob) =>
    });
 
 const EXPORT_PRESET: { width: number; height: number; scale: number; filename: string } = {
-   width: 160,
-   height: 227,
+   width: 180,
+   height: 248,
    scale: 2,
    filename: 'rubyshop-sticker',
 };
