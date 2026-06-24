@@ -21,6 +21,8 @@ interface Props extends SharedData {
 const QuickCreate = (props: Props) => {
     const user = props.auth.user;
     const { categories, instructors, system } = props;
+    const needsInstructorSelection = user?.role === 'admin' && system.sub_type === 'collaborative';
+    const defaultInstructor = instructors[0];
 
     const { data, setData, post, errors, processing } = useForm({
         title: '',
@@ -28,7 +30,7 @@ const QuickCreate = (props: Props) => {
         description: '',
         course_category_id: categories.length > 0 ? categories[0].id.toString() : '',
         course_category_child_id: '',
-        instructor_id: user.role === 'admin' && system.sub_type === 'collaborative' ? '' : (user.instructor_id ?? ''),
+        instructor_id: needsInstructorSelection ? String(defaultInstructor?.id ?? '') : (user?.instructor_id ?? ''),
     });
 
     useEffect(() => {
@@ -41,7 +43,59 @@ const QuickCreate = (props: Props) => {
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        post(route('courses.quick-store'));
+
+        const submitUrl = route('courses.quick-store');
+        const debugPayload = {
+            data,
+            user: {
+                id: user?.id,
+                role: user?.role,
+                instructor_id: user?.instructor_id,
+            },
+            system: {
+                sub_type: system.sub_type,
+            },
+            categories_count: categories.length,
+            instructors_count: instructors.length,
+            timestamp: new Date().toISOString(),
+        };
+
+        console.groupCollapsed('[QuickCreate] Create course clicked');
+        console.debug('[QuickCreate] Submit URL:', submitUrl);
+        console.debug('[QuickCreate] Payload/state:', debugPayload);
+        console.debug('[QuickCreate] Current form errors before submit:', errors);
+        console.groupEnd();
+
+        if (needsInstructorSelection && !data.instructor_id) {
+            console.error('[QuickCreate] Cannot submit: no valid instructor_id is selected.', {
+                instructor_id: data.instructor_id,
+                instructors,
+                hint: 'Create/approve an instructor first, or select one under Show details.',
+            });
+            return;
+        }
+
+        post(submitUrl, {
+            onBefore: () => {
+                console.debug('[QuickCreate] Inertia request starting', { submitUrl, data });
+            },
+            onStart: () => {
+                console.debug('[QuickCreate] Inertia request sent');
+            },
+            onError: (formErrors) => {
+                console.error('[QuickCreate] Inertia validation/server errors', formErrors);
+            },
+            onSuccess: (page) => {
+                console.debug('[QuickCreate] Course created successfully', {
+                    component: page.component,
+                    url: page.url,
+                    props: page.props,
+                });
+            },
+            onFinish: () => {
+                console.debug('[QuickCreate] Inertia request finished');
+            },
+        });
     };
 
     const transformedCategories = useMemo(() => {
@@ -67,7 +121,7 @@ const QuickCreate = (props: Props) => {
 
     const transformedInstructors = instructors.map((instructor) => ({
         label: instructor.user.name,
-        value: instructor.id as string,
+        value: String(instructor.id),
     }));
 
     return (
@@ -145,12 +199,13 @@ const QuickCreate = (props: Props) => {
                             <InputError message={errors.course_category_id} />
                         </div>
 
-                        {user.role === 'admin' && system.sub_type === 'collaborative' && (
+                        {needsInstructorSelection && (
                             <div>
                                 <Label>Course Instructor *</Label>
                                 <Combobox
                                     data={transformedInstructors}
                                     placeholder="Select the course instructor"
+                                    defaultValue={defaultInstructor ? String(defaultInstructor.id) : undefined}
                                     onSelect={(selected) => setData('instructor_id', selected.value)}
                                 />
                                 <InputError message={errors.instructor_id} />
