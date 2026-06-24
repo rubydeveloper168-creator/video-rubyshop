@@ -32,6 +32,10 @@ class PlayerController extends Controller
 
     public function intWatchHistory(Request $request)
     {
+        if (!$this->requireAuth()) {
+            return redirect()->guest(route('login'));
+        }
+
         $user = Auth::user();
         $watchHistory = $this->sectionService->initWatchHistory($request->course_id, 'lesson', $user->id);
 
@@ -44,6 +48,10 @@ class PlayerController extends Controller
 
     public function course_player(Request $request, string $type, WatchHistory $watch_history, string $lesson_id)
     {
+        if (!$this->requireAuth()) {
+            return redirect()->guest(route('login'));
+        }
+
         try {
             $user = Auth::user();
 
@@ -102,6 +110,10 @@ class PlayerController extends Controller
 
     public function finish_course(WatchHistory $watch_history)
     {
+        if (!$this->requireAuth()) {
+            return redirect()->guest(route('login'));
+        }
+
         $completedItems = json_decode($watch_history->completed_watching, true) ?: [];
         $lastItem = [
             'id' => $watch_history->current_watching_id,
@@ -158,5 +170,10 @@ class PlayerController extends Controller
         }
 
         return $cleaned;
+    }
+
+    private function requireAuth(): bool
+    {
+        return Auth::check();
     }
 }
