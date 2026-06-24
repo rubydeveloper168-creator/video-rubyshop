@@ -32,7 +32,7 @@ Route::post('enrollments', [CourseEnrollmentController::class, 'store'])->name('
 Route::resource('course-wishlists', CourseWishlistController::class)->only(['store', 'destroy']);
 
 Route::resource('quiz-submissions', QuizSubmissionController::class)->only(['store']);
-Route::post('player/init/watch-history', [\App\Http\Controllers\Course\PlayerController::class, 'intWatchHistory'])->name('player.init.watch-history');
+Route::middleware('auth')->post('player/init/watch-history', [\App\Http\Controllers\Course\PlayerController::class, 'intWatchHistory'])->name('player.init.watch-history');
 
 Route::prefix('audit-track')->name('audit.track.')->group(function () {
     Route::post('page-enter', [AuditController::class, 'pageEnter'])->name('page-enter');
