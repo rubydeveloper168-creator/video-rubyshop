@@ -26,7 +26,7 @@ Route::controller(CourseController::class)->group(function () {
     Route::get('courses/details/{slug}/{id}', 'show')->name('course.details');
 });
 
-Route::controller(PlayerController::class)->group(function () {
+Route::middleware('auth')->controller(PlayerController::class)->group(function () {
     Route::get('play-course/{type}/{watch_history}/{lesson_id}', 'course_player')->name('course.player');
     Route::get('play-course/finish/{watch_history}', 'finish_course')->name('course.player.finish');
 });
