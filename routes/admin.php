@@ -28,6 +28,7 @@ use App\Http\Controllers\UsersController;
 Route::prefix('dashboard')->group(function () {
     Route::get('audit', [AuditController::class, 'index'])->name('audit.index');
     Route::get('audit/users/{user}', [AuditController::class, 'show'])->name('audit.show');
+    Route::post('audit/users/{user}/verify', [AuditController::class, 'toggleVerify'])->name('audit.verify');
 
     // users
     Route::resource('users', UsersController::class)->only(['index', 'update']);

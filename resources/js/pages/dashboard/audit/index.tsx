@@ -2,6 +2,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import VerifiedBadge from '@/components/verified-badge';
 import DashboardLayout from '@/layouts/dashboard/layout';
 import { SharedData } from '@/types/global';
 import { Link } from '@inertiajs/react';
@@ -80,7 +81,12 @@ const Index = ({ users, summary }: Props) => {
                   <TableBody>
                      {users.data.map((user) => (
                         <TableRow key={user.id}>
-                           <TableCell className="font-medium">{user.name}</TableCell>
+                           <TableCell className="font-medium">
+                              <div className="flex items-center gap-1.5">
+                                 {user.name}
+                                 {user.is_verified && <VerifiedBadge />}
+                              </div>
+                           </TableCell>
                            <TableCell>{user.email}</TableCell>
                            <TableCell>
                               <Badge variant="secondary">{user.audit_sessions_count}</Badge>

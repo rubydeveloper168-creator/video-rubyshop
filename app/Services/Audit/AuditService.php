@@ -188,4 +188,36 @@ class AuditService
             return now();
         }
     }
+
+    public function parseUserAgent(?string $userAgent): array
+    {
+        $userAgent ??= '';
+
+        $browser = match (true) {
+            str_contains($userAgent, 'Edg/') => 'Edge',
+            str_contains($userAgent, 'OPR/') || str_contains($userAgent, 'Opera') => 'Opera',
+            str_contains($userAgent, 'Chrome/') && !str_contains($userAgent, 'Chromium') => 'Chrome',
+            str_contains($userAgent, 'Firefox/') => 'Firefox',
+            str_contains($userAgent, 'Safari/') && !str_contains($userAgent, 'Chrome') => 'Safari',
+            $userAgent !== '' => 'Other',
+            default => 'Unknown',
+        };
+
+        $os = match (true) {
+            str_contains($userAgent, 'Windows') => 'Windows',
+            str_contains($userAgent, 'Mac OS X') => 'macOS',
+            str_contains($userAgent, 'Android') => 'Android',
+            str_contains($userAgent, 'iPhone') || str_contains($userAgent, 'iPad') => 'iOS',
+            str_contains($userAgent, 'Linux') => 'Linux',
+            default => 'Unknown',
+        };
+
+        $deviceType = match (true) {
+            str_contains($userAgent, 'iPad') || str_contains($userAgent, 'Tablet') => 'tablet',
+            str_contains($userAgent, 'Mobi') || str_contains($userAgent, 'iPhone') || str_contains($userAgent, 'Android') => 'mobile',
+            default => 'desktop',
+        };
+
+        return ['browser' => $browser, 'os' => $os, 'device_type' => $deviceType];
+    }
 }

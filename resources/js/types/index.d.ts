@@ -18,6 +18,9 @@ interface User extends TableCommon {
    about: string | null;
    photo: string | null;
    email_verified_at: string | null;
+   is_verified?: boolean;
+   verified_at?: string | null;
+   verified_by?: number | null;
    password: string;
    instructor_id: number | null;
    remember_token?: string;

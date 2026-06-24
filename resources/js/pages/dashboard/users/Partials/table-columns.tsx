@@ -1,6 +1,7 @@
 import DeleteModal from '@/components/inertia/delete-modal';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
+import VerifiedBadge from '@/components/verified-badge';
 import { ColumnDef } from '@tanstack/react-table';
 import { ArrowUpDown, Pencil, Trash2 } from 'lucide-react';
 import EditForm from './edit-form';
@@ -26,7 +27,10 @@ const TableColumn: ColumnDef<User>[] = [
             </Avatar>
 
             <div>
-               <p className="mb-0.5 text-base font-medium">{row.original.name}</p>
+               <p className="mb-0.5 flex items-center gap-1.5 text-base font-medium">
+                  {row.original.name}
+                  {row.original.is_verified && <VerifiedBadge />}
+               </p>
                <p className="text-muted-foreground text-xs">{row.original.email}</p>
             </div>
          </div>
