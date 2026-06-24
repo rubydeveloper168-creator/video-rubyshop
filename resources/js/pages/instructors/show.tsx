@@ -3,6 +3,7 @@ import RatingStars from '@/components/rating-stars';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import VerifiedBadge from '@/components/verified-badge';
 import LandingLayout from '@/layouts/landing-layout';
 import { getQueryParams } from '@/lib/route';
 import { SharedData } from '@/types/global';
@@ -114,7 +115,10 @@ const Show = ({ instructor, system }: InstructorPageProps) => {
                </Avatar>
 
                <div className="group">
-                  <h3 className="text-xl font-semibold">{user.name}</h3>
+                  <h3 className="flex items-center gap-1.5 text-xl font-semibold">
+                     {user.name}
+                     {user.is_verified && <VerifiedBadge size={18} />}
+                  </h3>
                   <p className="text-gray-500">{user.email}</p>
                </div>
 

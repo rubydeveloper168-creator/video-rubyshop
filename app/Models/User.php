@@ -32,6 +32,9 @@ class User extends Authenticatable implements HasMedia, MustVerifyEmail
         'password',
         'role',
         'status',
+        'is_verified',
+        'verified_at',
+        'verified_by',
         'photo',
         'google_id',
         'social_links',
@@ -57,6 +60,8 @@ class User extends Authenticatable implements HasMedia, MustVerifyEmail
     protected $casts = [
         'social_links' => 'array',
         'status' => 'integer',
+        'is_verified' => 'boolean',
+        'verified_at' => 'datetime',
     ];
 
     public function instructor(): BelongsTo
@@ -82,6 +87,11 @@ class User extends Authenticatable implements HasMedia, MustVerifyEmail
     public function activityEvents(): HasMany
     {
         return $this->hasMany(UserActivityEvent::class);
+    }
+
+    public function verifiedBy(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'verified_by');
     }
 
     public function sendEmailVerificationNotification()
