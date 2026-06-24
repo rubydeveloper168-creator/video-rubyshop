@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\InstructorController;
+use App\Http\Controllers\AuditController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\Course\CategoryChildController;
 use App\Http\Controllers\Course\CourseCategoryController;
@@ -25,6 +26,9 @@ use App\Http\Controllers\UsersController;
  */
 
 Route::prefix('dashboard')->group(function () {
+    Route::get('audit', [AuditController::class, 'index'])->name('audit.index');
+    Route::get('audit/users/{user}', [AuditController::class, 'show'])->name('audit.show');
+
     // users
     Route::resource('users', UsersController::class)->only(['index', 'update']);
 

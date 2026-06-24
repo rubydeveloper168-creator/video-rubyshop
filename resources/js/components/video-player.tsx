@@ -1,3 +1,4 @@
+import { postAudit } from '@/lib/audit';
 import Hls from 'hls.js';
 import Plyr, { APITypes } from 'plyr-react';
 import { useEffect, useMemo, useRef } from 'react';
@@ -16,10 +17,16 @@ interface Props {
    debugLabel?: string;
    processingStatus?: string;
    forceHlsOnly?: boolean;
+   audit?: {
+      courseId?: number | null;
+      lessonId?: number | null;
+   };
 }
 
-const VideoPlayer = ({ source, debugLabel = 'player', processingStatus = 'unknown', forceHlsOnly = false }: Props) => {
+const VideoPlayer = ({ source, debugLabel = 'player', processingStatus = 'unknown', forceHlsOnly = false, audit }: Props) => {
    const playerRef = useRef<APITypes>(null);
+   const watchStartedAtRef = useRef<number | null>(null);
+   const lastVideoAuditAtRef = useRef(0);
 
    // Common Plyr options for all video types
    const plyrOptions = useMemo(
@@ -168,6 +175,12 @@ const VideoPlayer = ({ source, debugLabel = 'player', processingStatus = 'unknow
          const eventHandlers = trackedEvents.map((eventName) => {
             const handler = (event: any) => {
                const bufferedEnd = getBufferedEnd();
+               const duration = Number.isFinite(media.duration) ? media.duration : 0;
+               const playbackPosition = Number.isFinite(media.currentTime) ? media.currentTime : 0;
+               const watchedSeconds =
+                  watchStartedAtRef.current === null ? 0 : Math.max(0, Math.round((Date.now() - watchStartedAtRef.current) / 1000));
+               const percentWatched = duration > 0 ? Math.min(100, Math.round((playbackPosition / duration) * 100)) : null;
+
                console.log(`${labelPrefix} Event: ${eventName}`, {
                   eventDetail: event?.detail ?? null,
                   currentTime: media.currentTime,
@@ -179,6 +192,40 @@ const VideoPlayer = ({ source, debugLabel = 'player', processingStatus = 'unknow
                if (eventName === 'error' && !usedFallback) {
                   useFallbackSource();
                }
+
+               if (!audit?.lessonId) {
+                  return;
+               }
+
+               if (eventName === 'playing' && watchStartedAtRef.current === null) {
+                  watchStartedAtRef.current = Date.now();
+               }
+
+               const isImmediateAuditEvent = ['playing', 'pause', 'ended', 'seeking', 'seeked', 'error'].includes(eventName);
+               const now = Date.now();
+               const shouldHeartbeat = eventName === 'timeupdate' && now - lastVideoAuditAtRef.current >= 30000;
+
+               if (!isImmediateAuditEvent && !shouldHeartbeat) {
+                  return;
+               }
+
+               lastVideoAuditAtRef.current = now;
+
+               postAudit(route('audit.track.video-event'), {
+                  course_id: audit.courseId ?? null,
+                  lesson_id: audit.lessonId,
+                  event_type: shouldHeartbeat ? 'heartbeat' : eventName,
+                  playback_position: Math.round(playbackPosition),
+                  watched_seconds: watchedSeconds,
+                  percent_watched: percentWatched,
+                  metadata: {
+                     debug_label: debugLabel,
+                     processing_status: processingStatus,
+                     ready_state: media.readyState,
+                     buffered_end: Math.round(bufferedEnd),
+                     duration: Math.round(duration),
+                  },
+               });
             };
 
             playerInstance.on(eventName, handler);

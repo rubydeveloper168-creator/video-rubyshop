@@ -8,6 +8,7 @@ use App\Enums\UserType;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Models\User;
+use App\Services\Audit\AuditService;
 use App\Services\AuthService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -16,7 +17,10 @@ use Illuminate\Support\Facades\Route;
 
 class AuthenticatedSessionController extends Controller
 {
-    public function __construct(private AuthService $authService) {}
+    public function __construct(
+        private AuthService $authService,
+        private AuditService $auditService
+    ) {}
 
     /**
      * Show the login page.
@@ -40,6 +44,7 @@ class AuthenticatedSessionController extends Controller
         $request->authenticate();
 
         $request->session()->regenerate();
+        $this->auditService->recordLogin($request);
 
         $isAdmin = $request->user()->role == UserType::ADMIN->value;
         $isInstructor = $request->user()->role == UserType::INSTRUCTOR->value;
@@ -56,6 +61,8 @@ class AuthenticatedSessionController extends Controller
      */
     public function destroy(Request $request): RedirectResponse
     {
+        $this->auditService->recordLogout($request);
+
         Auth::guard('web')->logout();
 
         $request->session()->invalidate();

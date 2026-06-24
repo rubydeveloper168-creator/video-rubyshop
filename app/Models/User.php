@@ -6,11 +6,16 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Laravel\Sanctum\HasApiTokens;
 use App\Notifications\VerifyEmailNotification;
+use App\Models\Audit\UserActivityEvent;
+use App\Models\Audit\UserAuditSession;
+use App\Models\Audit\UserPageVisit;
+use App\Models\Audit\UserVideoEvent;
 
 class User extends Authenticatable implements HasMedia, MustVerifyEmail
 {
@@ -57,6 +62,26 @@ class User extends Authenticatable implements HasMedia, MustVerifyEmail
     public function instructor(): BelongsTo
     {
         return $this->belongsTo(Instructor::class);
+    }
+
+    public function auditSessions(): HasMany
+    {
+        return $this->hasMany(UserAuditSession::class);
+    }
+
+    public function pageVisits(): HasMany
+    {
+        return $this->hasMany(UserPageVisit::class);
+    }
+
+    public function videoEvents(): HasMany
+    {
+        return $this->hasMany(UserVideoEvent::class);
+    }
+
+    public function activityEvents(): HasMany
+    {
+        return $this->hasMany(UserActivityEvent::class);
     }
 
     public function sendEmailVerificationNotification()
