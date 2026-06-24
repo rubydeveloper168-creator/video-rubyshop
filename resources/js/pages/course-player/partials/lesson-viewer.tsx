@@ -117,6 +117,10 @@ const LessonViewer = ({ lesson }: LessonViewerProps) => {
               debugLabel={`lesson-${lesson.id}`}
               processingStatus={lesson.processing_status ?? 'unknown'}
               forceHlsOnly={hlsOnlyMode}
+              audit={{
+                 courseId: lesson.course_id,
+                 lessonId: lesson.id,
+              }}
            />
          )}
 

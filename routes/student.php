@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Auth\EmailVerificationNotificationController;
 use App\Http\Controllers\Auth\PasswordResetLinkController;
+use App\Http\Controllers\AuditController;
 use App\Http\Controllers\Course\CourseCartController;
 use App\Http\Controllers\Course\CourseEnrollmentController;
 use App\Http\Controllers\Course\CourseForumController;
@@ -32,6 +33,13 @@ Route::resource('course-wishlists', CourseWishlistController::class)->only(['sto
 
 Route::resource('quiz-submissions', QuizSubmissionController::class)->only(['store']);
 Route::post('player/init/watch-history', [\App\Http\Controllers\Course\PlayerController::class, 'intWatchHistory'])->name('player.init.watch-history');
+
+Route::prefix('audit-track')->name('audit.track.')->group(function () {
+    Route::post('page-enter', [AuditController::class, 'pageEnter'])->name('page-enter');
+    Route::post('page-leave', [AuditController::class, 'pageLeave'])->name('page-leave');
+    Route::post('heartbeat', [AuditController::class, 'heartbeat'])->name('heartbeat');
+    Route::post('video-event', [AuditController::class, 'videoEvent'])->name('video-event');
+});
 
 Route::resource('notifications', NotificationController::class)->only(['index', 'show']);
 Route::put('notifications/mark-as-read/all', [NotificationController::class, 'markAllAsRead'])->name('notifications.mark-all-as-read');
