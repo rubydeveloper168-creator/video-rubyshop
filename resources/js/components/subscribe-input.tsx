@@ -1,4 +1,5 @@
 import { cn } from '@/lib/utils';
+import { useI18n } from '@/lib/i18n';
 import { useForm } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
 import ButtonGradientPrimary from './button-gradient-primary';
@@ -10,6 +11,7 @@ interface SubscribeInputProps {
 }
 
 const SubscribeInput = ({ className, buttonText }: SubscribeInputProps) => {
+   const { text } = useI18n();
    const { data, setData, post, errors } = useForm({
       email: '',
    });
@@ -29,10 +31,10 @@ const SubscribeInput = ({ className, buttonText }: SubscribeInputProps) => {
                value={data.email}
                onChange={(e) => setData('email', e.target.value)}
                className="h-[50px] w-full px-4 focus:outline-0"
-               placeholder="Enter your email address"
+               placeholder={text('Enter your email address')}
             />
             <ButtonGradientPrimary type="submit" shadow={false} className="mr-1">
-               {buttonText || 'Subscribe'}
+               {buttonText || text('Subscribe')}
             </ButtonGradientPrimary>
          </div>
 

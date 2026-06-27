@@ -1,4 +1,5 @@
 import TiptapRenderer from '@/components/text-editor/tiptap-renderer/client-renderer';
+import { useI18n } from '@/lib/i18n';
 import { SharedData } from '@/types/global';
 import { Head } from '@inertiajs/react';
 import Layout from '../intro/partials/layout';
@@ -13,9 +14,12 @@ export interface InnerPageProps extends SharedData {
 }
 
 const Index = ({ innerPage, jobCirculars }: InnerPageProps) => {
+   const { field } = useI18n();
+   const description = field(innerPage, 'description');
+
    return (
       <Layout page={innerPage} navbarHeight={false}>
-         <Head title={innerPage.name} />
+         <Head title={field(innerPage, 'name')} />
 
          <Hero innerPage={innerPage} />
 
@@ -24,9 +28,9 @@ const Index = ({ innerPage, jobCirculars }: InnerPageProps) => {
          {innerPage.slug === 'careers' && jobCirculars && <Career jobCirculars={jobCirculars} />}
 
          <div className="container">
-            {innerPage.description && (
+            {description && (
                <div className="bg-muted mx-auto my-20 max-w-3xl rounded-2xl px-6 py-10 md:px-20">
-                  <TiptapRenderer>{innerPage.description}</TiptapRenderer>
+                  <TiptapRenderer>{description}</TiptapRenderer>
                </div>
             )}
          </div>

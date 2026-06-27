@@ -31,6 +31,12 @@ class UpdatePageSectionRequest extends FormRequest
             'background_image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
             'background_color' => 'nullable|string|max:255',
             'properties' => 'array',
+            'translations' => 'nullable|array',
+            'translations.th' => 'nullable|array',
+            'translations.th.title' => 'nullable|string|max:255',
+            'translations.th.sub_title' => 'nullable|string|max:255',
+            'translations.th.description' => 'nullable|string',
+            'translations.th.properties' => 'nullable|array',
         ];
     }
 }

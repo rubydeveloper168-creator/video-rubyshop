@@ -1,6 +1,7 @@
 import RatingStars from '@/components/rating-stars';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import courseLanguages from '@/data/course-languages';
+import { useI18n } from '@/lib/i18n';
 import { getCourseDuration } from '@/lib/utils';
 import { Link } from '@inertiajs/react';
 import { Clock, GraduationCap, Languages, Users } from 'lucide-react';
@@ -8,6 +9,8 @@ import { Clock, GraduationCap, Languages, Users } from 'lucide-react';
 const CourseHeader = ({ course }: { course: Course }) => {
    const { title, short_description, instructor, average_rating } = course;
    const courseLanguage = courseLanguages.find((language) => language.value === course.language);
+   const { t } = useI18n();
+   const enrollmentCount = course.enrollments_count || 0;
 
    return (
       <div className="space-y-7">
@@ -42,13 +45,13 @@ const CourseHeader = ({ course }: { course: Course }) => {
             {/* Certificate */}
             <div className="flex items-center gap-2">
                <GraduationCap className="h-5 w-5" />
-               <span>Course Certificate</span>
+               <span>{t('courseDetail.courseCertificate')}</span>
             </div>
 
             {/* Students */}
             <div className="flex items-center gap-2">
                <Users className="h-5 w-5" />
-               <span>{course.enrollments_count || 0} Enrolled Students</span>
+               <span>{t('courseDetail.enrolledStudents', { count: enrollmentCount })}</span>
             </div>
 
             {/* Duration */}

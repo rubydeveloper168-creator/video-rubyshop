@@ -1,4 +1,5 @@
 import debounce from '@/lib/debounce';
+import { useI18n } from '@/lib/i18n';
 import { getQueryParams } from '@/lib/route';
 import { cn } from '@/lib/utils';
 import { SharedData } from '@/types/global';
@@ -14,7 +15,9 @@ interface SearchInputProps {
 }
 
 const SearchInput = (props: SearchInputProps) => {
-   const { className, iconPosition = 'left', placeholder = 'Search', onChangeValue } = props;
+   const { className, iconPosition = 'left', onChangeValue } = props;
+   const { t } = useI18n();
+   const placeholder = props.placeholder || t('common.search');
    const page = usePage<SharedData>();
    const searchRef = useRef<HTMLInputElement>(null);
    const params = getQueryParams(page.url);

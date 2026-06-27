@@ -1,4 +1,5 @@
 import ButtonGradientPrimary from '@/components/button-gradient-primary';
+import { useI18n } from '@/lib/i18n';
 import { getPageSection } from '@/lib/page';
 import Section from '@/pages/intro/partials/section';
 import { Link, usePage } from '@inertiajs/react';
@@ -8,6 +9,8 @@ const SuccessStatistics = () => {
    const { props } = usePage<InnerPageProps>();
    const { customize, innerPage } = props;
    const successStatistics = getPageSection(innerPage, 'success_statistics');
+   const { field, properties, text } = useI18n();
+   const statisticsProperties = properties(successStatistics);
 
    return (
       <div className="overflow-y-hidden bg-cover bg-center py-[120px]">
@@ -15,16 +18,16 @@ const SuccessStatistics = () => {
             <div className="relative z-10 flex flex-col items-center justify-center gap-7 md:flex-row">
                <div className="relative w-full space-y-7 md:max-w-[384px]">
                   <div className="relative z-10 mb-6">
-                     <h1 className="text-2xl font-bold md:text-[30px]">{successStatistics?.title}</h1>
-                     <p className="text-muted-foreground mt-2">{successStatistics?.description}</p>
+                     <h1 className="text-2xl font-bold md:text-[30px]">{field(successStatistics, 'title')}</h1>
+                     <p className="text-muted-foreground mt-2">{field(successStatistics, 'description')}</p>
                   </div>
 
                   <ButtonGradientPrimary asChild shadow={false}>
-                     <Link href="/courses/all">Browse Courses</Link>
+                     <Link href="/courses/all">{text('Browse Courses')}</Link>
                   </ButtonGradientPrimary>
 
                   <div className="relative z-10 flex items-center justify-center gap-2.5 lg:justify-start">
-                     {successStatistics?.properties.array.map((stat, index) => (
+                     {statisticsProperties.array?.map((stat, index) => (
                         <div key={`item-${index}`}>
                            <h6 className="text-2xl font-bold md:text-[30px]">{stat.count}</h6>
                            <p className="text-muted-foreground text-sm">{stat.title}</p>
@@ -34,7 +37,7 @@ const SuccessStatistics = () => {
                </div>
 
                <div className="grid grid-cols-1 gap-7 md:grid-cols-3">
-                  {successStatistics?.properties.array.map((stat, index) => (
+                  {statisticsProperties.array?.map((stat, index) => (
                      <div key={`item-${index}`} className="h-[400px]">
                         <img src={stat.image} alt={stat.title} className="h-full w-full rounded-2xl object-cover object-center" />
                      </div>

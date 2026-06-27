@@ -1,5 +1,6 @@
 import SearchInput from '@/components/search-input';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { useI18n } from '@/lib/i18n';
 import { getQueryParams } from '@/lib/route';
 import { Link, router, usePage } from '@inertiajs/react';
 import { CoursesIndexProps } from '..';
@@ -12,6 +13,7 @@ const CourseFilter = ({ setOpen }: CourseFilterProps) => {
    const page = usePage<CoursesIndexProps>();
    const urlParams = getQueryParams(page.url);
    const { levels, prices, categories, category, categoryChild } = page.props;
+   const { t } = useI18n();
 
    const getQueryRoute = (newParams: Record<string, string>, category: string, category_child?: string) => {
       const updatedParams = { ...urlParams };
@@ -30,16 +32,16 @@ const CourseFilter = ({ setOpen }: CourseFilterProps) => {
 
    return (
       <div className="space-y-6">
-         <SearchInput onChangeValue={(value) => router.get(route('category.courses', { category: 'all', search: value }))} />
+         <SearchInput placeholder={t('common.search')} onChangeValue={(value) => router.get(route('category.courses', { category: 'all', search: value }))} />
 
          {/* Categories Section */}
          <div>
-            <h3 className="mb-3 font-semibold">Categories</h3>
+            <h3 className="mb-3 font-semibold">{t('courses.categories')}</h3>
             <RadioGroup value={categoryChild ? categoryChild?.slug : category?.slug || 'all'}>
                <Link className="flex items-center" href={getQueryRoute({}, 'all')}>
                   <RadioGroupItem className="cursor-pointer" id="category" value="all" />
                   <label htmlFor="category" className="cursor-pointer pl-2">
-                     All
+                     {t('common.all')}
                   </label>
                </Link>
 
@@ -84,7 +86,7 @@ const CourseFilter = ({ setOpen }: CourseFilterProps) => {
 
          {/* Price Section */}
          <div>
-            <h3 className="mb-3 font-semibold">Price</h3>
+            <h3 className="mb-3 font-semibold">{t('courses.price')}</h3>
             <RadioGroup value={urlParams['price'] || 'all'}>
                <Link
                   className="flex items-center"
@@ -93,7 +95,7 @@ const CourseFilter = ({ setOpen }: CourseFilterProps) => {
                >
                   <RadioGroupItem className="cursor-pointer" id="price" value="all" />
                   <label htmlFor="price" className="cursor-pointer pl-2">
-                     All
+                     {t('common.all')}
                   </label>
                </Link>
 
@@ -106,7 +108,7 @@ const CourseFilter = ({ setOpen }: CourseFilterProps) => {
                   >
                      <RadioGroupItem className="cursor-pointer" value={price} id={price} />
                      <label htmlFor={price} className="cursor-pointer pl-2">
-                        {price}
+                        {price === 'all' ? t('common.all') : price}
                      </label>
                   </Link>
                ))}
@@ -115,7 +117,7 @@ const CourseFilter = ({ setOpen }: CourseFilterProps) => {
 
          {/* Label Section */}
          <div>
-            <h3 className="mb-3 font-semibold">Level</h3>
+            <h3 className="mb-3 font-semibold">{t('courses.level')}</h3>
             <RadioGroup value={urlParams['level'] || 'all'}>
                <Link
                   className="flex items-center"
@@ -124,7 +126,7 @@ const CourseFilter = ({ setOpen }: CourseFilterProps) => {
                >
                   <RadioGroupItem className="cursor-pointer" id="level" value="all" />
                   <label htmlFor="level" className="cursor-pointer pl-2">
-                     All
+                     {t('common.all')}
                   </label>
                </Link>
                {levels.map((level) => (
@@ -136,7 +138,7 @@ const CourseFilter = ({ setOpen }: CourseFilterProps) => {
                   >
                      <RadioGroupItem className="cursor-pointer" value={level} id={level} />
                      <label htmlFor={level} className="cursor-pointer pl-2">
-                        {level}
+                        {level === 'all' ? t('common.all') : level}
                      </label>
                   </Link>
                ))}

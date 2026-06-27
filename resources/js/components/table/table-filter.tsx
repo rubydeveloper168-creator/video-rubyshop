@@ -1,4 +1,5 @@
 import debounce from '@/lib/debounce';
+import { useI18n } from '@/lib/i18n';
 import { getQueryParams } from '@/lib/route';
 import { cn } from '@/lib/utils';
 import { SharedData } from '@/types/global';
@@ -24,6 +25,7 @@ interface Props {
 const TableFilter = (props: Props) => {
    const { Icon, data, title, component, globalSearch, tablePageSizes, routeName, routeParams, exportPath, className } = props;
    const page = usePage<SharedData>();
+   const { t, text } = useI18n();
    const urlParams = getQueryParams(page.url);
    const searchRef = useRef<HTMLInputElement>(null);
 
@@ -49,7 +51,7 @@ const TableFilter = (props: Props) => {
       <div className={cn('items-center justify-between p-6 md:flex', className)}>
          <div className="flex items-center gap-5">
             {Icon && <div className="bg-primary-25 flex h-10 w-10 items-center justify-center rounded-md">{Icon}</div>}
-            {title && <p className="mb-4 text-lg font-semibold md:mb-0">{title}</p>}
+            {title && <p className="mb-4 text-lg font-semibold md:mb-0">{text(title)}</p>}
          </div>
          <div className="flex items-center justify-end">
             {globalSearch && (
@@ -57,7 +59,7 @@ const TableFilter = (props: Props) => {
                   <input
                      type="text"
                      ref={searchRef}
-                     placeholder="Search"
+                     placeholder={t('common.search')}
                      onChange={searchHandler}
                      className="focus:border-primary border-border h-10 w-full rounded-md border py-[15px] pr-4 pl-12 text-sm font-normal focus:ring-0 focus:outline-0"
                      defaultValue={urlParams['search'] ?? ''}

@@ -1,6 +1,7 @@
 import StudentFeedback from '@/components/student-feedback';
 import TableFooter from '@/components/table/table-footer';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { useI18n } from '@/lib/i18n';
 import { cn } from '@/lib/utils';
 import { usePage } from '@inertiajs/react';
 import { format } from 'date-fns';
@@ -9,13 +10,14 @@ import { CourseDetailsProps } from '../show';
 
 const CourseReviews = () => {
    const { props } = usePage<CourseDetailsProps>();
+   const { t } = useI18n();
 
    return (
       <>
          <StudentFeedback totalReviews={props.totalReviews} />
 
          <div className="mt-6 border-t pt-6">
-            <h3 className="mb-6 text-xl font-semibold">Student Reviews</h3>
+            <h3 className="mb-6 text-xl font-semibold">{t('courseDetail.studentReviews')}</h3>
 
             <div className="space-y-6">
                {props.reviews.data.length > 0 ? (
@@ -48,7 +50,7 @@ const CourseReviews = () => {
                      </div>
                   ))
                ) : (
-                  <p className="p-3 text-center">No reviews found.</p>
+                  <p className="p-3 text-center">{t('courseDetail.noReviews')}</p>
                )}
             </div>
 

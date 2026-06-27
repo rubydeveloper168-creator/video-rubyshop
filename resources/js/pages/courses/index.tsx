@@ -1,5 +1,6 @@
 import CourseCard1 from '@/components/cards/course-card-1';
 import TableFooter from '@/components/table/table-footer';
+import { useI18n } from '@/lib/i18n';
 import { getQueryParams } from '@/lib/route';
 import { cn } from '@/lib/utils';
 import { SharedData } from '@/types/global';
@@ -21,6 +22,7 @@ export interface CoursesIndexProps extends SharedData {
 const Index = (props: CoursesIndexProps) => {
    const { url } = usePage();
    const { courses, wishlists, category, categoryChild, system } = props;
+   const { t } = useI18n();
    const urlParams = getQueryParams(url);
 
    // Generate meta information based on category
@@ -29,21 +31,21 @@ const Index = (props: CoursesIndexProps) => {
    const siteUrl = url;
    const siteOrigin = typeof window !== 'undefined' ? window.location.origin : url.split('/').slice(0, 3).join('/');
 
-   let pageTitle = 'All Courses';
-   let pageDescription = `Browse ${totalCourses}+ online courses from expert instructors. Learn new skills with our comprehensive course catalog.`;
-   let pageKeywords = 'online courses, learning platform, education, skills, training, e-learning';
-   let ogTitle = 'Online Courses';
+   let pageTitle = t('courses.pageTitleAll');
+   let pageDescription = t('courses.metaAll', { total: totalCourses });
+   let pageKeywords = t('courses.metaKeywords');
+   let ogTitle = t('courses.ogTitle');
 
    if (category && categoryChild) {
-      pageTitle = `${categoryChild.title} Courses in ${category.title}`;
-      ogTitle = `${categoryChild.title} - ${category.title} Courses`;
-      pageDescription = `Learn ${categoryChild.title.toLowerCase()} with ${totalCourses} specialized courses in ${category.title.toLowerCase()}. Expert instructors, practical projects, and industry-relevant curriculum.`;
-      pageKeywords = `${categoryChild.title.toLowerCase()}, ${category.title.toLowerCase()}, courses, training, ${categoryChild.title} certification, ${category.title} skills`;
+      pageTitle = t('courses.childPageTitle', { child: categoryChild.title, category: category.title });
+      ogTitle = t('courses.childOgTitle', { child: categoryChild.title, category: category.title });
+      pageDescription = t('courses.childMeta', { child: categoryChild.title, category: category.title, total: totalCourses });
+      pageKeywords = t('courses.childKeywords', { child: categoryChild.title, category: category.title });
    } else if (category) {
-      pageTitle = `${category.title} Courses`;
-      ogTitle = `${category.title} Courses`;
-      pageDescription = `Explore ${totalCourses} ${category.title.toLowerCase()} courses taught by industry experts. Master ${category.title.toLowerCase()} skills with hands-on projects and comprehensive curriculum.`;
-      pageKeywords = `${category.title.toLowerCase()}, courses, training, online learning, ${category.title} certification, ${category.title} skills`;
+      pageTitle = t('courses.categoryPageTitle', { category: category.title });
+      ogTitle = t('courses.categoryOgTitle', { category: category.title });
+      pageDescription = t('courses.categoryMeta', { category: category.title, total: totalCourses });
+      pageKeywords = t('courses.categoryKeywords', { category: category.title });
    }
 
    const fullTitle = `${pageTitle} | ${siteName}`;
@@ -69,7 +71,7 @@ const Index = (props: CoursesIndexProps) => {
             <meta property="og:image" content={categoryImage} />
             <meta property="og:image:width" content="1200" />
             <meta property="og:image:height" content="630" />
-            <meta property="og:image:alt" content={`${pageTitle} - Course Catalog`} />
+            <meta property="og:image:alt" content={t('courses.imageAlt', { title: pageTitle })} />
 
             {/* Twitter Card Tags */}
             <meta name="twitter:card" content="summary_large_image" />
@@ -100,7 +102,7 @@ const Index = (props: CoursesIndexProps) => {
                   },
                   mainEntity: {
                      '@type': 'ItemList',
-                     name: `${pageTitle} Collection`,
+                     name: t('courses.collectionName', { title: pageTitle }),
                      description: pageDescription,
                      numberOfItems: totalCourses,
                      itemListElement:
@@ -146,14 +148,14 @@ const Index = (props: CoursesIndexProps) => {
                      about: {
                         '@type': 'Thing',
                         name: category.title,
-                        description: `Learn ${category.title.toLowerCase()} with comprehensive online courses`,
+                        description: t('courses.categoryMetaDescription', { category: category.title }),
                      },
                   }),
                   ...(categoryChild && {
                      specialty: {
                         '@type': 'Thing',
                         name: categoryChild.title,
-                        description: `Specialized ${categoryChild.title.toLowerCase()} courses and training`,
+                        description: t('courses.categoryMetaDescription', { category: categoryChild.title }),
                      },
                   }),
                })}

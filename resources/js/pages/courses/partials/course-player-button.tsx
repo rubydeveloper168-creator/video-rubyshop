@@ -1,9 +1,12 @@
 import { Button } from '@/components/ui/button';
+import { useI18n } from '@/lib/i18n';
 import { Link, router, usePage } from '@inertiajs/react';
 import { CourseDetailsProps } from '../show';
 
 // Separate component for the play button to reduce duplication
 const EnabledPlayButton = ({ course, watchHistory }: { course: Course; watchHistory: WatchHistory }) => {
+   const { t } = useI18n();
+
    return (
       <Button size="lg" className="w-full" asChild>
          <Link
@@ -13,7 +16,7 @@ const EnabledPlayButton = ({ course, watchHistory }: { course: Course; watchHist
                lesson_id: watchHistory.current_watching_id,
             })}
          >
-            Play Course
+            {t('courseDetail.playCourse')}
          </Link>
       </Button>
    );
@@ -22,20 +25,23 @@ const EnabledPlayButton = ({ course, watchHistory }: { course: Course; watchHist
 // Disabled play button component
 const DisabledPlayButton = ({ course, approvalStatus }: { course: Course; approvalStatus: CourseApprovalValidation }) => {
    const approve_able = approvalStatus.approve_able;
+   const { t } = useI18n();
 
    return approve_able ? (
       <Button size="lg" className="w-full" onClick={() => router.post(route('player.init.watch-history'), { course_id: course.id })}>
-         Play Course
+         {t('courseDetail.playCourse')}
       </Button>
    ) : (
       <Button disabled size="lg" className="w-full">
-         Course Player
+         {t('courseDetail.coursePlayer')}
       </Button>
    );
 };
 
 // Enrollment/Buy button component
 const EnrollmentButton = ({ auth, course }: { auth: Auth; course: Course }) => {
+   const { t } = useI18n();
+
    const enrollmentHandler = (course: Course) => {
       if (course.pricing_type === 'free') {
          router.post(route('enrollments.store'), {
@@ -52,13 +58,14 @@ const EnrollmentButton = ({ auth, course }: { auth: Auth; course: Course }) => {
 
    return (
       <Button size="lg" className="w-full" onClick={() => enrollmentHandler(course)}>
-         {course.pricing_type === 'free' ? 'Enroll Now' : 'Buy Now'}
+         {course.pricing_type === 'free' ? t('courseDetail.enrollNow') : t('courseDetail.buyNow')}
       </Button>
    );
 };
 
 const EnrollOrPlayerButton = () => {
    const { auth, course, enrollment, watchHistory, approvalStatus, wishlists } = usePage<CourseDetailsProps>().props;
+   const { t } = useI18n();
 
    // Compute access conditions - improves readability
    const isEnrolled = !!enrollment;
@@ -95,11 +102,11 @@ const EnrollOrPlayerButton = () => {
                      });
                   }}
                >
-                  Add to cart
+                  {t('courseDetail.addCart')}
                </Button>
 
                <Button className="w-full px-1 sm:px-3" variant="outline" size="lg" onClick={handleWishlist}>
-                  {isWishlisted ? 'Remove from Wishlist' : 'Add to Wishlist'}
+                  {isWishlisted ? t('courses.removeWishlist') : t('courses.addWishlist')}
                </Button>
             </div>
             <EnrollmentButton auth={auth} course={course} />

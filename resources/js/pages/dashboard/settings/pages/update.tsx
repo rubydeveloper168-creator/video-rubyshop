@@ -23,6 +23,7 @@ const Update = ({ page }: Props) => {
       description: page.description,
       meta_description: page.meta_description,
       meta_keywords: page.meta_keywords,
+      translations: page.translations || { th: {} },
       active: page.active,
    });
 
@@ -31,6 +32,19 @@ const Update = ({ page }: Props) => {
       e.preventDefault();
 
       put(route('settings.custom-page.update', page.id));
+   };
+
+   const handleThaiTranslationChange = (key: string, value: string) => {
+      setData((currentData) => ({
+         ...currentData,
+         translations: {
+            ...(currentData.translations || {}),
+            th: {
+               ...(currentData.translations?.th || {}),
+               [key]: value,
+            },
+         },
+      }));
    };
 
    return (
@@ -44,6 +58,12 @@ const Update = ({ page }: Props) => {
 
             <Card className="p-4 sm:p-6">
                <form onSubmit={handleSubmit} className="space-y-4">
+                  <div>
+                     <Label>Name</Label>
+                     <Input name="name" value={data.name} onChange={(e) => onHandleChange(e, setData)} placeholder="Enter Page Name" />
+                     <InputError message={errors.name} />
+                  </div>
+
                   <div>
                      <Label>Title</Label>
                      <Input name="title" value={data.title} onChange={(e) => onHandleChange(e, setData)} placeholder="Enter Page Title" />
@@ -93,6 +113,63 @@ const Update = ({ page }: Props) => {
                         placeholder="Enter Meta Keywords"
                      />
                      <InputError message={errors.meta_keywords} />
+                  </div>
+
+                  <div className="rounded-lg border p-4">
+                     <h2 className="mb-4 text-lg font-semibold">Thai Translations</h2>
+
+                     <div className="mb-4">
+                        <Label>Thai Name</Label>
+                        <Input
+                           value={data.translations?.th?.name || ''}
+                           onChange={(e) => handleThaiTranslationChange('name', e.target.value)}
+                           placeholder="Enter Thai Page Name"
+                        />
+                     </div>
+
+                     <div className="mb-4">
+                        <Label>Thai Title</Label>
+                        <Input
+                           value={data.translations?.th?.title || ''}
+                           onChange={(e) => handleThaiTranslationChange('title', e.target.value)}
+                           placeholder="Enter Thai Page Title"
+                        />
+                     </div>
+
+                     <div className="mb-4">
+                        <Label>Thai Description</Label>
+                        <TiptapEditor
+                           ssr={true}
+                           output="html"
+                           placeholder={{
+                              paragraph: 'Type Thai content here...',
+                              imageCaption: 'Type caption for image (optional)',
+                           }}
+                           contentMinHeight={256}
+                           contentMaxHeight={640}
+                           initialContent={data.translations?.th?.description || ''}
+                           onContentChange={(value) => handleThaiTranslationChange('description', value as string)}
+                        />
+                     </div>
+
+                     <div className="mb-4">
+                        <Label>Thai Meta Description</Label>
+                        <Textarea
+                           rows={3}
+                           value={data.translations?.th?.meta_description || ''}
+                           onChange={(e) => handleThaiTranslationChange('meta_description', e.target.value)}
+                           placeholder="Enter Thai Meta Description"
+                        />
+                     </div>
+
+                     <div>
+                        <Label>Thai Meta Keywords</Label>
+                        <Input
+                           value={data.translations?.th?.meta_keywords || ''}
+                           onChange={(e) => handleThaiTranslationChange('meta_keywords', e.target.value)}
+                           placeholder="Enter Thai Meta Keywords"
+                        />
+                     </div>
                   </div>
 
                   <div>

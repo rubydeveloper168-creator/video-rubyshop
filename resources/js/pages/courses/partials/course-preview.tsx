@@ -1,6 +1,7 @@
 import { Dialog, DialogContent, DialogTrigger, DialogTitle, DialogDescription, VisuallyHidden } from '@/components/ui/dialog';
 import VideoPlayer from '@/components/video-player';
 import courseLanguages from '@/data/course-languages';
+import { useI18n } from '@/lib/i18n';
 import { getCourseDuration, systemCurrency } from '@/lib/utils';
 import { usePage } from '@inertiajs/react';
 import { BarChart3, Calendar, Clock, Languages, Mail, Play, Users } from 'lucide-react';
@@ -11,6 +12,7 @@ const CoursePreview = () => {
    const { course, system } = usePage<CourseDetailsProps>().props;
    const currency = systemCurrency(system.fields['selling_currency']);
    const courseLanguage = courseLanguages.find((language) => language.value === course.language);
+   const { t } = useI18n();
 
    return (
       <div className="bg-card sticky top-24 space-y-5 rounded-lg border p-5 shadow">
@@ -28,8 +30,8 @@ const CoursePreview = () => {
 
                      <DialogContent className="overflow-hidden p-0 md:min-w-3xl">
                         <VisuallyHidden>
-                           <DialogTitle>Course Preview Video</DialogTitle>
-                           <DialogDescription>Preview video for {course.title}</DialogDescription>
+                           <DialogTitle>{t('courseDetail.previewTitle')}</DialogTitle>
+                           <DialogDescription>{t('courseDetail.previewDescription', { title: course.title })}</DialogDescription>
                         </VisuallyHidden>
                         <VideoPlayer
                            source={{
@@ -49,7 +51,7 @@ const CoursePreview = () => {
 
             <h2 className="text-4xl font-bold capitalize">
                {course.pricing_type === 'free' ? (
-                  course.pricing_type
+                  t('common.free')
                ) : course.discount ? (
                   <>
                      <span className="font-semibold">
@@ -78,7 +80,7 @@ const CoursePreview = () => {
             <div className="flex items-center justify-between">
                <span className="flex items-center gap-2">
                   <Users className="h-5 w-5" />
-                  Students
+                  {t('courseDetail.students')}
                </span>
                <span>{course.enrollments_count || 0}</span>
             </div>
@@ -86,7 +88,7 @@ const CoursePreview = () => {
             <div className="flex items-center justify-between">
                <span className="flex items-center gap-2">
                   <Languages className="h-5 w-5" />
-                  Language
+                  {t('common.language')}
                </span>
                <span>{courseLanguage?.label}</span>
             </div>
@@ -94,7 +96,7 @@ const CoursePreview = () => {
             <div className="flex items-center justify-between">
                <span className="flex items-center gap-2">
                   <Clock className="h-5 w-5" />
-                  Duration
+                  {t('courseDetail.duration')}
                </span>
                <span>{getCourseDuration(course)}</span>
             </div>
@@ -102,7 +104,7 @@ const CoursePreview = () => {
             <div className="flex items-center justify-between">
                <span className="flex items-center gap-2">
                   <BarChart3 className="h-5 w-5" />
-                  Level
+                  {t('courses.level')}
                </span>
                <span className="capitalize">{course.level}</span>
             </div>
@@ -110,7 +112,7 @@ const CoursePreview = () => {
             <div className="flex items-center justify-between">
                <span className="flex items-center gap-2">
                   <Calendar className="h-5 w-5" />
-                  Expiry Period
+                  {t('courseDetail.expiryPeriod')}
                </span>
                <span className="capitalize">{course.expiry_type}</span>
             </div>
@@ -118,9 +120,9 @@ const CoursePreview = () => {
             <div className="flex items-center justify-between">
                <span className="flex items-center gap-2">
                   <Mail className="h-5 w-5" />
-                  Certificate
+                  {t('courseDetail.certificate')}
                </span>
-               <span>Yes</span>
+               <span>{t('courseDetail.yes')}</span>
             </div>
          </div>
       </div>

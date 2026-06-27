@@ -1,4 +1,5 @@
 import { Progress } from '@/components/ui/progress';
+import { useI18n } from '@/lib/i18n';
 import { Star } from 'lucide-react';
 
 interface StudentFeedbackProps {
@@ -6,6 +7,8 @@ interface StudentFeedbackProps {
 }
 
 const StudentFeedback = ({ totalReviews }: StudentFeedbackProps) => {
+   const { t } = useI18n();
+
    // Calculate average rating from distribution
    const calculateAverageRating = () => {
       if (!totalReviews?.rating_distribution?.length || totalReviews.total_reviews === 0) {
@@ -41,9 +44,9 @@ const StudentFeedback = ({ totalReviews }: StudentFeedbackProps) => {
    return (
       <div>
          <div className="mb-6 flex items-center justify-between gap-2">
-            <h2 className="text-xl font-semibold">Student feedback</h2>
+            <h2 className="text-xl font-semibold">{t('courseDetail.studentFeedback')}</h2>
             <p className="font-semibold">
-               {totalReviews.total_reviews} {totalReviews.total_reviews === 1 ? 'Review' : 'Reviews'}
+               {t('courseDetail.reviewsCount', { count: totalReviews.total_reviews })}
             </p>
          </div>
 
@@ -52,7 +55,7 @@ const StudentFeedback = ({ totalReviews }: StudentFeedbackProps) => {
             <div className="flex min-w-[100px] flex-col items-center sm:min-w-[120px]">
                <div className="mb-2 text-6xl font-bold text-amber-600">{averageRating}</div>
                <div className="mb-2 flex gap-1">{renderStars(1 + averageRating)}</div>
-               <div className="text-sm font-medium text-amber-600">Course Rating</div>
+               <div className="text-sm font-medium text-amber-600">{t('courseDetail.courseRating')}</div>
             </div>
 
             {/* Rating Breakdown */}

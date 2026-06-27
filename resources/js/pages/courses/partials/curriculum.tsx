@@ -1,13 +1,15 @@
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { Separator } from '@/components/ui/separator';
+import { useI18n } from '@/lib/i18n';
 import { File, FileQuestion, FileText, Image, Video } from 'lucide-react';
 
 const Curriculum = ({ course }: { course: Course }) => {
    const videoTypes = ['video', 'video_url'];
+   const { t } = useI18n();
 
    return (
       <>
-         <h6 className="mb-4 text-xl font-semibold">Course curriculum</h6>
+         <h6 className="mb-4 text-xl font-semibold">{t('courseDetail.courseCurriculum')}</h6>
 
          <Separator className="my-6" />
 
@@ -61,7 +63,7 @@ const Curriculum = ({ course }: { course: Course }) => {
                         </>
                      ) : (
                         <div className="px-4 py-3 text-center">
-                           <p>There is no lesson added</p>
+                           <p>{t('courseDetail.noLessons')}</p>
                         </div>
                      )}
                   </AccordionContent>

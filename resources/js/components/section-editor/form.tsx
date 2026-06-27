@@ -17,8 +17,12 @@ const EditForm = () => {
    const [isFileUploaded, setIsFileUploaded] = useState(false);
    const [thumbnailPreview, setThumbnailPreview] = useState<string | null>(section.thumbnail || null);
    const [backgroundPreview, setBackgroundPreview] = useState<string | null>(section.background_image || null);
+   const [translationPropertiesJson, setTranslationPropertiesJson] = useState(
+      JSON.stringify(section.translations?.th?.properties || {}, null, 2),
+   );
+   const [translationPropertiesError, setTranslationPropertiesError] = useState<string | null>(null);
 
-   const { data, setData, post, reset, processing, errors } = useForm({
+   const { data, setData, post, transform, reset, processing, errors } = useForm({
       title: section.title,
       sub_title: section.sub_title,
       description: section.description || '',
@@ -27,6 +31,7 @@ const EditForm = () => {
       background_image: null,
       background_color: section.background_color,
       properties: section.properties,
+      translations: section.translations || { th: {} },
       active: section.active,
       sort: section.sort,
    });
@@ -36,6 +41,7 @@ const EditForm = () => {
 
    useEffect(() => {
       setPropertyFields(generatePropertyFields(section.properties));
+      setTranslationPropertiesJson(JSON.stringify(section.translations?.th?.properties || {}, null, 2));
    }, [section]);
 
    const handleSubmit = (e: React.FormEvent) => {
@@ -50,12 +56,32 @@ const EditForm = () => {
    };
 
    const submitForm = () => {
+      try {
+         const parsedProperties = translationPropertiesJson.trim() ? JSON.parse(translationPropertiesJson) : {};
+         transform((currentData) => ({
+            ...currentData,
+            translations: {
+               ...(currentData.translations || {}),
+               th: {
+                  ...(currentData.translations?.th || {}),
+                  properties: parsedProperties,
+               },
+            },
+         }));
+         setTranslationPropertiesError(null);
+      } catch {
+         setTranslationPropertiesError('Thai properties must be valid JSON.');
+         return;
+      }
+
       post(route('page.section.update', section.id), {
          onSuccess: () => {
+            transform((currentData) => currentData);
             reset();
             setOpen(false);
             setIsSubmit(false);
          },
+         onFinish: () => transform((currentData) => currentData),
       });
    };
 
@@ -73,6 +99,19 @@ const EditForm = () => {
          properties: {
             ...data.properties,
             [name]: value,
+         },
+      }));
+   };
+
+   const handleThaiTranslationChange = (key: string, value: string) => {
+      setData((currentData) => ({
+         ...currentData,
+         translations: {
+            ...(currentData.translations || {}),
+            th: {
+               ...(currentData.translations?.th || {}),
+               [key]: value,
+            },
          },
       }));
    };
@@ -116,6 +155,58 @@ const EditForm = () => {
                   {errors.description && <p className="mt-1 text-sm text-red-600">{errors.description}</p>}
                </div>
             )}
+
+            <div className="rounded-lg border p-4">
+               <h3 className="mb-4 text-lg font-medium">Thai Translations</h3>
+
+               {section.flags.title && (
+                  <div className="mb-4 space-y-2">
+                     <Label htmlFor="translations-th-title">Thai Title</Label>
+                     <Input
+                        type="text"
+                        id="translations-th-title"
+                        value={data.translations?.th?.title || ''}
+                        onChange={(e) => handleThaiTranslationChange('title', e.target.value)}
+                     />
+                  </div>
+               )}
+
+               {section.flags.sub_title && (
+                  <div className="mb-4 space-y-2">
+                     <Label htmlFor="translations-th-sub-title">Thai Sub Title</Label>
+                     <Input
+                        type="text"
+                        id="translations-th-sub-title"
+                        value={data.translations?.th?.sub_title || ''}
+                        onChange={(e) => handleThaiTranslationChange('sub_title', e.target.value)}
+                     />
+                  </div>
+               )}
+
+               {section.flags.description && (
+                  <div className="mb-4 space-y-2">
+                     <Label htmlFor="translations-th-description">Thai Description</Label>
+                     <Textarea
+                        id="translations-th-description"
+                        value={data.translations?.th?.description || ''}
+                        onChange={(e) => handleThaiTranslationChange('description', e.target.value)}
+                        rows={3}
+                     />
+                  </div>
+               )}
+
+               <div className="space-y-2">
+                  <Label htmlFor="translations-th-properties">Thai Properties JSON</Label>
+                  <Textarea
+                     id="translations-th-properties"
+                     value={translationPropertiesJson}
+                     onChange={(e) => setTranslationPropertiesJson(e.target.value)}
+                     rows={8}
+                     placeholder='{"array":[{"title":"..."}]}'
+                  />
+                  {translationPropertiesError && <p className="mt-1 text-sm text-red-600">{translationPropertiesError}</p>}
+               </div>
+            </div>
 
             {section.flags.thumbnail && (
                <div className="space-y-2">
