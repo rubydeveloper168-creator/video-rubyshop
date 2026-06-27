@@ -21,10 +21,15 @@ class PageSection extends Model implements HasMedia
         'name',
         'slug',
         'title',
+        'sub_title',
         'description',
         'thumbnail',
+        'background_image',
+        'background_color',
+        'video_url',
         'flags',
         'properties',
+        'translations',
         'active',
         'sort',
         'page_id',
@@ -40,6 +45,7 @@ class PageSection extends Model implements HasMedia
         'sort' => 'integer',
         'flags' => 'array',
         'properties' => 'array',
+        'translations' => 'array',
     ];
 
     /**

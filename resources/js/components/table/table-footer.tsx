@@ -1,4 +1,5 @@
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import { useI18n } from '@/lib/i18n';
 import { getQueryParams } from '@/lib/route';
 import { SharedData } from '@/types/global';
 import { router, usePage } from '@inertiajs/react';
@@ -17,6 +18,7 @@ const TableFooter = (props: Props) => {
    const { current_page, last_page, first_page_url, last_page_url, next_page_url, prev_page_url } = paginationInfo;
    const page = usePage<SharedData>();
    const urlParams = getQueryParams(page.url);
+   const { t } = useI18n();
 
    const dropdownList = [];
    if (last_page > 0) {
@@ -64,10 +66,10 @@ const TableFooter = (props: Props) => {
          <div className="mb-4 flex items-center justify-center md:hidden">
             <span className="mr-1">
                <strong>
-                  {current_page} of {last_page}
+                  {t('pagination.of', { current: current_page, total: last_page })}
                </strong>
             </span>
-            <span className="mr-3">| Go to page:</span>
+            <span className="mr-3">| {t('pagination.goToPage')}</span>
             <DropdownMenu>
                <DropdownMenuTrigger>
                   <Button variant="secondary" className="hover:border-primary h-8 w-[60px] rounded-md border border-gray-200 text-gray-700">
@@ -93,7 +95,7 @@ const TableFooter = (props: Props) => {
                onClick={() => gotoRoute(first_page_url as string)}
                className="bg-muted border-border h-8 border px-2 text-xs sm:px-3"
             >
-               {'<<First'}
+               {`<<${t('pagination.first')}`}
             </Button>
 
             <Button
@@ -102,17 +104,14 @@ const TableFooter = (props: Props) => {
                onClick={() => gotoRoute(prev_page_url as string)}
                className="bg-muted border-border mx-3 h-8 border px-2 text-xs sm:px-3"
             >
-               Prev
+               {t('pagination.prev')}
             </Button>
 
             <div className="hidden items-center md:flex">
                <span className="mr-1">
-                  Page{' '}
-                  <strong>
-                     {current_page} of {last_page}
-                  </strong>
+                  <strong>{t('pagination.pageOf', { current: current_page, total: last_page })}</strong>
                </span>
-               <span className="mr-3">| Go to page:</span>
+               <span className="mr-3">| {t('pagination.goToPage')}</span>
                <DropdownMenu>
                   <DropdownMenuTrigger>
                      <Button variant="ghost" className="border-border h-8 w-[60px] rounded-md border">
@@ -137,7 +136,7 @@ const TableFooter = (props: Props) => {
                onClick={() => gotoRoute(next_page_url as string)}
                className="bg-muted border-border mx-3 h-8 border px-2 text-xs sm:px-3"
             >
-               Next
+               {t('pagination.next')}
             </Button>
 
             <Button
@@ -146,7 +145,7 @@ const TableFooter = (props: Props) => {
                onClick={() => gotoRoute(last_page_url as string)}
                className="bg-muted border-border h-8 border px-2 text-xs sm:px-3"
             >
-               {'Last>>'}
+               {`${t('pagination.last')}>>`}
             </Button>
          </div>
       </div>

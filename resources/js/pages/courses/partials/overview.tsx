@@ -1,13 +1,16 @@
 import TiptapRenderer from '@/components/text-editor/tiptap-renderer/client-renderer';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
+import { useI18n } from '@/lib/i18n';
 
 const Overview = ({ course }: { course: Course }) => {
+   const { t } = useI18n();
+
    return (
       <div className="space-y-10">
          <TiptapRenderer>{course.description as string}</TiptapRenderer>
 
          <Accordion type="single" collapsible>
-            <h6 className="mb-4 text-xl font-semibold">Faqs</h6>
+            <h6 className="mb-4 text-xl font-semibold">{t('courseDetail.faqs')}</h6>
 
             <div className="border-border border-y">
                {course.faqs?.map((faq) => (

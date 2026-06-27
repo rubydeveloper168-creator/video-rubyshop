@@ -1,6 +1,8 @@
+import LanguageSwitcher from '@/components/language-switcher';
 import { Separator } from '@/components/ui/separator';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import LandingLayout from '@/layouts/landing-layout';
+import { useI18n } from '@/lib/i18n';
 import { SharedData } from '@/types/global';
 import { Head } from '@inertiajs/react';
 import { ReactNode } from 'react';
@@ -23,30 +25,31 @@ export interface CourseDetailsProps extends SharedData {
 }
 
 const Show = ({ course, system }: CourseDetailsProps) => {
+   const { t } = useI18n();
    const tabs = [
       {
          value: 'overview',
-         label: 'Overview',
+         label: t('courseDetail.overview'),
          Component: <Overview course={course} />,
       },
       {
          value: 'curriculum',
-         label: 'Curriculum',
+         label: t('courseDetail.curriculum'),
          Component: <Curriculum course={course} />,
       },
       {
          value: 'details',
-         label: 'Details',
+         label: t('courseDetail.details'),
          Component: <Details course={course} />,
       },
       {
          value: 'instructor',
-         label: 'Instructor',
+         label: t('courseDetail.instructor'),
          Component: <Instructor course={course} />,
       },
       {
          value: 'reviews',
-         label: 'Reviews',
+         label: t('courseDetail.reviews'),
          Component: <CourseReviews />,
       },
    ].filter((tab) => {
@@ -145,8 +148,12 @@ const Show = ({ course, system }: CourseDetailsProps) => {
 
          <div className="container grid grid-cols-1 gap-7 py-10 md:grid-cols-3">
             <div className="space-y-8 md:col-span-2">
+               <div className="flex justify-end">
+                  <LanguageSwitcher showLabel />
+               </div>
+
                <CourseHeader course={course} />
-              
+
                <Tabs defaultValue="overview" className="bg-card overflow-hidden rounded-md border shadow">
                   <div className="overflow-x-auto overflow-y-hidden">
                      <TabsList className="vertical-tabs-list">

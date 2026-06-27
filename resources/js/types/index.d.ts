@@ -74,6 +74,7 @@ interface Page extends TableCommon {
    description: string;
    meta_description: string;
    meta_keywords: string;
+   translations?: Record<string, Record<string, any>>;
    active: boolean;
    sort: number;
    sections: PageSection[];
@@ -95,6 +96,7 @@ interface PageSection extends TableCommon {
       contents: any[];
       [key: string]: any;
    };
+   translations?: Record<string, Record<string, any>>;
    active: boolean;
    sort: number;
    page_id: number;

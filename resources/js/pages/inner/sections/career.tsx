@@ -3,10 +3,13 @@ import TableFooter from '@/components/table/table-footer';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
+import { useI18n } from '@/lib/i18n';
 import { Link } from '@inertiajs/react';
 import { Briefcase, BriefcaseBusiness, Building2, Calendar, Eye, MapPin, TrendingUp } from 'lucide-react';
 
 const Career = ({ jobCirculars }: { jobCirculars: Pagination<JobCircular> }) => {
+   const { text } = useI18n();
+
    const getStatusBadge = (status: string) => {
       const variants: Record<string, 'default' | 'secondary' | 'destructive' | 'outline'> = {
          draft: 'outline',
@@ -64,7 +67,7 @@ const Career = ({ jobCirculars }: { jobCirculars: Pagination<JobCircular> }) => 
                                     </div>
                                     <div className="flex items-center gap-1 capitalize">
                                        <BriefcaseBusiness className="h-4 w-4" />
-                                       {job.positions_available} Position{job.positions_available !== 1 ? 's' : ''}
+                                       {job.positions_available} {text(job.positions_available !== 1 ? 'Positions' : 'Position')}
                                     </div>
                                     <div className="flex items-center gap-1">
                                        <Calendar className="h-4 w-4" />
@@ -89,8 +92,8 @@ const Career = ({ jobCirculars }: { jobCirculars: Pagination<JobCircular> }) => 
                ) : (
                   <div className="py-12 text-center">
                      <Briefcase className="text-muted-foreground mx-auto h-12 w-12" />
-                     <h3 className="mt-4 text-lg font-semibold">No job circulars found</h3>
-                     <p className="text-muted-foreground mt-2">Get started by creating your first job circular</p>
+                     <h3 className="mt-4 text-lg font-semibold">{text('No job circulars found')}</h3>
+                     <p className="text-muted-foreground mt-2">{text('Get started by creating your first job circular')}</p>
                   </div>
                )}
             </CardContent>

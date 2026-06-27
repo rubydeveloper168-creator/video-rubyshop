@@ -97,6 +97,14 @@ class PageData
             'title' => 'About Us - Why Choose Mentor?',
             'meta_description' => 'Mentor LMS offers quality content, affordable learning, and continuous improvement in online education.',
             'meta_keywords' => 'about us, mission, vision, quality content, affordable learning, education platform',
+            'translations' => [
+               'th' => [
+                  'name' => 'เกี่ยวกับเรา',
+                  'title' => 'เกี่ยวกับเรา - ทำไมต้องเลือก Mentor?',
+                  'meta_description' => 'Mentor LMS มีเนื้อหาคุณภาพ การเรียนรู้ในราคาที่เข้าถึงได้ และพัฒนาอย่างต่อเนื่องในการศึกษาออนไลน์',
+                  'meta_keywords' => 'เกี่ยวกับเรา, พันธกิจ, วิสัยทัศน์, เนื้อหาคุณภาพ, เรียนออนไลน์, แพลตฟอร์มการศึกษา',
+               ],
+            ],
             'sections' => InnerSections::getAboutUsSections()
          ],
          // Our Team page

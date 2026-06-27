@@ -1,6 +1,7 @@
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { useI18n } from '@/lib/i18n';
 import { cn, getCourseDuration, systemCurrency } from '@/lib/utils';
 import { SharedData } from '@/types/global';
 import { Link, router, usePage } from '@inertiajs/react';
@@ -15,9 +16,12 @@ interface Props {
 
 const CourseCard1 = ({ course, viewType = 'grid', className, wishlists }: Props) => {
    const { props } = usePage<SharedData>();
+   const { t } = useI18n();
    const { user } = props.auth;
    const isWishlisted = wishlists?.find((wishlist) => wishlist.course_id === course.id);
    const currency = systemCurrency(props.system.fields['selling_currency']);
+   const enrollmentCount = course.enrollments_count || 0;
+   const reviewCount = course.reviews_count || 0;
 
    const handleWishlist = () => {
       if (isWishlisted) {
@@ -61,7 +65,7 @@ const CourseCard1 = ({ course, viewType = 'grid', className, wishlists }: Props)
                            </Button>
                         </TooltipTrigger>
                         <TooltipContent>
-                           <p> {isWishlisted ? 'Remove from Wishlist' : 'Add to Wishlist'}</p>
+                           <p>{isWishlisted ? t('courses.removeWishlist') : t('courses.addWishlist')}</p>
                         </TooltipContent>
                      </Tooltip>
                   </TooltipProvider>
@@ -74,7 +78,7 @@ const CourseCard1 = ({ course, viewType = 'grid', className, wishlists }: Props)
                <div className="text-secondary-foreground mb-1 flex items-center gap-1.5 text-xs">
                   <Users className="h-3 w-3" />
                   <span>
-                     {course.enrollments_count || 0} {course.enrollments_count || 0 > 0 ? ' Students' : ' Student'}
+                     {enrollmentCount} {enrollmentCount === 1 ? t('courses.student') : t('courses.students')}
                   </span>
 
                   <Clock className="ml-2 h-3 w-3" />
@@ -93,7 +97,9 @@ const CourseCard1 = ({ course, viewType = 'grid', className, wishlists }: Props)
                   <p className="text-muted-foreground flex items-center gap-1.5 text-sm">
                      <Star className="h-3.5 w-3.5 fill-amber-400 text-amber-400" />
                      <span>{course.average_rating ? Number(course.average_rating).toFixed(2) : '0.00'}</span>
-                     <span>({course.reviews_count || 0} Reviews)</span>
+                     <span>
+                        ({reviewCount} {reviewCount === 1 ? t('courses.review') : t('courses.reviews')})
+                     </span>
                   </p>
                </Link>
             </CardContent>
@@ -101,7 +107,7 @@ const CourseCard1 = ({ course, viewType = 'grid', className, wishlists }: Props)
             <CardFooter className="flex w-full items-center justify-between p-4 pt-0">
                <p className="capitalize">
                   {course.pricing_type === 'free' ? (
-                     course.pricing_type
+                     course.pricing_type === 'free' ? t('common.free') : course.pricing_type
                   ) : course.discount ? (
                      <>
                         <span className="font-semibold">
@@ -130,7 +136,7 @@ const CourseCard1 = ({ course, viewType = 'grid', className, wishlists }: Props)
                         id: course.id,
                      })}
                   >
-                     Learn More
+                     {t('courses.learnMore')}
                   </Link>
                </Button>
             </CardFooter>

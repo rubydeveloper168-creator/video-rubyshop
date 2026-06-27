@@ -1,10 +1,12 @@
 import { Button } from '@/components/ui/button';
+import LanguageSwitcher from '@/components/language-switcher';
 import { Card } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import useScreen from '@/hooks/use-screen';
 import LandingLayout from '@/layouts/landing-layout';
+import { useI18n } from '@/lib/i18n';
 import { getQueryParams } from '@/lib/route';
 import { router, usePage } from '@inertiajs/react';
 import { Grid, List, ListFilter } from 'lucide-react';
@@ -19,6 +21,7 @@ const Layout = ({ children }: { children: ReactNode }) => {
    const urlParams = getQueryParams(url);
    const viewType = urlParams['view'] ?? 'grid';
    const { screen } = useScreen();
+   const { t } = useI18n();
 
    const getQueryRoute = (newParams: Record<string, string>, category: string, category_child?: string) => {
       const updatedParams = { ...urlParams };
@@ -57,6 +60,7 @@ const Layout = ({ children }: { children: ReactNode }) => {
                            <SheetTrigger asChild>
                               <Button size="icon" variant="outline">
                                  <ListFilter className="h-5 w-5" />
+                                 <span className="sr-only">{t('courses.filters')}</span>
                               </Button>
                            </SheetTrigger>
 
@@ -70,7 +74,9 @@ const Layout = ({ children }: { children: ReactNode }) => {
 
                      <div>
                         <h2 className="text-2xl font-bold capitalize">
-                           {category || categoryChild ? category?.title || categoryChild?.title : 'All'} Courses
+                           {category || categoryChild
+                              ? t('courses.categoryCourses', { category: category?.title || categoryChild?.title || t('common.all') })
+                              : t('courses.allCourses')}
                         </h2>
                         {((category && category.description) || (categoryChild && categoryChild.description)) && (
                            <p className="text-muted-foreground mt-1 text-sm">{category?.description || categoryChild?.description}</p>
@@ -78,6 +84,8 @@ const Layout = ({ children }: { children: ReactNode }) => {
                      </div>
                   </div>
                   <div className="flex gap-2">
+                     <LanguageSwitcher showLabel={screen >= 640} />
+
                      <TooltipProvider delayDuration={0}>
                         <Tooltip>
                            <TooltipTrigger asChild>
@@ -86,7 +94,7 @@ const Layout = ({ children }: { children: ReactNode }) => {
                               </Button>
                            </TooltipTrigger>
                            <TooltipContent>
-                              <p>Grid View</p>
+                              <p>{t('courses.gridView')}</p>
                            </TooltipContent>
                         </Tooltip>
                      </TooltipProvider>
@@ -99,7 +107,7 @@ const Layout = ({ children }: { children: ReactNode }) => {
                               </Button>
                            </TooltipTrigger>
                            <TooltipContent>
-                              <p>List View</p>
+                              <p>{t('courses.listView')}</p>
                            </TooltipContent>
                         </Tooltip>
                      </TooltipProvider>

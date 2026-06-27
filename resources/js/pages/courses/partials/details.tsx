@@ -1,11 +1,14 @@
 import { Separator } from '@/components/ui/separator';
+import { useI18n } from '@/lib/i18n';
 import { Check } from 'lucide-react';
 
 const Details = ({ course }: { course: Course }) => {
+   const { t } = useI18n();
+
    return (
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
          <div>
-            <h6 className="mb-4 text-xl font-semibold">Requirements</h6>
+            <h6 className="mb-4 text-xl font-semibold">{t('courseDetail.requirements')}</h6>
 
             <Separator className="my-4" />
 
@@ -22,7 +25,7 @@ const Details = ({ course }: { course: Course }) => {
          </div>
 
          <div>
-            <h6 className="mb-4 text-xl font-semibold">Outcomes</h6>
+            <h6 className="mb-4 text-xl font-semibold">{t('courseDetail.outcomes')}</h6>
 
             <Separator className="my-4" />
 

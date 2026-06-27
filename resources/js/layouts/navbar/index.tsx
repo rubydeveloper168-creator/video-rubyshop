@@ -1,5 +1,6 @@
 import AppLogo from '@/components/app-logo';
 import Appearance from '@/components/appearance';
+import LanguageSwitcher from '@/components/language-switcher';
 import Notification from '@/components/notification';
 import ProfileToggle from '@/components/profile-toggle';
 import { Button } from '@/components/ui/button';
@@ -7,6 +8,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { useAuth } from '@/hooks/use-auth';
 import useScreen from '@/hooks/use-screen';
+import { TranslationKey, useI18n } from '@/lib/i18n';
 import { cn } from '@/lib/utils';
 import { SharedData } from '@/types/global';
 import { Link, usePage } from '@inertiajs/react';
@@ -25,6 +27,7 @@ const Navbar = ({ heightCover = true, customizable = true }: NavbarProps) => {
    const [isSticky, setIsSticky] = useState(false);
    const [isMenuOpen, setIsMenuOpen] = useState(false);
    const { screen } = useScreen();
+   const { t } = useI18n();
 
    useEffect(() => {
       const handleScroll = () => {
@@ -47,16 +50,28 @@ const Navbar = ({ heightCover = true, customizable = true }: NavbarProps) => {
       switch (item.type) {
          case 'url':
             return (
-               <Link key={item.id} href={item.value || ''} className="text-sm font-normal">
-                  {item.title}
+               <Link
+                  key={item.id}
+                  href={item.value || ''}
+                  className={cn(
+                     'hover:bg-primary/10 hover:text-primary focus-visible:ring-ring inline-flex min-h-9 items-center rounded-md px-3 py-2 text-sm font-medium transition-colors focus-visible:ring-2 focus-visible:outline-none',
+                     isNavItemActive(item) && 'bg-primary/10 text-primary',
+                  )}
+               >
+                  {translateNavbarItem(item, t)}
                </Link>
             );
 
          case 'dropdown':
             return (
                <DropdownMenu key={item.id}>
-                  <DropdownMenuTrigger className="flex cursor-pointer items-center gap-1 text-sm">
-                     {item.title}
+                  <DropdownMenuTrigger
+                     className={cn(
+                        'hover:bg-primary/10 hover:text-primary focus-visible:ring-ring inline-flex min-h-9 cursor-pointer items-center gap-1 rounded-md px-3 py-2 text-sm font-medium transition-colors focus-visible:ring-2 focus-visible:outline-none',
+                        isNavItemActive(item) && 'bg-primary/10 text-primary',
+                     )}
+                  >
+                     {translateNavbarItem(item, t)}
                      <ChevronDown className="ml-1 h-4 w-4" />
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="start" className="min-w-20">
@@ -64,7 +79,7 @@ const Navbar = ({ heightCover = true, customizable = true }: NavbarProps) => {
                         Array.isArray(item.items) &&
                         item.items.map((subItem: any, idx: number) => (
                            <DropdownMenuItem key={idx} asChild className="cursor-pointer px-5">
-                              <Link href={subItem.url || ''}>{subItem.title}</Link>
+                              <Link href={subItem.url || subItem.value || ''}>{translateNavbarItem(subItem, t)}</Link>
                            </DropdownMenuItem>
                         ))}
                   </DropdownMenuContent>
@@ -106,9 +121,11 @@ const Navbar = ({ heightCover = true, customizable = true }: NavbarProps) => {
                <div className="flex items-center gap-2">
                   {customizable && isAdmin && (
                      <Button asChild variant="outline" className="hidden text-sm font-normal sm:block">
-                        <Link href={customizeLink}>{props.customize ? 'Back' : 'Customize'}</Link>
+                        <Link href={customizeLink}>{props.customize ? t('common.back') : t('common.customize')}</Link>
                      </Button>
                   )}
+
+                  <LanguageSwitcher compact={screen < 640} />
 
                   {sortedItems.map((item) => {
                      if (item.slug === 'theme') {
@@ -131,10 +148,10 @@ const Navbar = ({ heightCover = true, customizable = true }: NavbarProps) => {
                   ) : (
                      <div className="hidden space-x-2 sm:block">
                         <Button asChild variant="outline" className="">
-                           <Link href={route('register')}>Sign Up</Link>
+                           <Link href={route('register')}>{t('common.signUp')}</Link>
                         </Button>
                         <Button asChild className="">
-                           <Link href={route('login')}>Log In</Link>
+                           <Link href={route('login')}>{t('common.logIn')}</Link>
                         </Button>
                      </div>
                   )}
@@ -156,17 +173,17 @@ const Navbar = ({ heightCover = true, customizable = true }: NavbarProps) => {
 
                      {customizable && isAdmin && (
                         <Button asChild variant="outline" className="text-sm font-normal">
-                           <Link href={customizeLink}>{props.customize ? 'Back' : 'Customize'}</Link>
+                           <Link href={customizeLink}>{props.customize ? t('common.back') : t('common.customize')}</Link>
                         </Button>
                      )}
 
                      {!isLoggedIn && (
                         <div className="block space-y-2 sm:hidden">
                            <Button asChild variant="outline" className="w-full rounded-sm shadow-none sm:px-5 md:h-10">
-                              <Link href={route('register')}>Sign Up</Link>
+                              <Link href={route('register')}>{t('common.signUp')}</Link>
                            </Button>
                            <Button asChild className="w-full rounded-sm shadow-none sm:px-5 md:h-10">
-                              <Link href={route('login')}>Log In</Link>
+                              <Link href={route('login')}>{t('common.logIn')}</Link>
                            </Button>
                         </div>
                      )}
@@ -178,6 +195,45 @@ const Navbar = ({ heightCover = true, customizable = true }: NavbarProps) => {
          {heightCover && <div className="relative z-20 h-[72px] bg-transparent" />}
       </>
    );
+};
+
+const navbarTranslationKeys: Record<string, TranslationKey> = {
+   courses: 'nav.courses',
+   'about-us': 'nav.aboutUs',
+   'our-team': 'nav.ourTeam',
+   careers: 'nav.careers',
+   blogs: 'nav.blogs',
+   search: 'common.search',
+   theme: 'nav.theme',
+   notification: 'nav.notification',
+   profile: 'nav.profile',
+};
+
+const navbarTitleKeys: Record<string, TranslationKey> = {
+   Courses: 'nav.courses',
+   'About Us': 'nav.aboutUs',
+   'Our Team': 'nav.ourTeam',
+   Careers: 'nav.careers',
+   Blogs: 'nav.blogs',
+   Search: 'common.search',
+   Theme: 'nav.theme',
+   Notification: 'nav.notification',
+   Profile: 'nav.profile',
+};
+
+const translateNavbarItem = (item: Pick<NavbarItem, 'slug' | 'title'>, t: ReturnType<typeof useI18n>['t']) => {
+   const key = (item.slug && navbarTranslationKeys[item.slug]) || navbarTitleKeys[item.title];
+
+   return key ? t(key) : item.title;
+};
+
+const isNavItemActive = (item: Pick<NavbarItem, 'value'>) => {
+   if (typeof window === 'undefined' || !item.value) return false;
+
+   const currentPath = window.location.pathname.replace(/\/$/, '') || '/';
+   const itemPath = item.value.replace(/\/$/, '') || '/';
+
+   return currentPath === itemPath || (itemPath !== '/' && currentPath.startsWith(`${itemPath}/`));
 };
 
 export default Navbar;

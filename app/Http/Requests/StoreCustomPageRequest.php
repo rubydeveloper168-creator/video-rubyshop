@@ -28,6 +28,13 @@ class StoreCustomPageRequest extends FormRequest
             'description' => 'required|string',
             'meta_description' => 'nullable|string|max:1000',
             'meta_keywords' => 'nullable|string|max:255',
+            'translations' => 'nullable|array',
+            'translations.th' => 'nullable|array',
+            'translations.th.name' => 'nullable|string|max:255',
+            'translations.th.title' => 'nullable|string|max:255',
+            'translations.th.description' => 'nullable|string',
+            'translations.th.meta_description' => 'nullable|string|max:1000',
+            'translations.th.meta_keywords' => 'nullable|string|max:255',
             'active' => 'boolean',
         ];
     }

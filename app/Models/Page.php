@@ -18,12 +18,18 @@ class Page extends Model
     protected $fillable = [
         'name',
         'slug',
+        'type',
         'title',
         'banner',
         'favicon',
         'description',
         'meta_description',
         'meta_keywords',
+        'translations',
+    ];
+
+    protected $casts = [
+        'translations' => 'array',
     ];
 
     /**
