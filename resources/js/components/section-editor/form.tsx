@@ -93,7 +93,7 @@ const EditForm = () => {
    };
 
    const isTranslatablePropertyKey = (key: string) => {
-      return ['title', 'sub_title', 'description', 'text', 'label', 'role', 'button_text', 'placeholder', 'content'].includes(key);
+      return ['name', 'title', 'sub_title', 'description', 'text', 'label', 'role', 'button_text', 'placeholder', 'content'].includes(key);
    };
 
    const handleThaiPropertyChange = (path: Array<string | number>, value: string) => {

@@ -1,13 +1,27 @@
 import AppLogo from '@/components/app-logo';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { useI18n } from '@/lib/i18n';
 import { SystemProps } from '@/pages/dashboard/settings/system';
 import { Link, usePage } from '@inertiajs/react';
 import { DynamicIcon } from 'lucide-react/dynamic';
 
 const FooterPreview = () => {
    const { props } = usePage<SystemProps>();
-   const { footer, system } = props;
+   const { footer } = props;
+   const { locale, field } = useI18n();
+   const getTranslatedItems = (item: FooterItem) => {
+      if (locale === 'en') return item.items || [];
+
+      return (item.items || []).map((footerItem: any, index: number) => ({
+         ...footerItem,
+         ...(item.translations?.[locale]?.items?.[index] || {}),
+      }));
+   };
+   const footerDescription =
+      locale === 'th'
+         ? 'RUBYSHOP จำหน่ายเครื่องมือช่างและอุปกรณ์ก่อสร้างคุณภาพสำหรับงานมืออาชีพ พร้อมคำแนะนำสินค้า อะไหล่ บริการหลังการขาย และจัดส่งทั่วไทย'
+         : 'RUBYSHOP supplies quality professional tools and construction equipment with product guidance, spare parts, after-sales support, and nationwide delivery.';
 
    const renderFooterItem = (item: FooterItem) => {
       if (!item.active) return null;
@@ -16,11 +30,9 @@ const FooterPreview = () => {
          case 'list':
             return (
                <div key={item.id} className="space-y-4">
-                  <h3 className="text-lg font-semibold">{item.title}</h3>
+                  <h3 className="text-lg font-semibold">{field(item, 'title')}</h3>
                   <ul className="space-y-2">
-                     {item.items &&
-                        Array.isArray(item.items) &&
-                        item.items.map((subItem: any, idx: number) => (
+                     {getTranslatedItems(item).map((subItem: any, idx: number) => (
                            <li key={idx}>
                               {subItem.url ? (
                                  <Link href={subItem.url} className="text-muted-foreground hover:text-foreground text-sm transition-colors">
@@ -38,7 +50,7 @@ const FooterPreview = () => {
          case 'social_media':
             return (
                <div key={item.id} className="space-y-4">
-                  <h3 className="text-lg font-semibold">{item.title}</h3>
+                  <h3 className="text-lg font-semibold">{field(item, 'title')}</h3>
                   <div className="flex flex-wrap gap-3">
                      {item.items &&
                         Array.isArray(item.items) &&
@@ -50,10 +62,10 @@ const FooterPreview = () => {
                               className="hover:bg-primary hover:text-primary-foreground h-10 w-10 transition-colors"
                               asChild
                            >
-                              <Link href={socialItem.url} target="_blank" rel="noopener noreferrer">
+                              <a href={socialItem.url} target="_blank" rel="noopener noreferrer">
                                  <DynamicIcon name={socialItem.icon} className="h-5 w-5" />
                                  <span className="sr-only">{socialItem.title}</span>
-                              </Link>
+                              </a>
                            </Button>
                         ))}
                   </div>
@@ -63,7 +75,7 @@ const FooterPreview = () => {
          case 'payment_methods':
             return (
                <div key={item.id} className="space-y-4">
-                  <h3 className="text-muted-foreground text-sm font-medium">{item.title}</h3>
+                  <h3 className="text-muted-foreground text-sm font-medium">{field(item, 'title')}</h3>
                   <div className="flex flex-wrap gap-3">
                      {item.items &&
                         Array.isArray(item.items) &&
@@ -88,7 +100,7 @@ const FooterPreview = () => {
          default:
             return (
                <div key={item.id} className="space-y-4">
-                  <h3 className="text-lg font-semibold">{item.title}</h3>
+                  <h3 className="text-lg font-semibold">{field(item, 'title')}</h3>
                   {item.items && Array.isArray(item.items) && item.items.length > 0 && (
                      <div className="space-y-2">
                         {item.items.map((genericItem: any, idx: number) => (
@@ -120,7 +132,7 @@ const FooterPreview = () => {
                      </Link>
                   </div>
 
-                  <p className="text-muted-foreground text-sm">{system.fields.description}</p>
+                  <p className="text-muted-foreground text-sm">{footerDescription}</p>
 
                   {socialMediaItem && (
                      <div className="flex flex-wrap gap-3">
@@ -134,10 +146,10 @@ const FooterPreview = () => {
                                  className="bg-muted hover:bg-primary hover:text-primary-foreground text-muted-foreground rounded-full transition-colors"
                                  asChild
                               >
-                                 <Link href={socialItem.url} target="_blank" rel="noopener noreferrer">
+                                 <a href={socialItem.url} target="_blank" rel="noopener noreferrer">
                                     <DynamicIcon name={socialItem.icon} className="h-5 w-5" />
                                     <span className="sr-only">{socialItem.title}</span>
-                                 </Link>
+                                 </a>
                               </Button>
                            ))}
                      </div>
@@ -147,9 +159,9 @@ const FooterPreview = () => {
                <div className="flex w-full flex-col justify-between gap-10 md:max-w-[640px] md:flex-row">
                   {listItems.map((section) => (
                      <div className="relative w-full">
-                        <p className="mb-3 text-lg font-semibold">{section.title}</p>
+                        <p className="mb-3 text-lg font-semibold">{field(section, 'title')}</p>
                         <ul className="text-muted-foreground flex flex-col gap-2 text-sm">
-                           {section.items?.map((item, itemIndex) =>
+                           {getTranslatedItems(section).map((item, itemIndex) =>
                               section.slug === 'address' ? (
                                  <li key={`item-${itemIndex}`}>{item.title}</li>
                               ) : (
@@ -166,7 +178,7 @@ const FooterPreview = () => {
 
             {paymentMethodsItem && (
                <div className="space-y-2">
-                  <h3 className="text-lg font-semibold">{paymentMethodsItem.title}</h3>
+                  <h3 className="text-lg font-semibold">{field(paymentMethodsItem, 'title')}</h3>
                   <div className="flex flex-wrap gap-3">
                      {paymentMethodsItem.items &&
                         Array.isArray(paymentMethodsItem.items) &&
@@ -189,7 +201,7 @@ const FooterPreview = () => {
          {/* Copyright Section */}
          {copyrightItem && (
             <div className="px-6 py-8 text-center">
-               <p className="text-muted-foreground text-sm">{copyrightItem.title}</p>
+               <p className="text-muted-foreground text-sm">{field(copyrightItem, 'title')}</p>
             </div>
          )}
       </div>

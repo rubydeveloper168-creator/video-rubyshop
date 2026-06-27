@@ -19,6 +19,7 @@ import {
    Instagram,
    Linkedin,
    List,
+   MessageCircle,
    Plus,
    Share2,
    Trash2,
@@ -34,6 +35,7 @@ interface FooterItemForm {
    title: string;
    active: boolean;
    items: any[];
+   translations: Partial<Record<'th', Record<string, any>>>;
    sort: number;
    [key: string]: any;
 }
@@ -49,6 +51,7 @@ const FooterEditor = ({ footer }: { footer: Footer }) => {
       slug: '',
       title: '',
       items: [],
+      translations: { th: { items: [] } },
       active: true,
       sort: 0,
    });
@@ -63,6 +66,7 @@ const FooterEditor = ({ footer }: { footer: Footer }) => {
          slug: '',
          title: '',
          items: [],
+         translations: { th: { items: [] } },
          active: true,
          sort: Math.max(...footerItems.map((item) => item.sort), 0) + 1,
       });
@@ -77,6 +81,7 @@ const FooterEditor = ({ footer }: { footer: Footer }) => {
          title: item.title,
          active: item.active,
          items: Array.isArray(item.items) ? item.items : [],
+         translations: item.translations || { th: { items: [] } },
          sort: item.sort,
       });
       setIsFormOpen(true);
@@ -115,6 +120,35 @@ const FooterEditor = ({ footer }: { footer: Footer }) => {
       setData((prev) => ({ ...prev, items: updatedItems }));
    };
 
+   const updateThaiTitle = (value: string) => {
+      setData((prev) => ({
+         ...prev,
+         translations: {
+            ...(prev.translations || {}),
+            th: {
+               ...(prev.translations?.th || {}),
+               title: value,
+            },
+         },
+      }));
+   };
+
+   const updateThaiItemTitle = (index: number, value: string) => {
+      const translatedItems = [...(data.translations?.th?.items || [])];
+      translatedItems[index] = { ...(translatedItems[index] || {}), title: value };
+
+      setData((prev) => ({
+         ...prev,
+         translations: {
+            ...(prev.translations || {}),
+            th: {
+               ...(prev.translations?.th || {}),
+               items: translatedItems,
+            },
+         },
+      }));
+   };
+
    const removeListItem = (index: number) => {
       const updatedItems = data.items.filter((_: any, i: number) => i !== index);
       setData((prev) => ({ ...prev, items: updatedItems }));
@@ -149,6 +183,7 @@ const FooterEditor = ({ footer }: { footer: Footer }) => {
       { value: 'facebook', label: 'Facebook', icon: <Facebook className="h-4 w-4" /> },
       { value: 'twitter', label: 'Twitter', icon: <Twitter className="h-4 w-4" /> },
       { value: 'instagram', label: 'Instagram', icon: <Instagram className="h-4 w-4" /> },
+      { value: 'message-circle', label: 'LINE Official', icon: <MessageCircle className="h-4 w-4" /> },
       { value: 'linkedin', label: 'LinkedIn', icon: <Linkedin className="h-4 w-4" /> },
       { value: 'github', label: 'GitHub', icon: <Github className="h-4 w-4" /> },
       { value: 'youtube', label: 'YouTube', icon: <Youtube className="h-4 w-4" /> },
@@ -426,6 +461,16 @@ const FooterEditor = ({ footer }: { footer: Footer }) => {
                   </div>
 
                   <div>
+                     <Label htmlFor="translations-th-title">Thai Title</Label>
+                     <Input
+                        id="translations-th-title"
+                        value={data.translations?.th?.title || ''}
+                        onChange={(e) => updateThaiTitle(e.target.value)}
+                        placeholder="หัวข้อภาษาไทย"
+                     />
+                  </div>
+
+                  <div>
                      <Label htmlFor="slug">Slug</Label>
                      <Input
                         id="slug"
@@ -453,6 +498,12 @@ const FooterEditor = ({ footer }: { footer: Footer }) => {
                                     value={item.title || ''}
                                     onChange={(e) => updateListItem(index, 'title', e.target.value)}
                                     placeholder="Title"
+                                    className="flex-1"
+                                 />
+                                 <Input
+                                    value={data.translations?.th?.items?.[index]?.title || ''}
+                                    onChange={(e) => updateThaiItemTitle(index, e.target.value)}
+                                    placeholder="Thai title"
                                     className="flex-1"
                                  />
                                  <Input
@@ -487,6 +538,12 @@ const FooterEditor = ({ footer }: { footer: Footer }) => {
                                     value={item.title || ''}
                                     onChange={(e) => updateSocialMediaItem(index, 'title', e.target.value)}
                                     placeholder="Platform name"
+                                    className="flex-1"
+                                 />
+                                 <Input
+                                    value={data.translations?.th?.items?.[index]?.title || ''}
+                                    onChange={(e) => updateThaiItemTitle(index, e.target.value)}
+                                    placeholder="Thai name"
                                     className="flex-1"
                                  />
                                  <Input

@@ -13,36 +13,36 @@ class InnerSections
          [
             'name' => 'Hero',
             'slug' => 'hero',
-            'title' => 'About Us',
+            'title' => 'About RUBYSHOP',
             'flags' => [
                'title' => true,
             ],
             'properties' => [
                'array' => [
                   [
-                     'title' => 'Our Mission',
-                     'description' => 'To democratize education by making high-quality learning accessible to everyone, everywhere. We strive to bridge the gap between knowledge and application. Meet our passionate team of educators, developers, and designers who believe in the power of learning to change lives.',
+                     'title' => 'Built for Professional Worksites',
+                     'description' => 'RUBYSHOP supplies professional tools and construction equipment for painters, builders, contractors, and renovation teams. We focus on machines that help real work move faster, cleaner, and more reliably on site.',
                      'image' => '/assets/images/team-1.jpg'
                   ],
                   [
-                     'title' => 'Our Value',
-                     'description' => 'We believe in fostering a love for lifelong learning through innovative teaching methods, personalized experiences, and supportive communities. Meet our passionate team of educators, developers, and designers who believe in the power of learning to change lives.',
+                     'title' => 'Tools, Parts, and Support',
+                     'description' => 'From airless paint sprayers and mortar sprayers to wall chasers, waterproofing injection tools, spare parts, and accessories, our goal is to help customers choose the right equipment and keep it working after purchase.',
                      'image' => '/assets/images/team-2.jpg'
                   ]
                ]
             ],
             'translations' => [
                'th' => [
-                  'title' => 'เกี่ยวกับเรา',
+                  'title' => 'เกี่ยวกับ RUBYSHOP',
                   'properties' => [
                      'array' => [
                         [
-                           'title' => 'พันธกิจของเรา',
-                           'description' => 'ทำให้การศึกษาคุณภาพสูงเข้าถึงได้สำหรับทุกคน ทุกที่ เรามุ่งเชื่อมช่องว่างระหว่างความรู้และการนำไปใช้จริง พบกับทีมผู้สอน นักพัฒนา และนักออกแบบที่เชื่อว่าการเรียนรู้เปลี่ยนชีวิตได้',
+                           'title' => 'สร้างมาเพื่องานไซต์มืออาชีพ',
+                           'description' => 'RUBYSHOP จำหน่ายเครื่องมือช่างและอุปกรณ์ก่อสร้างสำหรับช่างสี ช่างก่อสร้าง ผู้รับเหมา และทีมรีโนเวท เราเน้นเครื่องมือที่ช่วยให้งานจริงทำได้เร็วขึ้น เนี้ยบขึ้น และมั่นใจมากขึ้นในทุกไซต์งาน',
                         ],
                         [
-                           'title' => 'คุณค่าของเรา',
-                           'description' => 'เราเชื่อในการสร้างความรักต่อการเรียนรู้ตลอดชีวิตผ่านวิธีสอนที่ทันสมัย ประสบการณ์เฉพาะบุคคล และชุมชนที่สนับสนุนกัน พบกับทีมผู้สอน นักพัฒนา และนักออกแบบที่เชื่อว่าการเรียนรู้เปลี่ยนชีวิตได้',
+                           'title' => 'มีทั้งเครื่อง อะไหล่ และคำแนะนำ',
+                           'description' => 'ตั้งแต่เครื่องพ่นสีแรงดันสูง เครื่องพ่นปูน เครื่องกรีดผนัง เครื่องยิงโฟม งานกันซึม ไปจนถึงอะไหล่และอุปกรณ์เสริม เป้าหมายของเราคือช่วยให้ลูกค้าเลือกเครื่องมือได้ถูกงาน และดูแลต่อได้หลังการขาย',
                         ],
                      ],
                   ],
@@ -52,8 +52,8 @@ class InnerSections
          [
             'name' => 'Success Statistics',
             'slug' => 'success_statistics',
-            'title' => 'Our Success Depends on Our Students Success',
-            'description' => 'We believe that our success is measured by our students\' achievements. Every milestone they reach is a testament to our commitment to excellence in education.',
+            'title' => 'Trusted Tools for Serious Jobs',
+            'description' => 'Our success is measured by the jobs our customers finish with confidence. RUBYSHOP supports professional work with practical equipment, clear product guidance, nationwide delivery, and after-sales service.',
             'flags' => [
                'title' => true,
                'description' => true,
@@ -62,30 +62,30 @@ class InnerSections
                'array' => [
                   [
                      'count' => '100+',
-                     'title' => 'Active Students',
+                     'title' => 'Professional Tool Models',
                      'image' => '/assets/images/students-1.jpg'
                   ],
                   [
                      'count' => '300+',
-                     'title' => 'Best Courses',
+                     'title' => 'Parts and Accessories',
                      'image' => '/assets/images/students-2.jpg'
                   ],
                   [
                      'count' => '40k+',
-                     'title' => 'Active Users',
+                     'title' => 'Customers Reached Online',
                      'image' => '/assets/images/students-3.jpg'
                   ]
                ]
             ],
             'translations' => [
                'th' => [
-                  'title' => 'ความสำเร็จของเราขึ้นอยู่กับความสำเร็จของผู้เรียน',
-                  'description' => 'เราเชื่อว่าความสำเร็จของเราวัดจากความสำเร็จของผู้เรียน ทุกก้าวที่ผู้เรียนทำได้คือหลักฐานของความมุ่งมั่นของเราในการยกระดับการศึกษา',
+                  'title' => 'เครื่องมือที่ช่างมืออาชีพไว้วางใจ',
+                  'description' => 'ความสำเร็จของเราวัดจากงานที่ลูกค้าทำเสร็จได้อย่างมั่นใจ RUBYSHOP สนับสนุนงานมืออาชีพด้วยเครื่องมือที่ใช้งานได้จริง คำแนะนำที่ชัดเจน การจัดส่งทั่วไทย และบริการหลังการขาย',
                   'properties' => [
                      'array' => [
-                        ['title' => 'ผู้เรียนที่ใช้งานอยู่'],
-                        ['title' => 'คอร์สยอดนิยม'],
-                        ['title' => 'ผู้ใช้ที่ใช้งานอยู่'],
+                        ['title' => 'รุ่นเครื่องมือสำหรับงานมืออาชีพ'],
+                        ['title' => 'อะไหล่และอุปกรณ์เสริม'],
+                        ['title' => 'ลูกค้าที่เข้าถึงผ่านช่องทางออนไลน์'],
                      ],
                   ],
                ],
@@ -94,8 +94,8 @@ class InnerSections
          [
             'name' => 'Team',
             'slug' => 'team',
-            'title' => 'The Minds Behind the Mission',
-            'description' => 'Meet our passionate team of educators, developers, and designers who believe in the power of learning to change lives. Meet our passionate team of educators, developers, and designers who believe in the power of learning to change lives.',
+            'title' => 'How We Help Customers Choose Better Tools',
+            'description' => 'RUBYSHOP combines product knowledge, practical site experience, and after-sales support so customers can choose equipment that fits their materials, workload, and budget.',
             'flags' => [
                'title' => true,
                'description' => true,
@@ -103,61 +103,61 @@ class InnerSections
             'properties' => [
                'array' => [
                   [
-                     'name' => 'Sarah Johnson',
-                     'role' => 'Lead Instructor',
+                     'name' => 'Product Consultation',
+                     'role' => 'Choosing the right machine for the job',
                      'image' => '/assets/images/users/user-1.jpg'
                   ],
                   [
-                     'name' => 'Michael Chen',
-                     'role' => 'Course Designer',
+                     'name' => 'Construction Tools',
+                     'role' => 'Spraying, cutting, sanding, mixing, and finishing',
                      'image' => '/assets/images/users/user-2.jpg'
                   ],
                   [
-                     'name' => 'Emily Rodriguez',
-                     'role' => 'Learning Experience Manager',
+                     'name' => 'Parts and Accessories',
+                     'role' => 'Nozzles, hoses, blades, rotors, stators, and wear parts',
                      'image' => '/assets/images/users/user-3.jpg'
                   ],
                   [
-                     'name' => 'David Thompson',
-                     'role' => 'Technology Director',
+                     'name' => 'After-Sales Support',
+                     'role' => 'Warranty guidance, service, and product care',
                      'image' => '/assets/images/users/user-4.jpg'
                   ],
                   [
-                     'name' => 'Lisa Wang',
-                     'role' => 'Student Success Coordinator',
+                     'name' => 'Nationwide Delivery',
+                     'role' => 'Shipping tools and parts across Thailand',
                      'image' => '/assets/images/users/user-5.jpg'
                   ],
                   [
-                     'name' => 'James Miller',
-                     'role' => 'Content Strategist',
+                     'name' => 'Worksite Solutions',
+                     'role' => 'Tools for painters, contractors, and renovation teams',
                      'image' => '/assets/images/users/user-6.jpg'
                   ],
                   [
-                     'name' => 'Amanda Davis',
-                     'role' => 'Quality Assurance Lead',
+                     'name' => 'Product Knowledge',
+                     'role' => 'Clear information before customers buy',
                      'image' => '/assets/images/users/user-7.jpg'
                   ],
                   [
-                     'name' => 'Robert Kim',
-                     'role' => 'Community Manager',
+                     'name' => 'Professional Results',
+                     'role' => 'Helping customers work faster and finish cleaner',
                      'image' => '/assets/images/users/user-8.jpg'
                   ]
                ]
             ],
             'translations' => [
                'th' => [
-                  'title' => 'ทีมเบื้องหลังพันธกิจ',
-                  'description' => 'พบกับทีมผู้สอน นักพัฒนา และนักออกแบบที่มีความมุ่งมั่นและเชื่อในพลังของการเรียนรู้ที่เปลี่ยนชีวิตผู้คนได้',
+                  'title' => 'เราช่วยลูกค้าเลือกเครื่องมือให้เหมาะกับงาน',
+                  'description' => 'RUBYSHOP รวมความรู้สินค้า ประสบการณ์งานไซต์ และบริการหลังการขาย เพื่อให้ลูกค้าเลือกเครื่องมือที่เหมาะกับวัสดุ ปริมาณงาน และงบประมาณ',
                   'properties' => [
                      'array' => [
-                        ['role' => 'ผู้สอนหลัก'],
-                        ['role' => 'ผู้ออกแบบคอร์ส'],
-                        ['role' => 'ผู้จัดการประสบการณ์การเรียนรู้'],
-                        ['role' => 'ผู้อำนวยการฝ่ายเทคโนโลยี'],
-                        ['role' => 'ผู้ประสานงานความสำเร็จของผู้เรียน'],
-                        ['role' => 'นักวางกลยุทธ์เนื้อหา'],
-                        ['role' => 'หัวหน้าฝ่ายประกันคุณภาพ'],
-                        ['role' => 'ผู้จัดการชุมชน'],
+                        ['name' => 'ให้คำปรึกษาสินค้า', 'role' => 'เลือกเครื่องให้ตรงกับงาน'],
+                        ['name' => 'เครื่องมืองานก่อสร้าง', 'role' => 'งานพ่น กรีด ขัด ผสม และเก็บผิว'],
+                        ['name' => 'อะไหล่และอุปกรณ์เสริม', 'role' => 'หัวพ่น สาย ใบตัด โรเตอร์ สเตเตอร์ และอะไหล่สิ้นเปลือง'],
+                        ['name' => 'บริการหลังการขาย', 'role' => 'คำแนะนำเรื่องรับประกัน งานบริการ และการดูแลสินค้า'],
+                        ['name' => 'จัดส่งทั่วไทย', 'role' => 'จัดส่งเครื่องมือและอะไหล่ทั่วไทย'],
+                        ['name' => 'โซลูชันหน้างาน', 'role' => 'เครื่องมือสำหรับช่างสี ผู้รับเหมา และทีมรีโนเวท'],
+                        ['name' => 'ข้อมูลสินค้า', 'role' => 'ข้อมูลชัดเจนก่อนตัดสินใจซื้อ'],
+                        ['name' => 'ผลงานแบบมืออาชีพ', 'role' => 'ช่วยให้งานเร็วขึ้นและจบงานเนี้ยบขึ้น'],
                      ],
                   ],
                ],
@@ -166,9 +166,9 @@ class InnerSections
          [
             'name' => 'Newsletter',
             'slug' => 'call_to_action',
-            'title' => 'Newsletter',
-            'sub_title' => 'Subscribe Our Newsletter',
-            'description' => 'Subscribe to our newsletter to get the latest news and updates. We will not spam you.',
+            'title' => 'Need Help Choosing a Tool?',
+            'sub_title' => 'Talk to RUBYSHOP',
+            'description' => 'Contact us for product advice, spare parts, warranty information, or help choosing equipment for your next project.',
             'flags' => [
                'title' => true,
                'sub_title' => true,
@@ -177,9 +177,9 @@ class InnerSections
             'properties' => [],
             'translations' => [
                'th' => [
-                  'title' => 'จดหมายข่าว',
-                  'sub_title' => 'สมัครรับข่าวสารของเรา',
-                  'description' => 'สมัครรับข่าวสารเพื่อรับข่าวและอัปเดตล่าสุด เราจะไม่ส่งสแปมถึงคุณ',
+                  'title' => 'ต้องการเลือกเครื่องมือให้ตรงงาน?',
+                  'sub_title' => 'คุยกับ RUBYSHOP',
+                  'description' => 'ติดต่อเราเพื่อขอคำแนะนำสินค้า อะไหล่ ข้อมูลการรับประกัน หรือเลือกอุปกรณ์ให้เหมาะกับงานถัดไปของคุณ',
                ],
             ],
          ],
@@ -202,8 +202,8 @@ class InnerSections
          [
             'name' => 'Top Instructors',
             'slug' => 'top_instructors',
-            'title' => 'Meet Our Experts',
-            'description' => 'Our team is a group of passionate educators, developers, & designers who believe in the power of learning to change lives.',
+            'title' => 'Meet the RUBYSHOP Support Team',
+            'description' => 'Our team helps professional technicians and contractors choose the right construction tools, understand machine setup, find spare parts, and keep equipment ready for real jobsite work.',
             'flags' => [
                'title' => true,
                'description' => true,
@@ -211,11 +211,17 @@ class InnerSections
             'properties' => [
                'contents' => [2, 3, 4, 5, 6, 7, 8, 9] // Example instructor IDs
             ],
+            'translations' => [
+               'th' => [
+                  'title' => 'พบกับทีมสนับสนุนของ RUBYSHOP',
+                  'description' => 'ทีมของเราช่วยช่างมืออาชีพและผู้รับเหมาเลือกเครื่องมือก่อสร้างให้เหมาะกับงาน แนะนำการใช้งานเบื้องต้น หาอะไหล่ และดูแลให้เครื่องพร้อมใช้งานจริงในไซต์งาน',
+               ],
+            ],
          ],
          [
             'name' => 'Partners',
             'slug' => 'partners',
-            'title' => 'Trusted by over 100 leading companies worldwide',
+            'title' => 'Trusted by technicians, contractors, and renovation teams across Thailand',
             'flags' => [
                'title' => true,
             ],
@@ -230,6 +236,11 @@ class InnerSections
                   ['image' => '/assets/logos/logo-7.png'],
                   ['image' => '/assets/logos/logo-8.png']
                ]
+            ],
+            'translations' => [
+               'th' => [
+                  'title' => 'ได้รับความไว้วางใจจากช่าง ผู้รับเหมา และทีมรีโนเวททั่วไทย',
+               ],
             ],
          ],
       ];
@@ -247,7 +258,12 @@ class InnerSections
     */
    public static function getContactUsDescription(): string
    {
-      return '<h1 style="text-align: center;"><strong>Contact Us</strong></h1><p style="text-align: center;">We\'re here to help! Whether you have questions about our courses, need technical support, or want to provide feedback, we\'d love to hear from you. Here are the best ways to get in touch with our team.</p><h2><strong>General Inquiries</strong></h2><p>For general questions about Mentor, our courses, or our platform, please email us at:</p><p><strong>Email: info@example.com</strong></p><h2><strong>Technical Support</strong></h2><p>If you\'re experiencing technical issues or need help with your account, our support team is ready to assist you:</p><p><strong>Email: support@uilib.com</strong></p><p>Response Time: We typically respond to support requests within 24 hours.</p><h2><strong>Partnership &amp; Business Inquiries</strong></h2><p>Interested in partnering with Mentor or have business-related questions? Contact our business development team:</p><p><strong>Email: partnerships@example.com</strong></p><h2><strong>Career Opportunities</strong></h2><p>Looking to join our team? Visit our Careers page or send your resume to:</p><p><strong>Email: careers@example.com</strong></p><h2><strong>Feedback &amp; Suggestions</strong></h2><p>We value your feedback and are always looking for ways to improve. Share your thoughts and suggestions with us:</p><p><strong>Email: feedback@example.com</strong></p><h2><strong>Office Address</strong></h2><p><strong>Mentor Headquarters</strong></p><p>123 Education Street Learning City, LC 12345 United States</p><p style="text-align: center;">Thank you for choosing Mentor. We look forward to hearing from you!</p>';
+      return '<h1 style="text-align: center;"><strong>Contact RUBYSHOP</strong></h1><p style="text-align: center;">Need help choosing professional tools for painting, plastering, wall chasing, waterproofing, injection work, or concrete surface preparation? RUBYSHOP is ready to help you select the right machine, spare parts, and accessories for your job.</p><h2><strong>Product Advice</strong></h2><p>Talk to us before buying if you need guidance on airless paint sprayers, mortar sprayers, skim coat machines, wall chasers, wall sanders, injection pumps, or waterproofing tools.</p><p><strong>Phone: 089-666-7802</strong></p><h2><strong>Spare Parts &amp; Accessories</strong></h2><p>Contact us for nozzles, hoses, blades, rotors, stators, spray guns, wear parts, and accessories for professional jobsite equipment.</p><p><strong>Email: info@rubyshop.co.th</strong></p><h2><strong>Warranty &amp; After-Sales Support</strong></h2><p>We support customers with warranty information, product care, repair guidance, and machine-use advice so your tools stay ready for work.</p><h2><strong>Visit Our Shop</strong></h2><p><strong>RUBYSHOP PART., LTD.</strong></p><p>97/60 Kosum Ruam Jai Soi 39, Don Mueang, Bangkok 10210, Thailand</p><p><strong>Open:</strong> Monday-Saturday 08:30-17:30</p><h2><strong>Online Store</strong></h2><p>Browse product categories, guides, and professional tools at <strong>www.rubyshop.co.th</strong>.</p><p style="text-align: center;">RUBYSHOP helps professional technicians and contractors work faster, cleaner, and with more confidence on every jobsite.</p>';
+   }
+
+   public static function getContactUsDescriptionThai(): string
+   {
+      return '<h1 style="text-align: center;"><strong>ติดต่อ RUBYSHOP</strong></h1><p style="text-align: center;">ต้องการคำแนะนำในการเลือกเครื่องมือสำหรับงานพ่นสี พ่นปูน กรีดผนัง กันซึม ยิงโฟม อีพ็อกซี่ หรือเตรียมพื้นผิวคอนกรีต RUBYSHOP พร้อมช่วยเลือกเครื่อง อะไหล่ และอุปกรณ์เสริมให้เหมาะกับงานของคุณ</p><h2><strong>ปรึกษาเลือกสินค้า</strong></h2><p>ติดต่อเราก่อนตัดสินใจซื้อ หากต้องการคำแนะนำเกี่ยวกับเครื่องพ่นสีแรงดันสูง เครื่องพ่นปูน เครื่องพ่นสกิมโค้ท เครื่องกรีดผนัง เครื่องขัดผนัง เครื่องยิงโฟม หรือเครื่องมือกันซึม</p><p><strong>โทร: 089-666-7802</strong></p><h2><strong>อะไหล่และอุปกรณ์เสริม</strong></h2><p>สอบถามหัวพ่น สายพ่น ใบตัด โรเตอร์ สเตเตอร์ ปืนพ่นสี อะไหล่สิ้นเปลือง และอุปกรณ์เสริมสำหรับเครื่องมือช่างมืออาชีพ</p><p><strong>อีเมล: info@rubyshop.co.th</strong></p><h2><strong>รับประกันและบริการหลังการขาย</strong></h2><p>เราช่วยให้ข้อมูลการรับประกัน การดูแลสินค้า คำแนะนำเรื่องงานซ่อม และการใช้งานเครื่องมือ เพื่อให้เครื่องพร้อมใช้งานในไซต์งานของคุณ</p><h2><strong>ที่อยู่ร้าน</strong></h2><p><strong>RUBYSHOP PART., LTD.</strong></p><p>97/60 โกสุมรวมใจ ซ.39 แขวงดอนเมือง เขตดอนเมือง กรุงเทพมหานคร 10210</p><p><strong>เปิดทำการ:</strong> จันทร์-เสาร์ 08:30-17:30 น.</p><h2><strong>ร้านค้าออนไลน์</strong></h2><p>ดูหมวดหมู่สินค้า คู่มือเลือกซื้อ และเครื่องมือช่างมืออาชีพได้ที่ <strong>www.rubyshop.co.th</strong></p><p style="text-align: center;">RUBYSHOP ช่วยให้ช่างมืออาชีพและผู้รับเหมาทำงานได้เร็วขึ้น เนี้ยบขึ้น และมั่นใจมากขึ้นในทุกไซต์งาน</p>';
    }
 
    /**

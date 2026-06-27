@@ -138,10 +138,15 @@
 
    <link
       rel="preconnect"
-      href="https://fonts.bunny.net"
+      href="https://fonts.googleapis.com"
    >
    <link
-      href="https://fonts.bunny.net/css?family=inter:100,100i,200,200i,300,300i,400,400i,500,500i,600,600i,700,700i"
+      rel="preconnect"
+      href="https://fonts.gstatic.com"
+      crossorigin
+   >
+   <link
+      href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700;800;900&display=swap"
       rel="stylesheet"
    />
 
@@ -164,6 +169,20 @@
          {!! $globalStyle !!}
       </style>
    @endif
+
+   <style
+      data-font-style
+      type="text/css"
+   >
+      html,
+      body,
+      button,
+      input,
+      textarea,
+      select {
+         font-family: 'Prompt', ui-sans-serif, system-ui, sans-serif !important;
+      }
+   </style>
 </body>
 
 </html>

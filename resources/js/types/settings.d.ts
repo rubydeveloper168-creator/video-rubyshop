@@ -157,6 +157,7 @@ interface FooterItem extends TableCommon {
    title: string;
    active: boolean;
    items: any[] | null;
+   translations?: Partial<Record<'en' | 'th', Record<string, any>>>;
    footer_id: number;
 }
 

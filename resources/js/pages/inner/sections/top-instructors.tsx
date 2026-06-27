@@ -9,13 +9,13 @@ const TopInstructors = () => {
    const { props } = usePage<InnerPageProps>();
    const { innerPage, customize, topInstructors } = props;
    const topInstructorsSection = getPageSection(innerPage, 'top_instructors');
-   const { text } = useI18n();
+   const { field } = useI18n();
 
    return (
       <Section customize={customize} pageSection={topInstructorsSection} containerClass="py-[120px]">
          <div className="relative z-10 mx-auto mb-8 max-w-lg text-center">
-            <h2 className="mb-2 text-2xl font-bold sm:text-[30px]">{text(topInstructorsSection?.title)}</h2>
-            <p className="text-muted-foreground">{text(topInstructorsSection?.description)}</p>
+            <h2 className="mb-2 text-2xl font-bold sm:text-[30px]">{field(topInstructorsSection, 'title')}</h2>
+            <p className="text-muted-foreground">{field(topInstructorsSection, 'description')}</p>
          </div>
 
          <div className="relative">

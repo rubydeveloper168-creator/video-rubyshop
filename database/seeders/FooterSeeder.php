@@ -25,33 +25,67 @@ class FooterSeeder extends Seeder
             [
                 'type' => 'list',
                 'slug' => 'company',
-                'title' => 'Company',
+                'title' => 'RUBYSHOP',
                 'items' => [
                     ['title' => 'About Us', 'url' => '/about-us'],
-                    ['title' => 'Our Team', 'url' => '/our-team'],
-                    ['title' => 'Careers', 'url' => '/careers'],
+                    ['title' => 'All Products', 'url' => '/courses/all'],
+                    ['title' => 'Product Guides', 'url' => '/blogs'],
                     ['title' => 'Contact Us', 'url' => '/contact-us'],
+                ],
+                'translations' => [
+                    'th' => [
+                        'title' => 'RUBYSHOP',
+                        'items' => [
+                            ['title' => 'เกี่ยวกับเรา'],
+                            ['title' => 'สินค้าทั้งหมด'],
+                            ['title' => 'คู่มือเลือกซื้อ'],
+                            ['title' => 'ติดต่อเรา'],
+                        ],
+                    ],
                 ],
             ],
             [
                 'type' => 'list',
-                'slug' => 'legal_policies',
-                'title' => 'Legal & Policies',
+                'slug' => 'products',
+                'title' => 'Product Categories',
                 'items' => [
-                    ['title' => 'Cookie Policy', 'url' => '/cookie-policy'],
-                    ['title' => 'Terms & Conditions', 'url' => '/terms-and-conditions'],
-                    ['title' => 'Privacy Policy', 'url' => '/privacy-policy'],
-                    ['title' => 'Refund Policy', 'url' => '/refund-policy'],
+                    ['title' => 'Airless Paint Sprayers', 'url' => '/courses/all'],
+                    ['title' => 'Mortar Sprayers', 'url' => '/courses/all'],
+                    ['title' => 'Wall Chasers', 'url' => '/courses/all'],
+                    ['title' => 'Parts & Accessories', 'url' => '/courses/all'],
+                ],
+                'translations' => [
+                    'th' => [
+                        'title' => 'หมวดหมู่สินค้า',
+                        'items' => [
+                            ['title' => 'เครื่องพ่นสีแรงดันสูง'],
+                            ['title' => 'เครื่องพ่นปูน'],
+                            ['title' => 'เครื่องกรีดผนัง'],
+                            ['title' => 'อะไหล่และอุปกรณ์เสริม'],
+                        ],
+                    ],
                 ],
             ],
             [
                 'type' => 'list',
                 'slug' => 'address',
-                'title' => 'Address',
+                'title' => 'Contact',
                 'items' => [
-                    ['title' => 'Corner view Subudbazar, Sylhet, Bangladesh.'],
-                    ['title' => 'Email: uilib@gmail.com'],
-                    ['title' => 'Phone: +880 1123 456 780'],
+                    ['title' => '97/60 Kosum Ruam Jai Soi 39, Don Mueang, Bangkok 10210'],
+                    ['title' => 'Email: info@rubyshop.co.th'],
+                    ['title' => 'Phone: 089-666-7802'],
+                    ['title' => 'Open: Mon-Sat 08:30-17:30'],
+                ],
+                'translations' => [
+                    'th' => [
+                        'title' => 'ติดต่อเรา',
+                        'items' => [
+                            ['title' => '97/60 โกสุมรวมใจ ซ.39 แขวงดอนเมือง เขตดอนเมือง กรุงเทพฯ 10210'],
+                            ['title' => 'อีเมล: info@rubyshop.co.th'],
+                            ['title' => 'โทร: 089-666-7802'],
+                            ['title' => 'เปิดทำการ: จันทร์-เสาร์ 08:30-17:30 น.'],
+                        ],
+                    ],
                 ],
             ],
             [
@@ -59,28 +93,25 @@ class FooterSeeder extends Seeder
                 'slug' => 'social_media',
                 'title' => 'Social Media',
                 'items' => [
-                    ['title' => 'Facebook', 'url' => 'https://www.facebook.com/', 'icon' => 'facebook'],
-                    ['title' => 'Twitter', 'url' => 'https://www.twitter.com/', 'icon' => 'twitter'],
-                    ['title' => 'Instagram', 'url' => 'https://www.instagram.com/', 'icon' => 'instagram'],
-                    ['title' => 'LinkedIn', 'url' => 'https://www.linkedin.com/', 'icon' => 'linkedin'],
+                    ['title' => 'Facebook', 'url' => 'https://www.facebook.com/rubyshopcoth', 'icon' => 'facebook'],
+                    ['title' => 'Instagram', 'url' => 'https://www.instagram.com/rubyshop_168/', 'icon' => 'instagram'],
+                    ['title' => 'YouTube', 'url' => 'https://www.youtube.com/channel/UCxiaZiIC8qs2C228jwIjcHg', 'icon' => 'youtube'],
+                    ['title' => 'LINE Official', 'url' => 'https://page.line.me/rubyshop168?openQrModal=true', 'icon' => 'message-circle'],
                 ],
             ],
             [
                 'type' => 'payment_methods',
                 'slug' => 'payment_methods',
-                'title' => 'We support multiple payment gateways.',
-                'items' => [
-                    ['image' => '/assets/payment/stripe.png'],
-                    ['image' => '/assets/payment/paypal.png'],
-                    ['image' => '/assets/payment/mollie.png'],
-                    ['image' => '/assets/payment/paystack.png'],
-                ],
+                'title' => 'Secure payment and nationwide delivery.',
+                'items' => [],
+                'translations' => ['th' => ['title' => 'ชำระเงินปลอดภัยและจัดส่งทั่วไทย']],
             ],
             [
                 'type' => 'copyright',
                 'slug' => 'copyright',
-                'title' => '© Copyright 2025 UI Lib, All rights reserved.',
+                'title' => '© Copyright 2025 RUBYSHOP. All rights reserved.',
                 'items' => [],
+                'translations' => ['th' => ['title' => '© Copyright 2025 RUBYSHOP สงวนลิขสิทธิ์']],
             ],
         ];
 
