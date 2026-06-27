@@ -17,12 +17,8 @@ const EditForm = () => {
    const [isFileUploaded, setIsFileUploaded] = useState(false);
    const [thumbnailPreview, setThumbnailPreview] = useState<string | null>(section.thumbnail || null);
    const [backgroundPreview, setBackgroundPreview] = useState<string | null>(section.background_image || null);
-   const [translationPropertiesJson, setTranslationPropertiesJson] = useState(
-      JSON.stringify(section.translations?.th?.properties || {}, null, 2),
-   );
-   const [translationPropertiesError, setTranslationPropertiesError] = useState<string | null>(null);
 
-   const { data, setData, post, transform, reset, processing, errors } = useForm({
+   const { data, setData, post, reset, processing, errors } = useForm({
       title: section.title,
       sub_title: section.sub_title,
       description: section.description || '',
@@ -41,7 +37,6 @@ const EditForm = () => {
 
    useEffect(() => {
       setPropertyFields(generatePropertyFields(section.properties));
-      setTranslationPropertiesJson(JSON.stringify(section.translations?.th?.properties || {}, null, 2));
    }, [section]);
 
    const handleSubmit = (e: React.FormEvent) => {
@@ -56,32 +51,12 @@ const EditForm = () => {
    };
 
    const submitForm = () => {
-      try {
-         const parsedProperties = translationPropertiesJson.trim() ? JSON.parse(translationPropertiesJson) : {};
-         transform((currentData) => ({
-            ...currentData,
-            translations: {
-               ...(currentData.translations || {}),
-               th: {
-                  ...(currentData.translations?.th || {}),
-                  properties: parsedProperties,
-               },
-            },
-         }));
-         setTranslationPropertiesError(null);
-      } catch {
-         setTranslationPropertiesError('Thai properties must be valid JSON.');
-         return;
-      }
-
       post(route('page.section.update', section.id), {
          onSuccess: () => {
-            transform((currentData) => currentData);
             reset();
             setOpen(false);
             setIsSubmit(false);
          },
-         onFinish: () => transform((currentData) => currentData),
       });
    };
 
@@ -102,6 +77,104 @@ const EditForm = () => {
          },
       }));
    };
+
+   const setNestedValue = (source: any, path: Array<string | number>, value: string) => {
+      if (path.length === 0) return value;
+
+      const [currentKey, ...nextPath] = path;
+      const nextSource = Array.isArray(source) ? [...source] : { ...(source || {}) };
+      nextSource[currentKey] = setNestedValue(nextSource[currentKey], nextPath, value);
+
+      return nextSource;
+   };
+
+   const getNestedValue = (source: any, path: Array<string | number>) => {
+      return path.reduce((current, key) => current?.[key], source);
+   };
+
+   const isTranslatablePropertyKey = (key: string) => {
+      return ['title', 'sub_title', 'description', 'text', 'label', 'role', 'button_text', 'placeholder', 'content'].includes(key);
+   };
+
+   const handleThaiPropertyChange = (path: Array<string | number>, value: string) => {
+      setData((currentData) => ({
+         ...currentData,
+         translations: {
+            ...(currentData.translations || {}),
+            th: {
+               ...(currentData.translations?.th || {}),
+               properties: setNestedValue(currentData.translations?.th?.properties || {}, path, value),
+            },
+         },
+      }));
+   };
+
+   const renderThaiPropertyFields = (source: any, translationSource: any, path: Array<string | number> = [], labelPrefix = ''): React.ReactNode => {
+      if (Array.isArray(source)) {
+         return source.map((item, index) => {
+            const nestedFields = renderThaiPropertyFields(item, translationSource?.[index], [...path, index], `${labelPrefix} Item ${index + 1}`);
+
+            if (!nestedFields) return null;
+
+            return (
+               <div key={`${path.join('.')}-${index}`} className="rounded-md border p-3">
+                  <h4 className="mb-3 text-sm font-medium">{`${labelPrefix || 'Item'} ${index + 1}`}</h4>
+                  <div className="space-y-3">{nestedFields}</div>
+               </div>
+            );
+         });
+      }
+
+      if (source && typeof source === 'object') {
+         const fields = Object.entries(source)
+            .map(([key, value]) => {
+               const nextPath = [...path, key];
+
+               if (typeof value === 'string' && isTranslatablePropertyKey(key)) {
+                  const inputId = `translations-th-properties-${nextPath.join('-')}`;
+                  const translatedValue = getNestedValue(data.translations?.th?.properties, nextPath) || '';
+                  const label = `${labelPrefix ? `${labelPrefix} ` : ''}${key.replace(/_/g, ' ')}`;
+
+                  return (
+                     <div key={inputId} className="space-y-2">
+                        <Label htmlFor={inputId} className="capitalize">
+                           {label}
+                        </Label>
+                        {key === 'description' || key === 'content' ? (
+                           <Textarea
+                              id={inputId}
+                              value={translatedValue}
+                              onChange={(e) => handleThaiPropertyChange(nextPath, e.target.value)}
+                              rows={3}
+                              placeholder={value}
+                           />
+                        ) : (
+                           <Input
+                              id={inputId}
+                              value={translatedValue}
+                              onChange={(e) => handleThaiPropertyChange(nextPath, e.target.value)}
+                              placeholder={value}
+                           />
+                        )}
+                     </div>
+                  );
+               }
+
+               if (Array.isArray(value) || (value && typeof value === 'object')) {
+                  return renderThaiPropertyFields(value, translationSource?.[key], nextPath, key.replace(/_/g, ' '));
+               }
+
+               return null;
+            })
+            .filter(Boolean);
+
+         return fields.length > 0 ? fields : null;
+      }
+
+      return null;
+   };
+
+   const thaiPropertyFields = renderThaiPropertyFields(data.properties, data.translations?.th?.properties);
 
    const handleThaiTranslationChange = (key: string, value: string) => {
       setData((currentData) => ({
@@ -195,17 +268,12 @@ const EditForm = () => {
                   </div>
                )}
 
-               <div className="space-y-2">
-                  <Label htmlFor="translations-th-properties">Thai Properties JSON</Label>
-                  <Textarea
-                     id="translations-th-properties"
-                     value={translationPropertiesJson}
-                     onChange={(e) => setTranslationPropertiesJson(e.target.value)}
-                     rows={8}
-                     placeholder='{"array":[{"title":"..."}]}'
-                  />
-                  {translationPropertiesError && <p className="mt-1 text-sm text-red-600">{translationPropertiesError}</p>}
-               </div>
+               {thaiPropertyFields && (
+                  <div className="space-y-3">
+                     <h4 className="text-sm font-medium">Thai Section Items</h4>
+                     {thaiPropertyFields}
+                  </div>
+               )}
             </div>
 
             {section.flags.thumbnail && (
