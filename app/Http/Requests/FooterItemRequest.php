@@ -31,6 +31,11 @@ class FooterItemRequest extends FormRequest
          'items.*.url' => 'nullable|string|max:500',
          'items.*.icon' => 'nullable|string|max:100',
          'items.*.image' => 'nullable|string|max:500',
+         'translations' => 'nullable|array',
+         'translations.th' => 'nullable|array',
+         'translations.th.title' => 'nullable|string|max:255',
+         'translations.th.items' => 'nullable|array',
+         'translations.th.items.*.title' => 'nullable|string|max:255',
          'sort' => 'required|integer|min:0',
       ];
    }

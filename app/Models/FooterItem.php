@@ -13,6 +13,7 @@ class FooterItem extends Model
         'slug',
         'title',
         'items',
+        'translations',
         'active',
         'footer_id',
     ];
@@ -21,6 +22,7 @@ class FooterItem extends Model
         'sort' => 'integer',
         'active' => 'boolean',
         'items' => 'array',
+        'translations' => 'array',
     ];
 
     protected $attributes = [

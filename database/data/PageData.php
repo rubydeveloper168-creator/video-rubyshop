@@ -94,15 +94,15 @@ class PageData
             'name' => 'About Us',
             'slug' => 'about-us',
             'type' => 'inner_page',
-            'title' => 'About Us - Why Choose Mentor?',
-            'meta_description' => 'Mentor LMS offers quality content, affordable learning, and continuous improvement in online education.',
-            'meta_keywords' => 'about us, mission, vision, quality content, affordable learning, education platform',
+            'title' => 'About RUBYSHOP - Professional Tools for Builders',
+            'meta_description' => 'RUBYSHOP supplies professional construction tools, airless sprayers, mortar sprayers, wall chasers, waterproofing injection tools, and accessories across Thailand.',
+            'meta_keywords' => 'RUBYSHOP, professional tools, construction tools, airless sprayer, mortar sprayer, wall chaser, waterproofing tools',
             'translations' => [
                'th' => [
                   'name' => 'เกี่ยวกับเรา',
-                  'title' => 'เกี่ยวกับเรา - ทำไมต้องเลือก Mentor?',
-                  'meta_description' => 'Mentor LMS มีเนื้อหาคุณภาพ การเรียนรู้ในราคาที่เข้าถึงได้ และพัฒนาอย่างต่อเนื่องในการศึกษาออนไลน์',
-                  'meta_keywords' => 'เกี่ยวกับเรา, พันธกิจ, วิสัยทัศน์, เนื้อหาคุณภาพ, เรียนออนไลน์, แพลตฟอร์มการศึกษา',
+                  'title' => 'เกี่ยวกับ RUBYSHOP - เครื่องมือช่างมืออาชีพ',
+                  'meta_description' => 'RUBYSHOP จำหน่ายเครื่องมือช่างและอุปกรณ์ก่อสร้างสำหรับมืออาชีพ เช่น เครื่องพ่นสีแรงดันสูง เครื่องพ่นปูน เครื่องกรีดผนัง เครื่องยิงโฟม และอุปกรณ์งานกันซึม ส่งทั่วไทย',
+                  'meta_keywords' => 'RUBYSHOP, เครื่องมือช่าง, อุปกรณ์ก่อสร้าง, เครื่องพ่นสี, เครื่องพ่นปูน, เครื่องกรีดผนัง, เครื่องมือกันซึม',
                ],
             ],
             'sections' => InnerSections::getAboutUsSections()
@@ -112,9 +112,17 @@ class PageData
             'name' => 'Our Team',
             'slug' => 'our-team',
             'type' => 'inner_page',
-            'title' => 'Our Team - Meet the People Behind Mentor',
-            'meta_description' => 'Meet the Mentor team - passionate educators, skilled developers, and dedicated professionals working to democratize education.',
-            'meta_keywords' => 'our team, about team, Mentor team, leadership, educators, developers, support staff',
+            'title' => 'Our Team - RUBYSHOP Professional Tool Support',
+            'meta_description' => 'Meet the RUBYSHOP team supporting professional technicians and contractors with construction tools, product advice, spare parts, warranty guidance, and after-sales service.',
+            'meta_keywords' => 'RUBYSHOP team, construction tools support, product advice, spare parts, warranty, after-sales service, professional tools Thailand',
+            'translations' => [
+               'th' => [
+                  'name' => 'ทีมของเรา',
+                  'title' => 'ทีม RUBYSHOP - ผู้ช่วยด้านเครื่องมือช่างมืออาชีพ',
+                  'meta_description' => 'พบกับทีม RUBYSHOP ที่ช่วยช่างมืออาชีพและผู้รับเหมาด้วยคำแนะนำเครื่องมือก่อสร้าง อะไหล่ ข้อมูลรับประกัน และบริการหลังการขาย',
+                  'meta_keywords' => 'ทีม RUBYSHOP, เครื่องมือช่าง, อุปกรณ์ก่อสร้าง, คำแนะนำสินค้า, อะไหล่, รับประกัน, บริการหลังการขาย',
+               ],
+            ],
             'sections' => InnerSections::getOurTeamSections()
          ],
          // Careers page
@@ -129,13 +137,22 @@ class PageData
          ],
          // Contact Us page
          [
-            'name' => 'Address',
+            'name' => 'Contact Us',
             'slug' => 'contact-us',
             'type' => 'inner_page',
-            'title' => 'Contact Us - Get in Touch with Mentor',
+            'title' => 'Contact RUBYSHOP - Professional Tools and Support',
             'description' => InnerSections::getContactUsDescription(),
-            'meta_description' => 'Contact Mentor for support, partnerships, careers, or general inquiries. Find all our contact information and office details.',
-            'meta_keywords' => 'contact us, support, help, contact information, customer service, partnerships, feedback',
+            'meta_description' => 'Contact RUBYSHOP for professional construction tools, airless sprayers, mortar sprayers, wall chasers, spare parts, warranty information, and product advice.',
+            'meta_keywords' => 'contact RUBYSHOP, construction tools support, airless sprayer support, mortar sprayer parts, wall chaser, waterproofing tools, Bangkok tools shop',
+            'translations' => [
+               'th' => [
+                  'name' => 'ติดต่อเรา',
+                  'title' => 'ติดต่อ RUBYSHOP - เครื่องมือช่างและบริการสำหรับมืออาชีพ',
+                  'description' => InnerSections::getContactUsDescriptionThai(),
+                  'meta_description' => 'ติดต่อ RUBYSHOP เพื่อสอบถามเครื่องมือช่าง อุปกรณ์ก่อสร้าง เครื่องพ่นสี เครื่องพ่นปูน เครื่องกรีดผนัง อะไหล่ ข้อมูลรับประกัน และคำแนะนำสินค้า',
+                  'meta_keywords' => 'ติดต่อ RUBYSHOP, เครื่องมือช่าง, อุปกรณ์ก่อสร้าง, เครื่องพ่นสี, เครื่องพ่นปูน, เครื่องกรีดผนัง, อะไหล่เครื่องมือช่าง',
+               ],
+            ],
             'sections' => []
          ],
          // Cookie Policy page

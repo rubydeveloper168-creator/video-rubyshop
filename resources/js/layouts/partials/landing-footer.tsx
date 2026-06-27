@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
+import { useI18n } from '@/lib/i18n';
 import { getPageSection } from '@/lib/page';
 import { cn } from '@/lib/utils';
 import { SharedData } from '@/types/global';
@@ -12,7 +13,8 @@ import { getYear } from 'date-fns';
 import { Settings } from 'lucide-react';
 
 const LandingFooter = () => {
-   const { page, customize, system } = usePage<SharedData>().props;
+   const { page, customize } = usePage<SharedData>().props;
+   const { locale, field, properties } = useI18n();
 
    const aboutUsSection = getPageSection(page, 'footer_list_1');
    const customerCareSection = getPageSection(page, 'footer_list_2');
@@ -27,6 +29,10 @@ const LandingFooter = () => {
          active,
       });
    };
+   const footerDescription =
+      locale === 'th'
+         ? 'RUBYSHOP จำหน่ายเครื่องมือช่างและอุปกรณ์ก่อสร้างคุณภาพสำหรับงานมืออาชีพ พร้อมคำแนะนำสินค้า อะไหล่ บริการหลังการขาย และจัดส่งทั่วไทย'
+         : 'RUBYSHOP supplies quality professional tools and construction equipment with product guidance, spare parts, after-sales support, and nationwide delivery.';
 
    return (
       <div className="text-primary-foreground dark:text-primary relative bg-gray-900 pt-20 pb-10 dark:bg-gray-800">
@@ -70,7 +76,7 @@ const LandingFooter = () => {
                      <AppLogo theme="light" />
                   </Link>
 
-                  <p className="mt-5 text-sm">{system.fields.description}</p>
+                  <p className="mt-5 text-sm">{footerDescription}</p>
                </div>
 
                <div className="flex w-full flex-col justify-between gap-10 md:max-w-[640px] md:flex-row">
@@ -78,9 +84,9 @@ const LandingFooter = () => {
                      (section) =>
                         section.active && (
                            <div className={cn('relative w-full', customize && 'section-edit')}>
-                              <p className="mb-3 text-lg font-semibold">{section?.title}</p>
+                              <p className="mb-3 text-lg font-semibold">{field(section, 'title')}</p>
                               <ul className="flex flex-col gap-2 text-sm">
-                                 {section?.properties.array.map((item, itemIndex) =>
+                                 {properties(section).array.map((item: any, itemIndex: number) =>
                                     section.slug === 'footer_list_3' ? (
                                        <li key={`item-${itemIndex}`}>{item.title}</li>
                                     ) : (
@@ -97,7 +103,11 @@ const LandingFooter = () => {
             </div>
 
             <p className="text-center text-sm">
-               Copyright © {getYear(new Date())} <a href="https://ui-lib.com/">UI Lib</a>. All rights reserved
+               {locale === 'th' ? (
+                  <>© Copyright {getYear(new Date())} RUBYSHOP สงวนลิขสิทธิ์</>
+               ) : (
+                  <>© Copyright {getYear(new Date())} RUBYSHOP. All rights reserved.</>
+               )}
             </p>
          </div>
       </div>
