@@ -1,6 +1,7 @@
 import { Accordion } from '@/components/ui/accordion';
 import { SidebarGroup, SidebarGroupLabel, SidebarMenu, SidebarMenuItem } from '@/components/ui/sidebar';
 import { getRouteSegments } from '@/lib/route';
+import { useI18n } from '@/lib/i18n';
 import { SharedData } from '@/types/global';
 import { usePage } from '@inertiajs/react';
 import { useEffect, useState } from 'react';
@@ -11,6 +12,7 @@ export function NavMain() {
    const page = usePage<SharedData>();
    const { auth, system } = page.props;
    const [openAccordions, setOpenAccordions] = useState<string>('');
+   const { text } = useI18n();
 
    // Set initial accordion state based on URL
    useEffect(() => {
@@ -26,7 +28,7 @@ export function NavMain() {
          <Accordion type="single" collapsible value={openAccordions} defaultValue={openAccordions} onValueChange={setOpenAccordions}>
             {routes.map(({ title, pages }, key) => (
                <SidebarMenu key={key} className="space-y-1">
-                  <SidebarGroupLabel>{title}</SidebarGroupLabel>
+                  <SidebarGroupLabel>{text(title)}</SidebarGroupLabel>
 
                   {pages.map((page) => {
                      const role = page.access.includes(auth.user.role || 'admin');

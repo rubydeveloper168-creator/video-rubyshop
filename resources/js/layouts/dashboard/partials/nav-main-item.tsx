@@ -5,6 +5,7 @@ import { cn } from '@/lib/utils';
 import { SharedData } from '@/types/global';
 import { Link, usePage } from '@inertiajs/react';
 import { Dot } from 'lucide-react';
+import { useI18n } from '@/lib/i18n';
 
 interface NavMainItemProps {
    pageRoute: RoutePage;
@@ -14,6 +15,7 @@ const NavMainItem = (props: NavMainItemProps) => {
    const page = usePage<SharedData>();
    const { auth } = page.props;
    const { state, toggleSidebar } = useSidebar();
+   const { text } = useI18n();
 
    const { pageRoute } = props;
    const { Icon, name, path, children, slug } = pageRoute;
@@ -51,7 +53,7 @@ const NavMainItem = (props: NavMainItemProps) => {
                   )}
                >
                   <Icon className="h-4 w-4" />
-                  <span>{name}</span>
+                  <span>{text(name)}</span>
                </SidebarMenuButton>
             </AccordionTrigger>
          </div>
@@ -63,7 +65,7 @@ const NavMainItem = (props: NavMainItemProps) => {
                      <SidebarMenuButton asChild key={index} isActive={activeChildRoute(pageRoute.slug, slug)} className="h-9 px-3">
                         <Link href={path} prefetch>
                            <Dot className="w-12" />
-                           <span className="text-sm font-normal capitalize">{name}</span>
+                           <span className="text-sm font-normal capitalize">{text(name)}</span>
                         </Link>
                      </SidebarMenuButton>
                   );
@@ -84,7 +86,7 @@ const NavMainItem = (props: NavMainItemProps) => {
       >
          <Link href={path} prefetch>
             <Icon className="h-4 w-4" />
-            <span>{name}</span>
+            <span>{text(name)}</span>
          </Link>
       </SidebarMenuButton>
    );
