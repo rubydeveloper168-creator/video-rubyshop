@@ -8,6 +8,7 @@ import { Label } from '@/components/ui/label';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { useI18n } from '@/lib/i18n';
 import { useForm } from '@inertiajs/react';
 import { useState } from 'react';
 
@@ -26,6 +27,7 @@ interface Props {
 
 const QuestionForm = ({ title, handler, quiz, question }: Props) => {
    const [open, setOpen] = useState(false);
+   const { text } = useI18n();
 
    // Get the maximum sort value from quiz_questions
    const maxSort = quiz.quiz_questions.length > 0 ? Math.max(...quiz.quiz_questions.map((question) => question.sort)) : 0;
@@ -73,7 +75,7 @@ const QuestionForm = ({ title, handler, quiz, question }: Props) => {
 
                <form onSubmit={handleSubmit} className="relative space-y-4 p-0.5">
                   <div>
-                     <Label>Question Type</Label>
+                     <Label>{text('Question Type')}</Label>
                      <Select
                         value={data.type}
                         onValueChange={(value) => {
@@ -87,12 +89,12 @@ const QuestionForm = ({ title, handler, quiz, question }: Props) => {
                         }}
                      >
                         <SelectTrigger>
-                           <SelectValue placeholder="Select question type" />
+                           <SelectValue placeholder={text('Select question type')} />
                         </SelectTrigger>
                         <SelectContent>
                            {questionTypes.map((type) => (
                               <SelectItem key={type.value} value={type.value}>
-                                 {type.label}
+                                 {text(type.label)}
                               </SelectItem>
                            ))}
                         </SelectContent>
@@ -100,13 +102,13 @@ const QuestionForm = ({ title, handler, quiz, question }: Props) => {
                   </div>
 
                   <div>
-                     <Label>Question Title</Label>
+                     <Label>{text('Question Title')}</Label>
                      <TiptapEditor
                         ssr={true}
                         output="html"
                         placeholder={{
-                           paragraph: 'Type your content here...',
-                           imageCaption: 'Type caption for image (optional)',
+                           paragraph: text('Type your content here...'),
+                           imageCaption: text('Type caption for image (optional)'),
                         }}
                         contentMinHeight={256}
                         contentMaxHeight={640}
@@ -124,31 +126,31 @@ const QuestionForm = ({ title, handler, quiz, question }: Props) => {
                   {data.type !== 'boolean' && (
                      <>
                         <div>
-                           <Label>Options</Label>
+                           <Label>{text('Options')}</Label>
                            <TagInput
                               defaultTags={data.options}
-                              placeholder="Enter the question options"
+                              placeholder={text('Enter the question options')}
                               onChange={(values: any) => setData('options', values)}
                            />
                         </div>
                         {data.type === 'multiple' ? (
                            <div>
-                              <Label>Answer</Label>
+                              <Label>{text('Answer')}</Label>
                               <TagInput
                                  defaultTags={data.answer}
                                  whitelist={data.options}
                                  enforceWhitelist={true}
-                                 placeholder="Enter the answer options"
+                                 placeholder={text('Enter the answer options')}
                                  onChange={(values) => setData('answer', values)}
                               />
                            </div>
                         ) : (
                            <div>
-                              <Label>Answer</Label>
+                              <Label>{text('Answer')}</Label>
                               <Input
                                  type="text"
                                  value={data.answer}
-                                 placeholder="Enter the answer"
+                                 placeholder={text('Enter the answer')}
                                  onChange={(e) => setData('answer', [e.target.value])}
                               />
                            </div>
@@ -158,14 +160,14 @@ const QuestionForm = ({ title, handler, quiz, question }: Props) => {
 
                   {data.type === 'boolean' && (
                      <div>
-                        <Label>Answer</Label>
+                        <Label>{text('Answer')}</Label>
                         <Tabs defaultValue="True" value={data.answer[0]} onValueChange={(value) => setData('answer', [value])}>
                            <TabsList className="w-full">
                               <TabsTrigger value="True" className="w-full">
-                                 True
+                                 {text('True')}
                               </TabsTrigger>
                               <TabsTrigger value="False" className="w-full">
-                                 False
+                                 {text('False')}
                               </TabsTrigger>
                            </TabsList>
                         </Tabs>
@@ -173,7 +175,7 @@ const QuestionForm = ({ title, handler, quiz, question }: Props) => {
                   )}
 
                   <LoadingButton loading={processing} className="absolute right-0 -bottom-16">
-                     Add Question
+                     {text('Add Question')}
                   </LoadingButton>
                </form>
             </ScrollArea>

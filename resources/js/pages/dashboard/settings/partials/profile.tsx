@@ -2,12 +2,14 @@ import InputError from '@/components/input-error';
 import LoadingButton from '@/components/loading-button';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
+import { useI18n } from '@/lib/i18n';
 import { SharedData } from '@/types/global';
 import { useForm, usePage } from '@inertiajs/react';
 import { Camera } from 'lucide-react';
 import { FormEventHandler, useState } from 'react';
 
 const Profile = () => {
+   const { text } = useI18n();
    const { props } = usePage<SharedData>();
    const { name, photo } = props.auth.user;
    const [imageUrl, setImageUrl] = useState(photo);
@@ -50,7 +52,7 @@ const Profile = () => {
                   <input hidden id="formFileSm" type="file" onChange={handleImageChange} />
                </div>
 
-               <small className="text-gray-500">Allowed: JPG, JPEG, PNG, SVG File, Maximum 2MB</small>
+               <small className="text-gray-500">{text('Allowed: JPG, JPEG, PNG, SVG File, Maximum 2MB')}</small>
 
                {errors.photo && <p className="mt-1 text-sm text-red-500">{errors.photo}</p>}
             </div>
@@ -62,7 +64,7 @@ const Profile = () => {
                      type="name"
                      name="name"
                      value={data.name}
-                     placeholder="Write your full name"
+                     placeholder={text('Write your full name')}
                      onChange={(e) => setData('name', e.target.value)}
                   />
 
@@ -70,7 +72,7 @@ const Profile = () => {
                </div>
 
                <LoadingButton loading={processing} className="h-9 w-full">
-                  Save Changes
+                  {text('Save Changes')}
                </LoadingButton>
             </div>
          </form>

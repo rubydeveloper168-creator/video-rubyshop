@@ -6,6 +6,7 @@ import { Card } from '@/components/ui/card';
 import { Dialog, DialogClose, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { useI18n } from '@/lib/i18n';
 import { cn } from '@/lib/utils';
 import { router, useForm } from '@inertiajs/react';
 import { Pencil, Trash2 } from 'lucide-react';
@@ -28,6 +29,7 @@ interface Props {
 const QuestionQuestions = ({ title, handler, quiz, question }: Props) => {
    const [open, setOpen] = useState(false);
    const [questionType, setQuestionType] = useState(question ? 'add-question' : 'questions');
+   const { text } = useI18n();
 
    // Get the maximum sort value from quiz_questions
    const maxSort = quiz.quiz_questions.length > 0 ? Math.max(...quiz.quiz_questions.map((question) => question.sort)) : 0;
@@ -84,21 +86,21 @@ const QuestionQuestions = ({ title, handler, quiz, question }: Props) => {
                   <div className="flex items-center gap-4">
                      <QuestionForm
                         quiz={quiz}
-                        title="Add Question"
+                        title={text('Add Question')}
                         question={question}
                         handler={
                            <Button variant="secondary" className="h-8 text-xs">
-                              Add Question
+                              {text('Add Question')}
                            </Button>
                         }
                      />
 
                      <DataSortModal
-                        title="Sort Items"
+                        title={text('Sort Items')}
                         data={quiz.quiz_questions}
                         handler={
                            <Button variant="secondary" className="h-8 text-xs">
-                              Sort Section
+                              {text('Sort Questions')}
                            </Button>
                         }
                         onOrderChange={(newOrder) => {
@@ -145,7 +147,7 @@ const QuestionQuestions = ({ title, handler, quiz, question }: Props) => {
 
                                  <QuestionForm
                                     quiz={quiz}
-                                    title="Edit Question"
+                                    title={text('Edit Question')}
                                     question={question}
                                     handler={
                                        <Button size="icon" variant="secondary" className="h-7 w-7">
@@ -158,7 +160,7 @@ const QuestionQuestions = ({ title, handler, quiz, question }: Props) => {
                         ))
                      ) : (
                         <div className="flex items-center justify-center">
-                           <p className="text-muted-foreground text-sm">No questions found</p>
+                           <p className="text-muted-foreground text-sm">{text('No questions found')}</p>
                         </div>
                      )}
                   </div>
@@ -168,13 +170,13 @@ const QuestionQuestions = ({ title, handler, quiz, question }: Props) => {
                   <div className="flex w-full items-center gap-4">
                      <DialogClose asChild>
                         <Button type="button" variant="outline">
-                           Close
+                           {text('Close')}
                         </Button>
                      </DialogClose>
 
                      <TabsList className="p-0">
                         <TabsTrigger asChild value="questions" className={cn(questionType === 'questions' ? 'hidden' : 'block')}>
-                           <Button>Back</Button>
+                           <Button>{text('Back')}</Button>
                         </TabsTrigger>
                      </TabsList>
                   </div>

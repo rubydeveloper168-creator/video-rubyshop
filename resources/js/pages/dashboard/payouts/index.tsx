@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableRow } from '@/components/ui/table';
 import DashboardLayout from '@/layouts/dashboard/layout';
+import { useI18n } from '@/lib/i18n';
 import { flexRender, getCoreRowModel, getFilteredRowModel, getSortedRowModel, useReactTable } from '@tanstack/react-table';
 import { CircleDollarSign, DollarSign, Plus, Wallet } from 'lucide-react';
 import { ReactNode } from 'react';
@@ -21,9 +22,10 @@ interface Props {
 
 const Index = (props: Props) => {
    const { payouts, totalEarnings, totalPayouts, pendingPayouts, availableForWithdrawal } = props;
+   const { locale, text } = useI18n();
    const table = useReactTable({
       data: payouts.data,
-      columns: TableColumn,
+      columns: TableColumn(text, locale),
       getCoreRowModel: getCoreRowModel(),
       getSortedRowModel: getSortedRowModel(),
       getFilteredRowModel: getFilteredRowModel(),
@@ -38,7 +40,7 @@ const Index = (props: Props) => {
                      <CircleDollarSign className="text-primary h-6 w-6" />
                   </div>
                   <div>
-                     <CardTitle className="text-base font-medium">Total Earnings</CardTitle>
+                     <CardTitle className="text-base font-medium">{text('Total Earnings')}</CardTitle>
                      <p className="mt-1 text-2xl font-bold">{totalEarnings} $</p>
                   </div>
                </CardContent>
@@ -50,7 +52,7 @@ const Index = (props: Props) => {
                      <Wallet className="text-primary h-6 w-6" />
                   </div>
                   <div>
-                     <CardTitle className="text-base font-medium">Available</CardTitle>
+                     <CardTitle className="text-base font-medium">{text('Available')}</CardTitle>
                      <p className="mt-1 text-2xl font-bold">{availableForWithdrawal} $</p>
                   </div>
                </CardContent>
@@ -62,7 +64,7 @@ const Index = (props: Props) => {
                      <DollarSign className="text-primary h-6 w-6" />
                   </div>
                   <div>
-                     <CardTitle className="text-base font-medium">Total Payout</CardTitle>
+                     <CardTitle className="text-base font-medium">{text('Total Payout')}</CardTitle>
                      <p className="mt-1 text-2xl font-bold">{totalPayouts} $</p>
                   </div>
                </CardContent>
@@ -74,7 +76,7 @@ const Index = (props: Props) => {
                      <CircleDollarSign className="text-primary h-6 w-6" />
                   </div>
                   <div>
-                     <CardTitle className="text-base font-medium">Requested</CardTitle>
+                     <CardTitle className="text-base font-medium">{text('Requested')}</CardTitle>
                      <p className="mt-1 text-2xl font-bold">{pendingPayouts} $</p>
                   </div>
                </CardContent>
@@ -85,7 +87,7 @@ const Index = (props: Props) => {
             <div className="relative flex items-center justify-between">
                <TableFilter
                   data={payouts}
-                  title="Withdraw List"
+                  title={text('Withdraw List')}
                   globalSearch={true}
                   tablePageSizes={[10, 15, 20, 25]}
                   routeName="payouts.index"
@@ -93,11 +95,11 @@ const Index = (props: Props) => {
                />
 
                <WithdrawForm
-                  title="Add Withdraw Request"
+                  title={text('Add Withdraw Request')}
                   handler={
                      <Button variant="outline" className="absolute top-5 right-6 md:static md:mr-6 md:mb-1">
                         <Plus />
-                        <span>Request</span>
+                        <span>{text('Request')}</span>
                      </Button>
                   }
                />
@@ -117,7 +119,7 @@ const Index = (props: Props) => {
                      ))
                   ) : (
                      <TableRow>
-                        <TableCell className="h-24 text-center">No results.</TableCell>
+                        <TableCell className="h-24 text-center">{text('No results.')}</TableCell>
                      </TableRow>
                   )}
                </TableBody>

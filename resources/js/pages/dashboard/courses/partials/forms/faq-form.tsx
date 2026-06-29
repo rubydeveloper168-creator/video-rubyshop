@@ -3,9 +3,11 @@ import LoadingButton from '@/components/loading-button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { onHandleChange } from '@/lib/inertia';
+import { useI18n } from '@/lib/i18n';
 import { useForm } from '@inertiajs/react';
 
 const FaqForm = ({ faq }: { faq: CourseFaq }) => {
+   const { text } = useI18n();
    const {
       data,
       setData,
@@ -36,7 +38,7 @@ const FaqForm = ({ faq }: { faq: CourseFaq }) => {
                type="text"
                name="question"
                value={data.question || ''}
-               placeholder="Question"
+               placeholder={text('Question')}
                onChange={(e) => onHandleChange(e, setData)}
             />
 
@@ -44,7 +46,7 @@ const FaqForm = ({ faq }: { faq: CourseFaq }) => {
          </div>
 
          <div>
-            <Textarea required name="answer" value={data.answer || ''} placeholder="Answer" onChange={(e) => onHandleChange(e, setData)} />
+            <Textarea required name="answer" value={data.answer || ''} placeholder={text('Answer')} onChange={(e) => onHandleChange(e, setData)} />
 
             <InputError message={errors.question} />
          </div>
@@ -57,10 +59,10 @@ const FaqForm = ({ faq }: { faq: CourseFaq }) => {
                onClick={handleDelete}
                className="h-7 w-full bg-red-50 text-xs hover:bg-red-100"
             >
-               Remove
+               {text('Remove')}
             </LoadingButton>
             <LoadingButton variant="secondary" className="h-7 w-full text-xs" loading={processing}>
-               Save
+               {text('Save')}
             </LoadingButton>
          </div>
       </form>

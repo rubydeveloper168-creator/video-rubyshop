@@ -4,14 +4,14 @@ import { Link, router } from '@inertiajs/react';
 import { ColumnDef } from '@tanstack/react-table';
 import { ArrowUpDown, Eye, Pencil, Trash2 } from 'lucide-react';
 
-const TableColumn = (): ColumnDef<Blog>[] => [
+const TableColumn = (text: (value?: string | null) => string): ColumnDef<Blog>[] => [
    {
       accessorKey: 'creator',
       header: ({ column }) => {
          return (
             <div className="flex items-center pl-4">
                <Button variant="ghost" className="p-0 hover:bg-transparent" onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
-                  Creator
+                  {text('Creator')}
                   <ArrowUpDown />
                </Button>
             </div>
@@ -27,7 +27,7 @@ const TableColumn = (): ColumnDef<Blog>[] => [
    },
    {
       accessorKey: 'title',
-      header: 'Title',
+      header: text('Title'),
       cell: ({ row }) => (
          <div className="py-1 capitalize">
             <Link href={route('blogs.edit', { blog: row.original.id })}>{row.getValue('title')}</Link>
@@ -38,7 +38,7 @@ const TableColumn = (): ColumnDef<Blog>[] => [
       accessorKey: 'category',
       header: () => (
          <div className="flex items-center justify-center">
-            <p>Category</p>
+            <p>{text('Category')}</p>
          </div>
       ),
       cell: ({ row }) => (
@@ -53,7 +53,7 @@ const TableColumn = (): ColumnDef<Blog>[] => [
       header: ({ column }) => (
          <div className="flex items-center justify-center">
             <Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
-               Status
+               {text('Status')}
                <ArrowUpDown />
             </Button>
          </div>
@@ -62,7 +62,7 @@ const TableColumn = (): ColumnDef<Blog>[] => [
    },
    {
       id: 'actions',
-      header: () => <div className="pr-4 text-end">Action</div>,
+      header: () => <div className="pr-4 text-end">{text('Action')}</div>,
       cell: ({ row }) => {
          const blog = row.original;
 

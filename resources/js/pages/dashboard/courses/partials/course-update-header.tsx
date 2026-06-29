@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { useI18n } from '@/lib/i18n';
 import { cn } from '@/lib/utils';
 import { Link, router, useForm, usePage } from '@inertiajs/react';
 import { useState } from 'react';
@@ -15,6 +16,7 @@ const CourseUpdateHeader = () => {
    const { props } = usePage<CourseUpdateProps>();
    const user = props.auth.user;
    const { course, watchHistory, approvalStatus } = props;
+   const { text } = useI18n();
    const statuses = props.statuses.filter((status) => status !== course.status);
    const { approve_able, validation_messages, counts } = approvalStatus;
 
@@ -43,7 +45,7 @@ const CourseUpdateHeader = () => {
                   id: course.id,
                })}
             >
-               Course Preview
+               {text('Course Preview')}
             </Link>
          </Button>
 
@@ -56,13 +58,13 @@ const CourseUpdateHeader = () => {
                      lesson_id: watchHistory.current_watching_id,
                   })}
                >
-                  Course Player
+                  {text('Course Player')}
                </Link>
             </Button>
          ) : approve_able ? (
-            <Button onClick={() => router.post(route('player.init.watch-history'), { course_id: course.id })}>Course Player</Button>
+            <Button onClick={() => router.post(route('player.init.watch-history'), { course_id: course.id })}>{text('Course Player')}</Button>
          ) : (
-            <Button disabled>Course Player</Button>
+            <Button disabled>{text('Course Player')}</Button>
          )}
 
          <Button
@@ -76,22 +78,22 @@ const CourseUpdateHeader = () => {
             course.status !== 'approved' &&
             course.status !== 'pending' &&
             (approve_able ? (
-               <Button onClick={() => router.put(route('course.status', { id: course.id }), { status: 'pending' })}>Submit for Approval</Button>
+               <Button onClick={() => router.put(route('course.status', { id: course.id }), { status: 'pending' })}>{text('Submit for Approval')}</Button>
             ) : (
                <Dialog open={open} onOpenChange={setOpen}>
                   <DialogTrigger>
-                     <Button>Submit for Approval</Button>
+                     <Button>{text('Submit for Approval')}</Button>
                   </DialogTrigger>
                   <DialogContent>
                      <DialogHeader>
-                        <DialogTitle>Course Approval Status</DialogTitle>
+                        <DialogTitle>{text('Course Approval Status')}</DialogTitle>
                      </DialogHeader>
 
                      {approve_able ? (
-                        <div className="text-green-600">This course is ready for approval!</div>
+                        <div className="text-green-600">{text('This course is ready for approval!')}</div>
                      ) : (
                         <div className="text-red-600">
-                           <h3>This course needs attention before it can be approved:</h3>
+                           <h3>{text('This course needs attention before it can be approved:')}</h3>
                            <ul className="list-disc pl-5">
                               {validation_messages.map((message: string, index: number) => (
                                  <li key={index}>{message}</li>
@@ -101,11 +103,11 @@ const CourseUpdateHeader = () => {
                      )}
 
                      <div>
-                        <h3 className="text-lg font-medium">Course Content Summary</h3>
-                        <p>Sections: {counts.sections_count}</p>
-                        <p>Lessons: {counts.lessons_count}</p>
-                        <p>Quizzes: {counts.quizzes_count}</p>
-                        <p className="font-medium">Total Content Items: {counts.total_content_count}</p>
+                        <h3 className="text-lg font-medium">{text('Course Content Summary')}</h3>
+                        <p>{text('Sections:')} {counts.sections_count}</p>
+                        <p>{text('Lessons:')} {counts.lessons_count}</p>
+                        <p>{text('Quizzes:')} {counts.quizzes_count}</p>
+                        <p className="font-medium">{text('Total Content Items:')} {counts.total_content_count}</p>
                      </div>
                   </DialogContent>
                </Dialog>
@@ -114,19 +116,19 @@ const CourseUpdateHeader = () => {
          {user.role === 'admin' && (
             <Dialog>
                <DialogTrigger asChild>
-                  <Button className="capitalize">Approval Status</Button>
+                  <Button className="capitalize">{text('Approval Status')}</Button>
                </DialogTrigger>
                <DialogContent>
                   <DialogHeader>
-                     <DialogTitle>Are you absolutely sure?</DialogTitle>
+                     <DialogTitle>{text('Are you absolutely sure?')}</DialogTitle>
 
                      {/* add a form where admin can select status then write a feedback and submit */}
                      <form onSubmit={handleSubmit} className="space-y-4">
                         <div>
-                           <Label>Approval Status *</Label>
+                           <Label>{text('Approval Status')} *</Label>
                            <Select required value={data.status} onValueChange={(value) => setData('status', value as any)}>
                               <SelectTrigger>
-                                 <SelectValue placeholder="Select the approval status" />
+                                 <SelectValue placeholder={text('Select the approval status')} />
                               </SelectTrigger>
                               <SelectContent>
                                  {statuses.map((status) => (
@@ -140,13 +142,13 @@ const CourseUpdateHeader = () => {
                         </div>
 
                         <div className="pb-6">
-                           <Label>Feedback {`(Optional)`}</Label>
+                           <Label>{text('Feedback')} {text('(Optional)')}</Label>
                            <TiptapEditor
                               ssr={true}
                               output="html"
                               placeholder={{
-                                 paragraph: 'Type your content here...',
-                                 imageCaption: 'Type caption for image (optional)',
+                                 paragraph: text('Type your content here...'),
+                                 imageCaption: text('Type caption for image (optional)'),
                               }}
                               contentMinHeight={256}
                               contentMaxHeight={640}
@@ -162,7 +164,7 @@ const CourseUpdateHeader = () => {
                         </div>
 
                         <LoadingButton loading={processing} className="w-full">
-                           Submit
+                           {text('Submit')}
                         </LoadingButton>
                      </form>
                   </DialogHeader>

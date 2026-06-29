@@ -7,14 +7,14 @@ import { ColumnDef } from '@tanstack/react-table';
 import { ArrowUpDown, Edit } from 'lucide-react';
 import ApplicationApproval from './application-approval';
 
-const ApplicationsTableColumn: ColumnDef<Instructor>[] = [
+const ApplicationsTableColumn = (text: (value?: string | null) => string): ColumnDef<Instructor>[] => [
    {
       accessorKey: 'name',
       header: ({ column }) => {
          return (
             <div className="flex items-center">
                <Button variant="ghost" className="p-0 hover:bg-transparent" onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
-                  Name
+                  {text('Name')}
                   <ArrowUpDown />
                </Button>
             </div>
@@ -28,19 +28,19 @@ const ApplicationsTableColumn: ColumnDef<Instructor>[] = [
    },
    {
       accessorKey: 'resume',
-      header: 'Resume',
+      header: text('Resume'),
       cell: ({ row }) => (
          <div className="capitalize">
             <Dialog>
                <DialogTrigger>
-                  <Button>View Resume</Button>
+                  <Button>{text('View Resume')}</Button>
                </DialogTrigger>
 
                <DialogContent className="max-w-2xl p-0">
                   <ScrollArea className="min-h-[90vh]">
                      <DialogHeader className="p-6">
-                        <DialogTitle>Resume</DialogTitle>
-                        <DialogDescription>View the instructor application resume</DialogDescription>
+                        <DialogTitle>{text('Resume')}</DialogTitle>
+                        <DialogDescription>{text('View the instructor application resume')}</DialogDescription>
                      </DialogHeader>
 
                      <DocumentViewer src={row.original.resume || ''} className="min-h-[80vh]" />
@@ -52,7 +52,7 @@ const ApplicationsTableColumn: ColumnDef<Instructor>[] = [
    },
    {
       accessorKey: 'status',
-      header: 'Status',
+      header: text('Status'),
       cell: ({ row }) => (
          <div className="capitalize">
             <span>{row.original.status}</span>
@@ -61,7 +61,7 @@ const ApplicationsTableColumn: ColumnDef<Instructor>[] = [
    },
    {
       id: 'actions',
-      header: () => <div className="text-end">Action</div>,
+      header: () => <div className="text-end">{text('Action')}</div>,
       cell: ({ row }) => (
          <div className="flex items-center justify-end">
             <ApplicationApproval

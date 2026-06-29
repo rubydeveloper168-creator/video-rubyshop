@@ -8,6 +8,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import VerifiedBadge from '@/components/verified-badge';
 import { useInitials } from '@/hooks/use-initials';
 import DashboardLayout from '@/layouts/dashboard/layout';
+import { useI18n } from '@/lib/i18n';
 import { SharedData } from '@/types/global';
 import { Link, router } from '@inertiajs/react';
 import {
@@ -153,6 +154,7 @@ const DeviceIcon = ({ deviceType }: { deviceType?: string }) => {
 };
 
 const Show = ({ auditUser, sessions, pageVisits, videoEvents, activityEvents, dailyActivity, topPages, topVideos, totals }: Props) => {
+   const { text } = useI18n();
    const getInitials = useInitials();
 
    const isOnline = sessions.some((session) => session.is_online);
@@ -224,14 +226,14 @@ const Show = ({ auditUser, sessions, pageVisits, videoEvents, activityEvents, da
                   <div className="flex items-center gap-2">
                      <h1 className="text-2xl font-semibold">{auditUser.name}</h1>
                      {auditUser.is_verified && <VerifiedBadge size={20} />}
-                     <Badge variant={isOnline ? 'default' : 'secondary'}>{isOnline ? 'Online' : 'Offline'}</Badge>
+                     <Badge variant={isOnline ? 'default' : 'secondary'}>{isOnline ? text('Online') : text('Offline')}</Badge>
                      <Badge variant="outline" className="capitalize">
                         {auditUser.role}
                      </Badge>
                   </div>
                   <p className="text-muted-foreground text-sm">{auditUser.email}</p>
                   {auditUser.is_verified && auditUser.verified_at && (
-                     <p className="text-muted-foreground text-xs">Verified {formatDate(auditUser.verified_at)}</p>
+                     <p className="text-muted-foreground text-xs">{text('Verified')} {formatDate(auditUser.verified_at)}</p>
                   )}
                </div>
             </div>
@@ -243,19 +245,19 @@ const Show = ({ auditUser, sessions, pageVisits, videoEvents, activityEvents, da
                   {auditUser.is_verified ? (
                      <>
                         <ShieldX className="size-4" />
-                        Unverify User
+                        {text('Unverify User')}
                      </>
                   ) : (
                      <>
                         <BadgeCheck className="size-4" />
-                        Verify User
+                        {text('Verify User')}
                      </>
                   )}
                </Button>
                <Button asChild variant="outline">
                   <Link href={route('audit.index')}>
                      <ArrowLeft className="size-4" />
-                     Back
+                     {text('Back')}
                   </Link>
                </Button>
             </div>
@@ -264,35 +266,35 @@ const Show = ({ auditUser, sessions, pageVisits, videoEvents, activityEvents, da
          <div className="grid gap-4 md:grid-cols-3 lg:grid-cols-5">
             <Card>
                <CardHeader className="flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">Active Time</CardTitle>
+                  <CardTitle className="text-sm font-medium">{text('Active Time')}</CardTitle>
                   <Clock className="text-muted-foreground size-4" />
                </CardHeader>
                <CardContent className="text-2xl font-semibold">{formatSeconds(totals.active_seconds)}</CardContent>
             </Card>
             <Card>
                <CardHeader className="flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">Idle Time</CardTitle>
+                  <CardTitle className="text-sm font-medium">{text('Idle Time')}</CardTitle>
                   <Activity className="text-muted-foreground size-4" />
                </CardHeader>
                <CardContent className="text-2xl font-semibold">{formatSeconds(totals.idle_seconds)}</CardContent>
             </Card>
             <Card>
                <CardHeader className="flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">Sessions</CardTitle>
+                  <CardTitle className="text-sm font-medium">{text('Sessions')}</CardTitle>
                   <Laptop className="text-muted-foreground size-4" />
                </CardHeader>
                <CardContent className="text-2xl font-semibold">{totals.sessions}</CardContent>
             </Card>
             <Card>
                <CardHeader className="flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">Pages Visited</CardTitle>
+                  <CardTitle className="text-sm font-medium">{text('Pages Visited')}</CardTitle>
                   <FileText className="text-muted-foreground size-4" />
                </CardHeader>
                <CardContent className="text-2xl font-semibold">{totals.page_visits}</CardContent>
             </Card>
             <Card>
                <CardHeader className="flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">Video Events</CardTitle>
+                  <CardTitle className="text-sm font-medium">{text('Video Events')}</CardTitle>
                   <MonitorPlay className="text-muted-foreground size-4" />
                </CardHeader>
                <CardContent className="text-2xl font-semibold">{totals.video_events}</CardContent>
@@ -301,7 +303,7 @@ const Show = ({ auditUser, sessions, pageVisits, videoEvents, activityEvents, da
 
          <Card>
             <CardHeader>
-               <CardTitle>Activity Over the Last 14 Days</CardTitle>
+               <CardTitle>{text('Activity Over the Last 14 Days')}</CardTitle>
             </CardHeader>
             <CardContent>
                <ResponsiveContainer width="100%" height={260}>
@@ -317,7 +319,7 @@ const Show = ({ auditUser, sessions, pageVisits, videoEvents, activityEvents, da
                      <YAxis axisLine={false} tickLine={false} tickMargin={0} unit="m" />
                      <Tooltip
                         labelFormatter={(value) => new Date(value).toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' })}
-                        formatter={(value: number, name) => [`${value}m`, name === 'page_minutes' ? 'Page time' : 'Video time']}
+                        formatter={(value: number, name) => [`${value}m`, name === 'page_minutes' ? text('Page time') : text('Video time')]}
                      />
                      <Area
                         type="monotone"
@@ -346,17 +348,17 @@ const Show = ({ auditUser, sessions, pageVisits, videoEvents, activityEvents, da
             <Card>
                <Tabs defaultValue="all">
                   <CardHeader className="flex-row items-center justify-between space-y-0">
-                     <CardTitle>Timeline</CardTitle>
+                     <CardTitle>{text('Timeline')}</CardTitle>
                      <TabsList>
-                        <TabsTrigger value="all">All</TabsTrigger>
-                        <TabsTrigger value="login">Logins</TabsTrigger>
-                        <TabsTrigger value="page">Pages</TabsTrigger>
-                        <TabsTrigger value="video">Videos</TabsTrigger>
+                        <TabsTrigger value="all">{text('All')}</TabsTrigger>
+                        <TabsTrigger value="login">{text('Logins')}</TabsTrigger>
+                        <TabsTrigger value="page">{text('Pages')}</TabsTrigger>
+                        <TabsTrigger value="video">{text('Videos')}</TabsTrigger>
                      </TabsList>
                   </CardHeader>
                   <CardContent>
                      <TabsContent value="all">
-                        {groupedAll.length === 0 && <p className="text-muted-foreground py-10 text-center text-sm">No activity recorded yet.</p>}
+                        {groupedAll.length === 0 && <p className="text-muted-foreground py-10 text-center text-sm">{text('No activity recorded yet.')}</p>}
 
                         <div className="space-y-6">
                            {groupedAll.map((group) => (
@@ -385,7 +387,7 @@ const Show = ({ auditUser, sessions, pageVisits, videoEvents, activityEvents, da
                                              <div className="min-w-0 flex-1 border-b pb-5">
                                                 <div className="flex flex-wrap items-center gap-2">
                                                    <p className="font-medium">{item.title}</p>
-                                                   <Badge variant="outline">{item.type}</Badge>
+                                                   <Badge variant="outline">{text(item.type)}</Badge>
                                                 </div>
                                                 {item.detail && <p className="text-muted-foreground mt-1 truncate text-sm">{item.detail}</p>}
                                                 <p className="text-muted-foreground mt-1 text-xs" title={formatDate(item.at)}>
@@ -402,7 +404,7 @@ const Show = ({ auditUser, sessions, pageVisits, videoEvents, activityEvents, da
                      </TabsContent>
 
                      <TabsContent value="login">
-                        {sortedSessions.length === 0 && <p className="text-muted-foreground py-10 text-center text-sm">No login sessions yet.</p>}
+                        {sortedSessions.length === 0 && <p className="text-muted-foreground py-10 text-center text-sm">{text('No login sessions yet.')}</p>}
 
                         <div className="space-y-4">
                            {sortedSessions.map((session) => {
@@ -419,22 +421,22 @@ const Show = ({ auditUser, sessions, pageVisits, videoEvents, activityEvents, da
                                     <div className="min-w-0 flex-1">
                                        <div className="flex flex-wrap items-center gap-2">
                                           <p className="font-medium">
-                                             {session.browser} on {session.os}
+                                             {session.browser} {text('on')} {session.os}
                                           </p>
                                           <Badge variant={session.is_online ? 'default' : 'secondary'}>
-                                             {session.is_online ? 'Active' : 'Ended'}
+                                             {session.is_online ? text('Active') : text('Ended')}
                                           </Badge>
                                        </div>
-                                       <p className="text-muted-foreground mt-1 text-sm">{session.ip_address || 'Unknown IP'}</p>
+                                       <p className="text-muted-foreground mt-1 text-sm">{session.ip_address || text('Unknown IP')}</p>
                                        <div className="text-muted-foreground mt-1 grid gap-1 text-xs sm:grid-cols-2">
-                                          <span>Login: {formatDate(session.started_at)}</span>
-                                          <span>{session.ended_at ? `Logout: ${formatDate(session.ended_at)}` : `Last seen: ${timeAgo(session.last_activity_at)}`}</span>
+                                          <span>{text('Login')}: {formatDate(session.started_at)}</span>
+                                          <span>{session.ended_at ? `${text('Logout')}: ${formatDate(session.ended_at)}` : `${text('Last seen')}: ${timeAgo(session.last_activity_at)}`}</span>
                                        </div>
                                        <div className="mt-2 max-w-sm space-y-1">
                                           <Progress value={sessionRatio} />
                                           <p className="text-muted-foreground text-xs">
-                                             Active {formatSeconds(session.active_seconds)} · Idle {formatSeconds(session.idle_seconds)} ·{' '}
-                                             {sessionRatio}% engaged
+                                             {text('Active')} {formatSeconds(session.active_seconds)} · {text('Idle')} {formatSeconds(session.idle_seconds)} ·{' '}
+                                             {sessionRatio}% {text('engaged')}
                                           </p>
                                        </div>
                                     </div>
@@ -446,23 +448,23 @@ const Show = ({ auditUser, sessions, pageVisits, videoEvents, activityEvents, da
 
                      <TabsContent value="page">
                         {pageVisits.length === 0 ? (
-                           <p className="text-muted-foreground py-10 text-center text-sm">No page visits yet.</p>
+                           <p className="text-muted-foreground py-10 text-center text-sm">{text('No page visits yet.')}</p>
                         ) : (
                            <Table>
                               <TableHeader>
                                  <TableRow>
-                                    <TableHead>Page</TableHead>
-                                    <TableHead>Entered</TableHead>
-                                    <TableHead>Left</TableHead>
-                                    <TableHead>Duration</TableHead>
-                                    <TableHead>Referrer</TableHead>
+                                    <TableHead>{text('Page')}</TableHead>
+                                    <TableHead>{text('Entered')}</TableHead>
+                                    <TableHead>{text('Left')}</TableHead>
+                                    <TableHead>{text('Duration')}</TableHead>
+                                    <TableHead>{text('Referrer')}</TableHead>
                                  </TableRow>
                               </TableHeader>
                               <TableBody>
                                  {pageVisits.map((visit) => (
                                     <TableRow key={visit.id}>
                                        <TableCell className="max-w-[260px]">
-                                          <p className="truncate font-medium">{visit.title || 'Page visit'}</p>
+                                          <p className="truncate font-medium">{visit.title || text('Page visit')}</p>
                                           <p className="text-muted-foreground truncate text-xs">{visit.url}</p>
                                        </TableCell>
                                        <TableCell className="text-xs whitespace-nowrap">{formatDate(visit.entered_at)}</TableCell>
@@ -478,24 +480,24 @@ const Show = ({ auditUser, sessions, pageVisits, videoEvents, activityEvents, da
 
                      <TabsContent value="video">
                         {videoEvents.length === 0 ? (
-                           <p className="text-muted-foreground py-10 text-center text-sm">No video activity yet.</p>
+                           <p className="text-muted-foreground py-10 text-center text-sm">{text('No video activity yet.')}</p>
                         ) : (
                            <Table>
                               <TableHeader>
                                  <TableRow>
-                                    <TableHead>Course / Lesson</TableHead>
-                                    <TableHead>Event</TableHead>
-                                    <TableHead>Position</TableHead>
-                                    <TableHead>Watched</TableHead>
+                                    <TableHead>{text('Course / Lesson')}</TableHead>
+                                    <TableHead>{text('Event')}</TableHead>
+                                    <TableHead>{text('Position')}</TableHead>
+                                    <TableHead>{text('Watched')}</TableHead>
                                     <TableHead>%</TableHead>
-                                    <TableHead>When</TableHead>
+                                    <TableHead>{text('When')}</TableHead>
                                  </TableRow>
                               </TableHeader>
                               <TableBody>
                                  {videoEvents.map((event) => (
                                     <TableRow key={event.id}>
                                        <TableCell className="max-w-[220px]">
-                                          <p className="truncate font-medium">{event.lesson?.title || 'Lesson'}</p>
+                                          <p className="truncate font-medium">{event.lesson?.title || text('Lesson')}</p>
                                           <p className="text-muted-foreground truncate text-xs">{event.course?.title || '-'}</p>
                                        </TableCell>
                                        <TableCell>
@@ -520,10 +522,10 @@ const Show = ({ auditUser, sessions, pageVisits, videoEvents, activityEvents, da
             <div className="space-y-6">
                <Card>
                   <CardHeader>
-                     <CardTitle>Sessions</CardTitle>
+                     <CardTitle>{text('Sessions')}</CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-4">
-                     {sessions.length === 0 && <p className="text-muted-foreground text-sm">No sessions recorded yet.</p>}
+                     {sessions.length === 0 && <p className="text-muted-foreground text-sm">{text('No sessions recorded yet.')}</p>}
                      {sessions.map((session) => {
                         const sessionRatio =
                            session.active_seconds + session.idle_seconds > 0
@@ -536,17 +538,17 @@ const Show = ({ auditUser, sessions, pageVisits, videoEvents, activityEvents, da
                                  <div className="flex items-center gap-2">
                                     <DeviceIcon deviceType={session.device_type} />
                                     <p className="text-sm font-medium">
-                                       {session.browser} on {session.os}
+                                       {session.browser} {text('on')} {session.os}
                                     </p>
                                  </div>
-                                 <Badge variant={session.is_online ? 'default' : 'secondary'}>{session.is_online ? 'Active' : 'Ended'}</Badge>
+                                 <Badge variant={session.is_online ? 'default' : 'secondary'}>{session.is_online ? text('Active') : text('Ended')}</Badge>
                               </div>
-                              <p className="text-muted-foreground mt-1 text-xs">{session.ip_address || 'Unknown IP'}</p>
-                              <p className="text-muted-foreground text-xs">Started {formatDate(session.started_at)}</p>
+                              <p className="text-muted-foreground mt-1 text-xs">{session.ip_address || text('Unknown IP')}</p>
+                              <p className="text-muted-foreground text-xs">{text('Started')} {formatDate(session.started_at)}</p>
                               <div className="mt-2 space-y-1">
                                  <Progress value={sessionRatio} />
                                  <p className="text-muted-foreground text-xs">
-                                    Active {formatSeconds(session.active_seconds)} · Idle {formatSeconds(session.idle_seconds)}
+                                    {text('Active')} {formatSeconds(session.active_seconds)} · {text('Idle')} {formatSeconds(session.idle_seconds)}
                                  </p>
                               </div>
                            </div>
@@ -557,10 +559,10 @@ const Show = ({ auditUser, sessions, pageVisits, videoEvents, activityEvents, da
 
                <Card>
                   <CardHeader>
-                     <CardTitle>Top Pages</CardTitle>
+                     <CardTitle>{text('Top Pages')}</CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-3">
-                     {topPages.length === 0 && <p className="text-muted-foreground text-sm">No page visits yet.</p>}
+                     {topPages.length === 0 && <p className="text-muted-foreground text-sm">{text('No page visits yet.')}</p>}
                      {topPages.map((page) => (
                         <div key={page.url} className="flex items-center justify-between gap-3 text-sm">
                            <div className="min-w-0">
@@ -568,7 +570,7 @@ const Show = ({ auditUser, sessions, pageVisits, videoEvents, activityEvents, da
                               <p className="text-muted-foreground truncate text-xs">{page.url}</p>
                            </div>
                            <div className="text-muted-foreground shrink-0 text-right text-xs">
-                              <p>{page.visits} visits</p>
+                              <p>{page.visits} {text('visits')}</p>
                               <p>{formatSeconds(page.total_seconds)}</p>
                            </div>
                         </div>
@@ -578,16 +580,16 @@ const Show = ({ auditUser, sessions, pageVisits, videoEvents, activityEvents, da
 
                <Card>
                   <CardHeader>
-                     <CardTitle>Most Watched Videos</CardTitle>
+                     <CardTitle>{text('Most Watched Videos')}</CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-3">
-                     {topVideos.length === 0 && <p className="text-muted-foreground text-sm">No video activity yet.</p>}
+                     {topVideos.length === 0 && <p className="text-muted-foreground text-sm">{text('No video activity yet.')}</p>}
                      {topVideos.map((video) => (
                         <div key={video.lesson_id} className="flex items-center justify-between gap-3 text-sm">
-                           <p className="min-w-0 truncate font-medium">{video.lesson?.title || 'Lesson'}</p>
+                           <p className="min-w-0 truncate font-medium">{video.lesson?.title || text('Lesson')}</p>
                            <div className="text-muted-foreground shrink-0 text-right text-xs">
                               <p>{formatSeconds(video.total_seconds)}</p>
-                              <p>{video.max_percent ?? 0}% watched</p>
+                              <p>{video.max_percent ?? 0}% {text('watched')}</p>
                            </div>
                         </div>
                      ))}

@@ -5,6 +5,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import DashboardLayout from '@/layouts/dashboard/layout';
+import { useI18n } from '@/lib/i18n';
 import { SharedData } from '@/types/global';
 import { Head, Link, router, usePage } from '@inertiajs/react';
 import {
@@ -40,6 +41,7 @@ interface JobCircularsPageProps extends SharedData {
 }
 
 const JobCircularsIndex = () => {
+   const { locale, text } = useI18n();
    const { props } = usePage<JobCircularsPageProps>();
    const { jobCirculars, statistics, jobTypes, workTypes, experienceLevels, statuses } = props;
 
@@ -68,17 +70,17 @@ const JobCircularsIndex = () => {
 
    return (
       <>
-         <Head title="Job Circulars" />
+         <Head title={text('Job Circulars')} />
 
          <div className="space-y-6">
             {/* Header */}
             <div className="flex items-center justify-between">
-               <h1 className="text-xl font-semibold">Job Circulars</h1>
+               <h1 className="text-xl font-semibold">{text('Job Circulars')}</h1>
 
                <Button asChild>
                   <Link href={route('job-circulars.create')}>
                      <Plus className="mr-2 h-4 w-4" />
-                     Create Job Circular
+                     {text('Create Job Circular')}
                   </Link>
                </Button>
             </div>
@@ -87,7 +89,7 @@ const JobCircularsIndex = () => {
             <div className="grid grid-cols-2 gap-4 md:grid-cols-4 xl:grid-cols-5">
                <Card>
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                     <CardTitle className="text-sm font-medium">Total Jobs</CardTitle>
+                     <CardTitle className="text-sm font-medium">{text('Total Jobs')}</CardTitle>
                      <Briefcase className="text-muted-foreground h-4 w-4" />
                   </CardHeader>
                   <CardContent>
@@ -97,7 +99,7 @@ const JobCircularsIndex = () => {
 
                <Card>
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                     <CardTitle className="text-sm font-medium">Active</CardTitle>
+                     <CardTitle className="text-sm font-medium">{text('Active')}</CardTitle>
                      <PlayCircle className="h-4 w-4 text-green-600" />
                   </CardHeader>
                   <CardContent>
@@ -107,7 +109,7 @@ const JobCircularsIndex = () => {
 
                <Card>
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                     <CardTitle className="text-sm font-medium">Draft</CardTitle>
+                     <CardTitle className="text-sm font-medium">{text('Draft')}</CardTitle>
                      <Edit className="h-4 w-4 text-yellow-600" />
                   </CardHeader>
                   <CardContent>
@@ -117,7 +119,7 @@ const JobCircularsIndex = () => {
 
                <Card>
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                     <CardTitle className="text-sm font-medium">Closed</CardTitle>
+                     <CardTitle className="text-sm font-medium">{text('Closed')}</CardTitle>
                      <Clock className="h-4 w-4 text-orange-600" />
                   </CardHeader>
                   <CardContent>
@@ -127,7 +129,7 @@ const JobCircularsIndex = () => {
 
                <Card>
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                     <CardTitle className="text-sm font-medium">Expired</CardTitle>
+                     <CardTitle className="text-sm font-medium">{text('Expired')}</CardTitle>
                      <Clock className="h-4 w-4 text-red-600" />
                   </CardHeader>
                   <CardContent>
@@ -140,7 +142,7 @@ const JobCircularsIndex = () => {
             <Card>
                <TableFilter
                   data={jobCirculars}
-                  title="Job Circulars"
+                  title={text('Job Circulars')}
                   globalSearch={true}
                   tablePageSizes={[10, 15, 20, 25]}
                   routeName="job-circulars.index"
@@ -179,11 +181,11 @@ const JobCircularsIndex = () => {
                                        </div>
                                        <div className="flex items-center gap-1">
                                           <BriefcaseBusiness className="h-4 w-4" />
-                                          {job.positions_available} Position{job.positions_available !== 1 ? 's' : ''}
+                                          {job.positions_available} {job.positions_available !== 1 ? text('Positions') : text('Position')}
                                        </div>
                                        <div className="flex items-center gap-1">
                                           <Calendar className="h-4 w-4" />
-                                          {new Date(job.application_deadline).toLocaleDateString('en-US', {
+                                          {new Date(job.application_deadline).toLocaleDateString(locale === 'th' ? 'th-TH' : 'en-US', {
                                              year: 'numeric',
                                              month: 'long',
                                              day: 'numeric',
@@ -225,13 +227,13 @@ const JobCircularsIndex = () => {
                   ) : (
                      <div className="py-12 text-center">
                         <Briefcase className="text-muted-foreground mx-auto h-12 w-12" />
-                        <h3 className="mt-4 text-lg font-semibold">No job circulars found</h3>
-                        <p className="text-muted-foreground mt-2">Get started by creating your first job circular</p>
+                        <h3 className="mt-4 text-lg font-semibold">{text('No job circulars found')}</h3>
+                        <p className="text-muted-foreground mt-2">{text('Get started by creating your first job circular')}</p>
 
                         <Button className="mt-4" asChild>
                            <Link href={route('job-circulars.create')}>
                               <Plus className="mr-2 h-4 w-4" />
-                              Create Job Circular
+                              {text('Create Job Circular')}
                            </Link>
                         </Button>
                      </div>

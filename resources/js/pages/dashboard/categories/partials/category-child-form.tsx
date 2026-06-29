@@ -9,6 +9,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import { onHandleChange } from '@/lib/inertia';
+import { useI18n } from '@/lib/i18n';
 import { useForm } from '@inertiajs/react';
 import { useState } from 'react';
 
@@ -21,6 +22,7 @@ interface Props {
 }
 
 const CategoryChildForm = ({ title, handler, categoryId, categoryChild, lastChildPosition }: Props) => {
+   const { text } = useI18n();
    const [open, setOpen] = useState(false);
    const [openIcon, setOpenIcon] = useState(false);
 
@@ -63,31 +65,31 @@ const CategoryChildForm = ({ title, handler, categoryId, categoryChild, lastChil
             <ScrollArea className="max-h-[90vh] p-6">
                <DialogHeader className="mb-6">
                   <DialogTitle>{title}</DialogTitle>
-                  <DialogDescription>Manage subcategory information and settings</DialogDescription>
+                  <DialogDescription>{text('Manage subcategory information and settings')}</DialogDescription>
                </DialogHeader>
 
                <form onSubmit={handleSubmit} className="space-y-4 p-0.5">
                   <div>
-                     <Label>Name</Label>
+                     <Label>{text('Name')}</Label>
                      <Input
                         required
                         type="text"
                         name="title"
                         value={data.title}
-                        placeholder="Enter your category name"
+                        placeholder={text('Enter your category name')}
                         onChange={(e) => onHandleChange(e, setData)}
                      />
                      <InputError message={errors.title} />
                   </div>
                   <div>
-                     <Label>Icon</Label>
+                     <Label>{text('Icon')}</Label>
                      <Input
                         required
                         readOnly
                         type="text"
                         name="icon"
                         value={data.icon}
-                        placeholder="Pick your category icon"
+                        placeholder={text('Pick your category icon')}
                         onClick={() => setOpenIcon(true)}
                      />
                      <InputError message={errors.icon} />
@@ -96,8 +98,8 @@ const CategoryChildForm = ({ title, handler, categoryId, categoryChild, lastChil
                         <DialogContent className="p-0">
                            <ScrollArea className="max-h-[90vh] p-6">
                               <DialogHeader className="mb-6">
-                                 <DialogTitle>Icon Picker</DialogTitle>
-                                 <DialogDescription>Choose an icon for the subcategory</DialogDescription>
+                                 <DialogTitle>{text('Icon Picker')}</DialogTitle>
+                                 <DialogDescription>{text('Choose an icon for the subcategory')}</DialogDescription>
                               </DialogHeader>
 
                               <IconPicker
@@ -111,23 +113,23 @@ const CategoryChildForm = ({ title, handler, categoryId, categoryChild, lastChil
                      </Dialog>
                   </div>
                   <div>
-                     <Label>Status</Label>
+                     <Label>{text('Status')}</Label>
                      <Select value={JSON.stringify(data.status)} onValueChange={(e) => setData('status', JSON.parse(e))}>
                         <SelectTrigger>
-                           <SelectValue placeholder="Select the status" />
+                           <SelectValue placeholder={text('Select the status')} />
                         </SelectTrigger>
                         <SelectContent>
-                           <SelectItem value="1">Active</SelectItem>
-                           <SelectItem value="0">Deactive</SelectItem>
+                           <SelectItem value="1">{text('Active')}</SelectItem>
+                           <SelectItem value="0">{text('Deactive')}</SelectItem>
                         </SelectContent>
                      </Select>
                   </div>
                   <div>
-                     <Label>Description (optional)</Label>
+                     <Label>{text('Description (optional)')}</Label>
                      <Textarea
                         name="description"
                         value={data.description}
-                        placeholder="Enter your description"
+                        placeholder={text('Enter your description')}
                         onChange={(e) => onHandleChange(e, setData)}
                      />
                      <InputError message={errors.description} />
@@ -136,11 +138,11 @@ const CategoryChildForm = ({ title, handler, categoryId, categoryChild, lastChil
                   <DialogFooter className="flex justify-end space-x-2 pt-4">
                      <DialogClose asChild>
                         <Button type="button" variant="outline">
-                           Close
+                           {text('Close')}
                         </Button>
                      </DialogClose>
 
-                     <LoadingButton loading={processing}>Submit</LoadingButton>
+                     <LoadingButton loading={processing}>{text('Submit')}</LoadingButton>
                   </DialogFooter>
                </form>
             </ScrollArea>

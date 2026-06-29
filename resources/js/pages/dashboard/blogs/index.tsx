@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableRow } from '@/components/ui/table';
 import DashboardLayout from '@/layouts/dashboard/layout';
+import { useI18n } from '@/lib/i18n';
 import { SharedData } from '@/types/global';
 import { Head, Link, usePage } from '@inertiajs/react';
 import { SortingState, flexRender, getCoreRowModel, getFilteredRowModel, getSortedRowModel, useReactTable } from '@tanstack/react-table';
@@ -29,12 +30,13 @@ interface BlogsPageProps extends SharedData {
 const BlogsIndex = () => {
    const { props } = usePage<BlogsPageProps>();
    const { blogs, statistics } = props;
+   const { text } = useI18n();
 
    const [sorting, setSorting] = React.useState<SortingState>([]);
 
    const table = useReactTable({
       data: blogs.data,
-      columns: TableColumn(),
+      columns: TableColumn(text),
       onSortingChange: setSorting,
       getCoreRowModel: getCoreRowModel(),
       getSortedRowModel: getSortedRowModel(),
@@ -44,17 +46,17 @@ const BlogsIndex = () => {
 
    return (
       <>
-         <Head title="Blog" />
+         <Head title={text('Blog')} />
 
          <div className="space-y-6">
             {/* Header */}
             <div className="flex items-center justify-between">
-               <h1 className="text-xl font-semibold">Blog</h1>
+               <h1 className="text-xl font-semibold">{text('Blog')}</h1>
 
                <Button asChild>
                   <Link href={route('blogs.create')}>
                      <Plus className="mr-2 h-4 w-4" />
-                     Add new blog
+                     {text('Add new blog')}
                   </Link>
                </Button>
             </div>
@@ -63,7 +65,7 @@ const BlogsIndex = () => {
             <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
                <Card>
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                     <CardTitle className="text-sm font-medium">Total Blogs</CardTitle>
+                     <CardTitle className="text-sm font-medium">{text('Total Blogs')}</CardTitle>
                      <BookOpen className="text-muted-foreground h-4 w-4" />
                   </CardHeader>
                   <CardContent>
@@ -73,7 +75,7 @@ const BlogsIndex = () => {
 
                <Card>
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                     <CardTitle className="text-sm font-medium">Published</CardTitle>
+                     <CardTitle className="text-sm font-medium">{text('Published')}</CardTitle>
                      <Eye className="h-4 w-4 text-green-600" />
                   </CardHeader>
                   <CardContent>
@@ -83,7 +85,7 @@ const BlogsIndex = () => {
 
                <Card>
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                     <CardTitle className="text-sm font-medium">Draft</CardTitle>
+                     <CardTitle className="text-sm font-medium">{text('Draft')}</CardTitle>
                      <Edit className="h-4 w-4 text-yellow-600" />
                   </CardHeader>
                   <CardContent>
@@ -93,7 +95,7 @@ const BlogsIndex = () => {
 
                <Card>
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                     <CardTitle className="text-sm font-medium">Archived</CardTitle>
+                     <CardTitle className="text-sm font-medium">{text('Archived')}</CardTitle>
                      <Archive className="h-4 w-4 text-gray-600" />
                   </CardHeader>
                   <CardContent>
@@ -104,7 +106,7 @@ const BlogsIndex = () => {
 
             {/* Blogs Table */}
             <Card>
-               <TableFilter data={blogs} title="Blog List" globalSearch={true} tablePageSizes={[10, 15, 20, 25]} routeName="blogs.index" />
+               <TableFilter data={blogs} title={text('Blog List')} globalSearch={true} tablePageSizes={[10, 15, 20, 25]} routeName="blogs.index" />
 
                <Table className="border-border border-y">
                   <TableHeader table={table} />
@@ -120,7 +122,7 @@ const BlogsIndex = () => {
                         ))
                      ) : (
                         <TableRow>
-                           <TableCell className="h-24 text-center">No results.</TableCell>
+                           <TableCell className="h-24 text-center">{text('No results.')}</TableCell>
                         </TableRow>
                      )}
                   </TableBody>
@@ -131,7 +133,7 @@ const BlogsIndex = () => {
 
             {/* Showing summary */}
             <div className="text-muted-foreground text-sm">
-               Showing {blogs.data.length} of {blogs.total} data
+               {text('Showing')} {blogs.data.length} {text('of')} {blogs.total} {text('data')}
             </div>
          </div>
       </>

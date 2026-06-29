@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { onHandleChange } from '@/lib/inertia';
+import { useI18n } from '@/lib/i18n';
 import { useForm, usePage } from '@inertiajs/react';
 import { useState } from 'react';
 import { CourseUpdateProps } from '../../update';
@@ -21,6 +22,7 @@ interface Props {
 const QuizForm = ({ title, quiz, handler, sectionId }: Props) => {
    const [open, setOpen] = useState(false);
    const { props } = usePage<CourseUpdateProps>();
+   const { text } = useI18n();
 
    const { data, setData, post, put, reset, errors, processing } = useForm({
       title: quiz?.title || '',
@@ -67,13 +69,13 @@ const QuizForm = ({ title, quiz, handler, sectionId }: Props) => {
 
                <form onSubmit={handleSubmit} className="space-y-4 p-0.5">
                   <div>
-                     <Label>Title</Label>
+                     <Label>{text('Title')}</Label>
                      <Input
                         required
                         type="text"
                         name="title"
                         value={data.title}
-                        placeholder="Enter quiz title"
+                        placeholder={text('Enter quiz title')}
                         onChange={(e) => onHandleChange(e, setData)}
                      />
                      <InputError message={errors.title} />
@@ -81,37 +83,37 @@ const QuizForm = ({ title, quiz, handler, sectionId }: Props) => {
 
                   <div className="grid grid-cols-3 gap-4">
                      <div>
-                        <Label>Hours</Label>
+                        <Label>{text('Hours')}</Label>
                         <Input
                            required
                            type="number"
                            name="hours"
                            value={data.hours}
-                           placeholder="00 hours"
+                           placeholder={text('00 hours')}
                            onChange={(e) => onHandleChange(e, setData)}
                         />
                         <InputError message={errors.hours} />
                      </div>
                      <div>
-                        <Label>Minutes</Label>
+                        <Label>{text('Minutes')}</Label>
                         <Input
                            required
                            type="number"
                            name="minutes"
                            value={data.minutes}
-                           placeholder="00 minutes"
+                           placeholder={text('00 minutes')}
                            onChange={(e) => onHandleChange(e, setData)}
                         />
                         <InputError message={errors.minutes} />
                      </div>
                      <div>
-                        <Label>Seconds</Label>
+                        <Label>{text('Seconds')}</Label>
                         <Input
                            required
                            type="number"
                            name="seconds"
                            value={data.seconds}
-                           placeholder="00 seconds"
+                           placeholder={text('00 seconds')}
                            onChange={(e) => onHandleChange(e, setData)}
                         />
                         <InputError message={errors.seconds} />
@@ -120,7 +122,7 @@ const QuizForm = ({ title, quiz, handler, sectionId }: Props) => {
 
                   <div className="grid grid-cols-3 gap-4">
                      <div>
-                        <Label>Total Mark</Label>
+                        <Label>{text('Total Mark')}</Label>
                         <Input
                            required
                            type="number"
@@ -132,7 +134,7 @@ const QuizForm = ({ title, quiz, handler, sectionId }: Props) => {
                         <InputError message={errors.total_mark} />
                      </div>
                      <div>
-                        <Label>Pass Mark</Label>
+                        <Label>{text('Pass Mark')}</Label>
                         <Input
                            required
                            type="number"
@@ -144,7 +146,7 @@ const QuizForm = ({ title, quiz, handler, sectionId }: Props) => {
                         <InputError message={errors.pass_mark} />
                      </div>
                      <div>
-                        <Label>Retake Attempts</Label>
+                        <Label>{text('Retake Attempts')}</Label>
                         <Input
                            min="1"
                            required
@@ -159,13 +161,13 @@ const QuizForm = ({ title, quiz, handler, sectionId }: Props) => {
                   </div>
 
                   <div>
-                     <Label htmlFor="summary">Summary</Label>
+                     <Label htmlFor="summary">{text('Summary')}</Label>
                      <TiptapEditor
                         ssr={true}
                         output="html"
                         placeholder={{
-                           paragraph: 'Type your content here...',
-                           imageCaption: 'Type caption for image (optional)',
+                           paragraph: text('Type your content here...'),
+                           imageCaption: text('Type caption for image (optional)'),
                         }}
                         contentMinHeight={256}
                         contentMaxHeight={640}
@@ -183,11 +185,11 @@ const QuizForm = ({ title, quiz, handler, sectionId }: Props) => {
                   <DialogFooter className="flex justify-end space-x-2 pt-4">
                      <DialogClose asChild>
                         <Button type="button" variant="outline">
-                           Close
+                           {text('Close')}
                         </Button>
                      </DialogClose>
 
-                     <LoadingButton loading={processing}>Submit</LoadingButton>
+                     <LoadingButton loading={processing}>{text('Submit')}</LoadingButton>
                   </DialogFooter>
                </form>
             </ScrollArea>

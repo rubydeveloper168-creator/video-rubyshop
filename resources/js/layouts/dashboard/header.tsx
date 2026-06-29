@@ -1,6 +1,7 @@
 import Appearance from '@/components/appearance';
 import { Breadcrumbs } from '@/components/breadcrumbs';
 import Notification from '@/components/notification';
+import LanguageSwitcher from '@/components/language-switcher';
 import { SidebarTrigger } from '@/components/ui/sidebar';
 
 const DashboardHeader = ({ breadcrumbs = [] }: { breadcrumbs?: BreadcrumbItem[] }) => {
@@ -14,6 +15,7 @@ const DashboardHeader = ({ breadcrumbs = [] }: { breadcrumbs?: BreadcrumbItem[] 
 
             <div className="flex items-center gap-2">
                <Appearance />
+               <LanguageSwitcher compact />
                <Notification />
             </div>
          </div>

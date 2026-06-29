@@ -6,14 +6,14 @@ import { ColumnDef } from '@tanstack/react-table';
 import { ArrowUpDown, Pencil, Trash2 } from 'lucide-react';
 import ApplicationApproval from './application-approval';
 
-const InstructorsTableColumn = (isAdmin: boolean): ColumnDef<Instructor>[] => [
+const InstructorsTableColumn = (isAdmin: boolean, text: (value?: string | null) => string): ColumnDef<Instructor>[] => [
    {
       accessorKey: 'name',
       header: ({ column }) => {
          return (
             <div className="flex items-center">
                <Button variant="ghost" className="p-0 hover:bg-transparent" onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
-                  Name
+                  {text('Name')}
                   <ArrowUpDown />
                </Button>
             </div>
@@ -38,25 +38,25 @@ const InstructorsTableColumn = (isAdmin: boolean): ColumnDef<Instructor>[] => [
    },
    {
       accessorKey: 'courses',
-      header: 'Number Of Course',
+      header: text('Number Of Course'),
       cell: ({ row }) => (
          <div className="capitalize">
-            <p>{row.original.courses_count} Courses</p>
+            <p>{row.original.courses_count} {text('Courses')}</p>
          </div>
       ),
    },
    {
       accessorKey: 'status',
-      header: 'Status',
+      header: text('Status'),
       cell: ({ row }) => (
          <div className="capitalize">
-            <span>{row.original.status}</span>
+            <span>{text(row.original.status)}</span>
          </div>
       ),
    },
    {
       id: 'actions',
-      header: () => <div className="text-end">Action</div>,
+      header: () => <div className="text-end">{text('Action')}</div>,
       cell: ({ row }) => {
          return (
             <div className="flex justify-end gap-2 py-1">
@@ -65,7 +65,7 @@ const InstructorsTableColumn = (isAdmin: boolean): ColumnDef<Instructor>[] => [
                   actionComponent={
                      <Button variant="secondary" className="h-8">
                         <Pencil />
-                        Status
+                        {text('Status')}
                      </Button>
                   }
                />
@@ -73,7 +73,7 @@ const InstructorsTableColumn = (isAdmin: boolean): ColumnDef<Instructor>[] => [
                {isAdmin && (
                   <DeleteModal
                      routePath={route('instructors.destroy', row.original.id)}
-                     message="After deleting the instructor, the admin will be the assign as a new instructor, of this instructor all the courses."
+                     message={text('After deleting the instructor, the admin will be the assign as a new instructor, of this instructor all the courses.')}
                      actionComponent={
                         <Button size="icon" variant="ghost" className="bg-destructive/8 hover:bg-destructive/6 h-8 w-8 p-0">
                            <Trash2 className="text-destructive text-sm" />

@@ -8,6 +8,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import DashboardLayout from '@/layouts/dashboard/layout';
 import { onHandleChange } from '@/lib/inertia';
+import { useI18n } from '@/lib/i18n';
 import { SharedData } from '@/types/global';
 import { useForm } from '@inertiajs/react';
 import { ChevronDown, ChevronUp } from 'lucide-react';
@@ -21,6 +22,7 @@ interface Props extends SharedData {
 const QuickCreate = (props: Props) => {
     const user = props.auth.user;
     const { categories, instructors, system } = props;
+    const { text } = useI18n();
     const needsInstructorSelection = user?.role === 'admin' && system.sub_type === 'collaborative';
     const defaultInstructor = instructors[0];
 
@@ -127,19 +129,19 @@ const QuickCreate = (props: Props) => {
     return (
         <Card className="container mx-auto max-w-2xl p-6">
             <div className="mb-6">
-                <h2 className="text-xl font-semibold">Quick Create Course</h2>
-                <p className="text-muted-foreground mt-1 text-sm">Fill in the title and category — the rest is set automatically.</p>
+                <h2 className="text-xl font-semibold">{text('Quick Create Course')}</h2>
+                <p className="text-muted-foreground mt-1 text-sm">{text('Fill in the title and category - the rest is set automatically.')}</p>
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-5">
                 <div>
-                    <Label>Title *</Label>
+                    <Label>{text('Title')} *</Label>
                     <Input
                         autoFocus
                         name="title"
                         value={data.title}
                         onChange={(e) => onHandleChange(e, setData)}
-                        placeholder="Enter course title"
+                        placeholder={text('Enter course title')}
                     />
                     <InputError message={errors.title} />
                 </div>
@@ -150,46 +152,46 @@ const QuickCreate = (props: Props) => {
                     className="text-muted-foreground hover:text-foreground flex items-center gap-1.5 text-sm transition-colors"
                 >
                     {showExtra ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
-                    {showExtra ? 'Hide details' : 'Show details'}
+                    {showExtra ? text('Hide details') : text('Show details')}
                 </button>
 
                 {showExtra && (
                     <div className="space-y-5">
                         <div>
                             <Label>
-                                Short Description{' '}
-                                <span className="text-muted-foreground text-xs">(auto-filled from title)</span>
+                                {text('Short Description')}{' '}
+                                <span className="text-muted-foreground text-xs">{text('(auto-filled from title)')}</span>
                             </Label>
                             <Textarea
                                 rows={2}
                                 name="short_description"
                                 value={data.short_description}
                                 onChange={(e) => onHandleChange(e, setData)}
-                                placeholder="Short description"
+                                placeholder={text('Short description')}
                             />
                             <InputError message={errors.short_description} />
                         </div>
 
                         <div>
                             <Label>
-                                Description{' '}
-                                <span className="text-muted-foreground text-xs">(auto-filled from title)</span>
+                                {text('Description')}{' '}
+                                <span className="text-muted-foreground text-xs">{text('(auto-filled from title)')}</span>
                             </Label>
                             <Textarea
                                 rows={3}
                                 name="description"
                                 value={data.description}
                                 onChange={(e) => onHandleChange(e, setData)}
-                                placeholder="Course description"
+                                placeholder={text('Course description')}
                             />
                             <InputError message={errors.description} />
                         </div>
 
                         <div>
-                            <Label>Category *</Label>
+                            <Label>{text('Category')} *</Label>
                             <Combobox
                                 data={transformedCategories}
-                                placeholder="Select a category"
+                                placeholder={text('Select a category')}
                                 defaultValue={transformedCategories.length > 0 ? transformedCategories[0].value : undefined}
                                 onSelect={(selected) => {
                                     setData('course_category_id', selected.id as string);
@@ -201,10 +203,10 @@ const QuickCreate = (props: Props) => {
 
                         {needsInstructorSelection && (
                             <div>
-                                <Label>Course Instructor *</Label>
+                                <Label>{text('Course Instructor')} *</Label>
                                 <Combobox
                                     data={transformedInstructors}
-                                    placeholder="Select the course instructor"
+                                    placeholder={text('Select the course instructor')}
                                     defaultValue={defaultInstructor ? String(defaultInstructor.id) : undefined}
                                     onSelect={(selected) => setData('instructor_id', selected.value)}
                                 />
@@ -215,15 +217,15 @@ const QuickCreate = (props: Props) => {
                 )}
 
                 <div className="flex flex-wrap items-center gap-3 pt-1">
-                    <span className="text-muted-foreground text-sm">Defaults:</span>
-                    <Badge variant="secondary">Free</Badge>
-                    <Badge variant="secondary">Beginner</Badge>
-                    <Badge variant="secondary">Approved</Badge>
-                    <Badge variant="secondary">Lifetime</Badge>
+                    <span className="text-muted-foreground text-sm">{text('Defaults:')}</span>
+                    <Badge variant="secondary">{text('Free')}</Badge>
+                    <Badge variant="secondary">{text('Beginner')}</Badge>
+                    <Badge variant="secondary">{text('Approved')}</Badge>
+                    <Badge variant="secondary">{text('Lifetime')}</Badge>
                 </div>
 
                 <div className="pt-2 text-right">
-                    <LoadingButton loading={processing}>Create & Upload Video</LoadingButton>
+                    <LoadingButton loading={processing}>{text('Create & Upload Video')}</LoadingButton>
                 </div>
             </form>
         </Card>

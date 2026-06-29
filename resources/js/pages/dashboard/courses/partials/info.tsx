@@ -1,6 +1,7 @@
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
+import { useI18n } from '@/lib/i18n';
 import { router, usePage } from '@inertiajs/react';
 import { Plus } from 'lucide-react';
 import { CourseUpdateProps } from '../update';
@@ -11,11 +12,12 @@ import RequirementForm from './forms/requirement-form';
 const Info = () => {
    const { props } = usePage<CourseUpdateProps>();
    const { faqs, requirements, outcomes } = props.course;
+   const { text } = useI18n();
 
    return (
       <Card className="space-y-7 p-4 sm:p-6">
          <div className="gap-64md:flex-row justify-betwee3 flex flex-col">
-            <h6 className="w-[200px] font-medium">Course Faqs</h6>
+            <h6 className="w-[200px] font-medium">{text('Course Faqs')}</h6>
             <div className="w-full space-y-6">
                <Button
                   variant="outline"
@@ -27,7 +29,7 @@ const Info = () => {
                   }
                >
                   <Plus />
-                  Add
+                  {text('Add')}
                </Button>
                {faqs?.map((faq) => (
                   <FaqForm key={faq.id} faq={faq} />
@@ -38,7 +40,7 @@ const Info = () => {
          <Separator />
 
          <div className="flex flex-col justify-between gap-3 md:flex-row">
-            <h6 className="w-[200px] font-medium">Requirements</h6>
+            <h6 className="w-[200px] font-medium">{text('Requirements')}</h6>
             <div className="w-full space-y-6">
                <Button
                   variant="outline"
@@ -50,7 +52,7 @@ const Info = () => {
                   }
                >
                   <Plus />
-                  Add
+                  {text('Add')}
                </Button>
                {requirements?.map((requirement) => (
                   <RequirementForm key={requirement.id} requirement={requirement} />
@@ -61,7 +63,7 @@ const Info = () => {
          <Separator />
 
          <div className="flex flex-col justify-between gap-3 md:flex-row">
-            <h6 className="w-[200px] font-medium">Outcomes</h6>
+            <h6 className="w-[200px] font-medium">{text('Outcomes')}</h6>
             <div className="w-full space-y-6">
                <Button
                   variant="outline"
@@ -73,7 +75,7 @@ const Info = () => {
                   }
                >
                   <Plus />
-                  Add
+                  {text('Add')}
                </Button>
                {outcomes?.map((outcome) => (
                   <OutcomeForm key={outcome.id} outcome={outcome} />

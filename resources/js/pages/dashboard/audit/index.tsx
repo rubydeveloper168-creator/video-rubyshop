@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import VerifiedBadge from '@/components/verified-badge';
 import DashboardLayout from '@/layouts/dashboard/layout';
+import { useI18n } from '@/lib/i18n';
 import { SharedData } from '@/types/global';
 import { Link } from '@inertiajs/react';
 import { Activity, Eye, MonitorPlay, UserRound } from 'lucide-react';
@@ -25,17 +26,18 @@ interface Props extends SharedData {
 }
 
 const Index = ({ users, summary }: Props) => {
+   const { text } = useI18n();
    return (
       <div className="space-y-6">
          <div>
-            <h1 className="text-2xl font-semibold">Audit Timeline</h1>
-            <p className="text-muted-foreground text-sm">Track logins, visited pages, session time, and video watch activity.</p>
+            <h1 className="text-2xl font-semibold">{text('Audit Timeline')}</h1>
+            <p className="text-muted-foreground text-sm">{text('Track logins, visited pages, session time, and video watch activity.')}</p>
          </div>
 
          <div className="grid gap-4 md:grid-cols-3">
             <Card>
                <CardHeader className="flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">Sessions</CardTitle>
+                  <CardTitle className="text-sm font-medium">{text('Sessions')}</CardTitle>
                   <UserRound className="text-muted-foreground size-4" />
                </CardHeader>
                <CardContent>
@@ -44,7 +46,7 @@ const Index = ({ users, summary }: Props) => {
             </Card>
             <Card>
                <CardHeader className="flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">Page Visits</CardTitle>
+                  <CardTitle className="text-sm font-medium">{text('Page Visits')}</CardTitle>
                   <Activity className="text-muted-foreground size-4" />
                </CardHeader>
                <CardContent>
@@ -53,7 +55,7 @@ const Index = ({ users, summary }: Props) => {
             </Card>
             <Card>
                <CardHeader className="flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">Video Events</CardTitle>
+                  <CardTitle className="text-sm font-medium">{text('Video Events')}</CardTitle>
                   <MonitorPlay className="text-muted-foreground size-4" />
                </CardHeader>
                <CardContent>
@@ -64,17 +66,17 @@ const Index = ({ users, summary }: Props) => {
 
          <Card>
             <CardHeader>
-               <CardTitle>Users</CardTitle>
+               <CardTitle>{text('Users')}</CardTitle>
             </CardHeader>
             <CardContent>
                <Table>
                   <TableHeader>
                      <TableRow>
-                        <TableHead>User</TableHead>
-                        <TableHead>Email</TableHead>
-                        <TableHead>Sessions</TableHead>
-                        <TableHead>Pages</TableHead>
-                        <TableHead>Videos</TableHead>
+                        <TableHead>{text('User')}</TableHead>
+                        <TableHead>{text('Email')}</TableHead>
+                        <TableHead>{text('Sessions')}</TableHead>
+                        <TableHead>{text('Pages')}</TableHead>
+                        <TableHead>{text('Videos')}</TableHead>
                         <TableHead className="w-20"></TableHead>
                      </TableRow>
                   </TableHeader>

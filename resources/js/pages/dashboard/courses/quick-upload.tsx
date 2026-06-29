@@ -6,6 +6,7 @@ import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { getFileMetadata } from '@/lib/file-metadata';
+import { useI18n } from '@/lib/i18n';
 import DashboardLayout from '@/layouts/dashboard/layout';
 import { SharedData } from '@/types/global';
 import { router, useForm } from '@inertiajs/react';
@@ -20,6 +21,7 @@ interface QuickUploadProps extends SharedData {
 
 const QuickUpload = ({ course, lastLessonSort }: QuickUploadProps) => {
     const section = course.sections?.[0];
+    const { text } = useI18n();
 
     const [isSubmit, setIsSubmit] = useState(false);
     const [isFileSelected, setIsFileSelected] = useState(false);
@@ -67,14 +69,14 @@ const QuickUpload = ({ course, lastLessonSort }: QuickUploadProps) => {
     return (
         <Card className="container mx-auto max-w-2xl p-6">
             <div className="mb-6">
-                <h2 className="text-xl font-semibold">Upload First Video</h2>
+                <h2 className="text-xl font-semibold">{text('Upload First Video')}</h2>
                 <div className="text-muted-foreground mt-2 space-y-0.5 text-sm">
                     <p>
-                        Course: <span className="text-foreground font-medium">{course.title}</span>
+                        {text('Course:')} <span className="text-foreground font-medium">{course.title}</span>
                     </p>
                     {section && (
                         <p>
-                            Section: <span className="text-foreground font-medium">{section.title}</span>
+                            {text('Section:')} <span className="text-foreground font-medium">{section.title}</span>
                         </p>
                     )}
                 </div>
@@ -82,14 +84,14 @@ const QuickUpload = ({ course, lastLessonSort }: QuickUploadProps) => {
 
             <form onSubmit={handleSubmit} className="space-y-5">
                 <div>
-                    <Label>Video File *</Label>
+                    <Label>{text('Video File')} *</Label>
                     <ChunkedUploaderInput
                         isSubmit={isSubmit}
                         courseId={String(data.course_id ?? '')}
                         sectionId={String(data.course_section_id ?? '')}
                         filetype="video"
                         dropzone={true}
-                        dropzoneHint="MP4, MOV, AVI · Max 2 GB"
+                        dropzoneHint={text('MP4, MOV, AVI - Max 2 GB')}
                         delayUpload={true}
                         onFileSelected={(file) => {
                             setIsFileSelected(true);
@@ -108,12 +110,12 @@ const QuickUpload = ({ course, lastLessonSort }: QuickUploadProps) => {
                 </div>
 
                 <div>
-                    <Label>Lesson Title *</Label>
+                    <Label>{text('Lesson Title')} *</Label>
                     <Input
                         name="title"
                         value={data.title}
                         onChange={(e) => setData('title', e.target.value)}
-                        placeholder="Auto-filled from filename"
+                        placeholder={text('Auto-filled from filename')}
                     />
                     <InputError message={errors.title} />
                 </div>
@@ -125,19 +127,19 @@ const QuickUpload = ({ course, lastLessonSort }: QuickUploadProps) => {
                             variant="ghost"
                             onClick={() => router.visit(route('courses.quick-poster', { id: course.id }))}
                         >
-                            Back to Poster
+                            {text('Back to Poster')}
                         </Button>
                         <Button
                             type="button"
                             variant="ghost"
                             onClick={() => router.visit(route('courses.edit', { course: course.id }))}
                         >
-                            Skip
+                            {text('Skip')}
                         </Button>
                     </div>
 
                     <LoadingButton loading={processing || isSubmit} disabled={!isFileSelected || processing || isSubmit}>
-                        {isSubmit ? 'Uploading...' : 'Save & Finish'}
+                        {isSubmit ? text('Uploading...') : text('Save & Finish')}
                     </LoadingButton>
                 </div>
             </form>

@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { onHandleChange } from '@/lib/inertia';
+import { useI18n } from '@/lib/i18n';
 import { useForm } from '@inertiajs/react';
 import { useState } from 'react';
 
@@ -17,6 +18,7 @@ interface Props {
 }
 
 const NewsletterForm = ({ title, newsletter, handler }: Props) => {
+   const { text } = useI18n();
    const [open, setOpen] = useState(false);
 
    const { data, setData, post, put, errors, processing } = useForm({
@@ -50,26 +52,26 @@ const NewsletterForm = ({ title, newsletter, handler }: Props) => {
 
                <form onSubmit={handleSubmit} className="space-y-4 p-0.5">
                   <div>
-                     <Label>Subject</Label>
+                     <Label>{text('Subject')}</Label>
                      <Input
                         required
                         type="text"
                         name="subject"
                         value={data.subject}
-                        placeholder="Enter your subject"
+                        placeholder={text('Enter your subject')}
                         onChange={(e) => onHandleChange(e, setData)}
                      />
                      <InputError message={errors.subject} />
                   </div>
 
                   <div>
-                     <Label>Description</Label>
+                     <Label>{text('Description')}</Label>
                      <TiptapEditor
                         ssr={true}
                         output="html"
                         placeholder={{
-                           paragraph: 'Type your content here...',
-                           imageCaption: 'Type caption for image (optional)',
+                           paragraph: text('Type your content here...'),
+                           imageCaption: text('Type caption for image (optional)'),
                         }}
                         contentMinHeight={256}
                         contentMaxHeight={640}
@@ -87,11 +89,11 @@ const NewsletterForm = ({ title, newsletter, handler }: Props) => {
                   <DialogFooter className="flex justify-end space-x-2 pt-4">
                      <DialogClose asChild>
                         <Button type="button" variant="outline">
-                           Close
+                           {text('Close')}
                         </Button>
                      </DialogClose>
 
-                     <LoadingButton loading={processing}>Submit</LoadingButton>
+                     <LoadingButton loading={processing}>{text('Submit')}</LoadingButton>
                   </DialogFooter>
                </form>
             </ScrollArea>

@@ -5,11 +5,13 @@ import { Dialog, DialogClose, DialogContent, DialogFooter, DialogHeader, DialogT
 import { Label } from '@/components/ui/label';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { useI18n } from '@/lib/i18n';
 import { useForm } from '@inertiajs/react';
 import { Send } from 'lucide-react';
 import { useState } from 'react';
 
 const NewsletterSend = ({ id }: { id: string | number }) => {
+   const { text } = useI18n();
    const [open, setOpen] = useState(false);
 
    const { data, setData, post, errors, processing } = useForm({
@@ -26,9 +28,9 @@ const NewsletterSend = ({ id }: { id: string | number }) => {
    };
 
    const users = [
-      { title: 'All', value: 'all' },
-      { title: 'Student', value: 'student' },
-      { title: 'Instructor', value: 'instructor' },
+      { title: text('All'), value: 'all' },
+      { title: text('Student'), value: 'student' },
+      { title: text('Instructor'), value: 'instructor' },
    ];
 
    return (
@@ -42,16 +44,16 @@ const NewsletterSend = ({ id }: { id: string | number }) => {
          <DialogContent className="p-0">
             <ScrollArea className="max-h-[90vh] p-6">
                <DialogHeader className="mb-6">
-                  <DialogTitle>Send newsletter</DialogTitle>
-                  <DialogDescription>Select recipients and send the newsletter</DialogDescription>
+                  <DialogTitle>{text('Send newsletter')}</DialogTitle>
+                  <DialogDescription>{text('Select recipients and send the newsletter')}</DialogDescription>
                </DialogHeader>
 
                <form onSubmit={handleSubmit} className="space-y-4 p-0.5">
                   <div>
-                     <Label>Send To</Label>
+                     <Label>{text('Send To')}</Label>
                      <Select value={data.user_type} onValueChange={(value) => setData('user_type', value)}>
                         <SelectTrigger>
-                           <SelectValue placeholder="Select user type" />
+                           <SelectValue placeholder={text('Select user type')} />
                         </SelectTrigger>
                         <SelectContent>
                            {users.map(({ title, value }) => (
@@ -67,11 +69,11 @@ const NewsletterSend = ({ id }: { id: string | number }) => {
                   <DialogFooter className="flex justify-end space-x-2 pt-4">
                      <DialogClose asChild>
                         <Button type="button" variant="outline">
-                           Close
+                           {text('Close')}
                         </Button>
                      </DialogClose>
 
-                     <LoadingButton loading={processing}>Submit</LoadingButton>
+                     <LoadingButton loading={processing}>{text('Submit')}</LoadingButton>
                   </DialogFooter>
                </form>
             </ScrollArea>

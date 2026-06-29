@@ -1,5 +1,6 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import DashboardLayout from '@/layouts/dashboard/layout';
+import { useI18n } from '@/lib/i18n';
 import { SharedData } from '@/types/global';
 import { ReactNode } from 'react';
 import Footer from './partials/footer';
@@ -12,26 +13,27 @@ export interface SystemProps extends SharedData {
 }
 
 const System = () => {
+   const { text } = useI18n();
    return (
       <div className="md:px-3">
          <div className="mb-6">
-            <h1 className="text-2xl font-bold">System Settings</h1>
-            <p className="text-gray-500">Manage your system's core settings</p>
+            <h1 className="text-2xl font-bold">{text('System Settings')}</h1>
+            <p className="text-gray-500">{text("Manage your system's core settings")}</p>
          </div>
 
          <Tabs defaultValue="website">
             <TabsList className="h-13 px-2">
                <TabsTrigger value="website" className="h-10 cursor-pointer px-6">
-                  Website
+                  {text('Website')}
                </TabsTrigger>
                <TabsTrigger value="navbar" className="h-10 cursor-pointer px-6">
-                  Navbar
+                  {text('Navbar')}
                </TabsTrigger>
                <TabsTrigger value="footer" className="h-10 cursor-pointer px-6">
-                  Footer
+                  {text('Footer')}
                </TabsTrigger>
                <TabsTrigger value="style" className="h-10 cursor-pointer px-6">
-                  Style
+                  {text('Style')}
                </TabsTrigger>
             </TabsList>
 

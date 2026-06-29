@@ -8,6 +8,7 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Textarea } from '@/components/ui/textarea';
 import DashboardLayout from '@/layouts/dashboard/layout';
 import { onHandleChange } from '@/lib/inertia';
+import { useI18n } from '@/lib/i18n';
 import { SharedData } from '@/types/global';
 import { Head, useForm } from '@inertiajs/react';
 
@@ -16,6 +17,7 @@ interface Props extends SharedData {
 }
 
 const Update = ({ page }: Props) => {
+   const { text } = useI18n();
    const { data, setData, put, errors, processing } = useForm({
       name: page.name,
       slug: page.slug,
@@ -49,35 +51,35 @@ const Update = ({ page }: Props) => {
 
    return (
       <>
-         <Head title="Edit Custom Page" />
+         <Head title={text('Edit Custom Page')} />
 
          <div className="container mx-auto space-y-10 px-4 py-6">
             <div className="mb-6 flex items-center justify-between">
-               <h1 className="text-2xl font-bold text-gray-800">Edit Custom Page</h1>
+               <h1 className="text-2xl font-bold text-gray-800">{text('Edit Custom Page')}</h1>
             </div>
 
             <Card className="p-4 sm:p-6">
                <form onSubmit={handleSubmit} className="space-y-4">
                   <div>
-                     <Label>Name</Label>
-                     <Input name="name" value={data.name} onChange={(e) => onHandleChange(e, setData)} placeholder="Enter Page Name" />
+                     <Label>{text('Name')}</Label>
+                     <Input name="name" value={data.name} onChange={(e) => onHandleChange(e, setData)} placeholder={text('Enter Page Name')} />
                      <InputError message={errors.name} />
                   </div>
 
                   <div>
-                     <Label>Title</Label>
-                     <Input name="title" value={data.title} onChange={(e) => onHandleChange(e, setData)} placeholder="Enter Page Title" />
+                     <Label>{text('Title')}</Label>
+                     <Input name="title" value={data.title} onChange={(e) => onHandleChange(e, setData)} placeholder={text('Enter Page Title')} />
                      <InputError message={errors.title} />
                   </div>
 
                   <div>
-                     <Label>Description</Label>
+                     <Label>{text('Description')}</Label>
                      <TiptapEditor
                         ssr={true}
                         output="html"
                         placeholder={{
-                           paragraph: 'Type your content here...',
-                           imageCaption: 'Type caption for image (optional)',
+                           paragraph: text('Type your content here...'),
+                           imageCaption: text('Type caption for image (optional)'),
                         }}
                         contentMinHeight={256}
                         contentMaxHeight={640}
@@ -93,57 +95,57 @@ const Update = ({ page }: Props) => {
                   </div>
 
                   <div>
-                     <Label>Meta Description</Label>
+                     <Label>{text('Meta Description')}</Label>
                      <Textarea
                         rows={3}
                         name="meta_description"
                         value={data.meta_description}
                         onChange={(e) => onHandleChange(e, setData)}
-                        placeholder="Enter Meta Description"
+                        placeholder={text('Enter Meta Description')}
                      />
                      <InputError message={errors.meta_description} />
                   </div>
 
                   <div>
-                     <Label>Meta Keywords</Label>
+                     <Label>{text('Meta Keywords')}</Label>
                      <Input
                         name="meta_keywords"
                         value={data.meta_keywords}
                         onChange={(e) => onHandleChange(e, setData)}
-                        placeholder="Enter Meta Keywords"
+                        placeholder={text('Enter Meta Keywords')}
                      />
                      <InputError message={errors.meta_keywords} />
                   </div>
 
                   <div className="rounded-lg border p-4">
-                     <h2 className="mb-4 text-lg font-semibold">Thai Translations</h2>
+                     <h2 className="mb-4 text-lg font-semibold">{text('Thai Translations')}</h2>
 
                      <div className="mb-4">
-                        <Label>Thai Name</Label>
+                        <Label>{text('Thai Name')}</Label>
                         <Input
                            value={data.translations?.th?.name || ''}
                            onChange={(e) => handleThaiTranslationChange('name', e.target.value)}
-                           placeholder="Enter Thai Page Name"
+                           placeholder={text('Enter Thai Page Name')}
                         />
                      </div>
 
                      <div className="mb-4">
-                        <Label>Thai Title</Label>
+                        <Label>{text('Thai Title')}</Label>
                         <Input
                            value={data.translations?.th?.title || ''}
                            onChange={(e) => handleThaiTranslationChange('title', e.target.value)}
-                           placeholder="Enter Thai Page Title"
+                           placeholder={text('Enter Thai Page Title')}
                         />
                      </div>
 
                      <div className="mb-4">
-                        <Label>Thai Description</Label>
+                        <Label>{text('Thai Description')}</Label>
                         <TiptapEditor
                            ssr={true}
                            output="html"
                            placeholder={{
-                              paragraph: 'Type Thai content here...',
-                              imageCaption: 'Type caption for image (optional)',
+                              paragraph: text('Type Thai content here...'),
+                              imageCaption: text('Type caption for image (optional)'),
                            }}
                            contentMinHeight={256}
                            contentMaxHeight={640}
@@ -153,27 +155,27 @@ const Update = ({ page }: Props) => {
                      </div>
 
                      <div className="mb-4">
-                        <Label>Thai Meta Description</Label>
+                        <Label>{text('Thai Meta Description')}</Label>
                         <Textarea
                            rows={3}
                            value={data.translations?.th?.meta_description || ''}
                            onChange={(e) => handleThaiTranslationChange('meta_description', e.target.value)}
-                           placeholder="Enter Thai Meta Description"
+                           placeholder={text('Enter Thai Meta Description')}
                         />
                      </div>
 
                      <div>
-                        <Label>Thai Meta Keywords</Label>
+                        <Label>{text('Thai Meta Keywords')}</Label>
                         <Input
                            value={data.translations?.th?.meta_keywords || ''}
                            onChange={(e) => handleThaiTranslationChange('meta_keywords', e.target.value)}
-                           placeholder="Enter Thai Meta Keywords"
+                           placeholder={text('Enter Thai Meta Keywords')}
                         />
                      </div>
                   </div>
 
                   <div>
-                     <Label>Active</Label>
+                     <Label>{text('Active')}</Label>
                      <RadioGroup
                         defaultValue={data.active ? 'on' : 'off'}
                         className="flex items-center space-x-4 pt-2 pb-1"
@@ -181,11 +183,11 @@ const Update = ({ page }: Props) => {
                      >
                         <div className="flex items-center space-x-2">
                            <RadioGroupItem className="cursor-pointer" id="off" value="off" />
-                           <Label htmlFor="off">Off</Label>
+                           <Label htmlFor="off">{text('Off')}</Label>
                         </div>
                         <div className="flex items-center space-x-2">
                            <RadioGroupItem className="cursor-pointer" id="on" value="on" />
-                           <Label htmlFor="on">On</Label>
+                           <Label htmlFor="on">{text('On')}</Label>
                         </div>
                      </RadioGroup>
                      <InputError message={errors.active} />
@@ -193,7 +195,7 @@ const Update = ({ page }: Props) => {
 
                   <div>
                      <Button type="submit" disabled={processing}>
-                        {processing ? 'Saving...' : 'Save Changes'}
+                        {processing ? text('Saving...') : text('Save Changes')}
                      </Button>
                   </div>
                </form>

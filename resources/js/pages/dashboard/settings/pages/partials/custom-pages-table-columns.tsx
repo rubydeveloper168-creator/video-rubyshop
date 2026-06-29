@@ -6,35 +6,35 @@ import { ColumnDef } from '@tanstack/react-table';
 import { MoreVertical } from 'lucide-react';
 import { toast } from 'sonner';
 
-const TableColumn = (): ColumnDef<Page>[] => [
+const TableColumn = (text: (value?: string | null) => string): ColumnDef<Page>[] => [
    {
       accessorKey: 'name',
-      header: () => <p className="px-3">Name</p>,
+      header: () => <p className="px-3">{text('Name')}</p>,
       cell: ({ row }) => <div className="px-3 py-1 text-sm font-medium">{row.getValue('name')}</div>,
    },
    {
       accessorKey: 'slug',
-      header: () => <p className="px-3">Slug</p>,
+      header: () => <p className="px-3">{text('Slug')}</p>,
       cell: ({ row }) => <div className="text-muted-foreground px-3 py-1 text-sm">{row.getValue('slug')}</div>,
    },
    {
       accessorKey: 'title',
-      header: () => <p className="px-3">Title</p>,
+      header: () => <p className="px-3">{text('Title')}</p>,
       cell: ({ row }) => <div className="text-muted-foreground px-3 py-1 text-sm">{row.getValue('title')}</div>,
    },
    {
       accessorKey: 'meta_description',
-      header: () => <p className="px-3">Meta Description</p>,
+      header: () => <p className="px-3">{text('Meta Description')}</p>,
       cell: ({ row }) => <div className="text-muted-foreground px-3 py-1 text-sm">{row.getValue('meta_description')}</div>,
    },
    {
       accessorKey: 'meta_keywords',
-      header: () => <p className="px-3">Meta Keywords</p>,
+      header: () => <p className="px-3">{text('Meta Keywords')}</p>,
       cell: ({ row }) => <div className="text-muted-foreground px-3 py-1 text-sm">{row.getValue('meta_keywords')}</div>,
    },
    {
       id: 'action',
-      header: () => <div className="px-3 text-center">action</div>,
+      header: () => <div className="px-3 text-center">{text('Action')}</div>,
       cell: ({ row }) => {
          const page = row.original;
          const url = window.location.origin + '/' + page.slug;
@@ -61,7 +61,7 @@ const TableColumn = (): ColumnDef<Page>[] => [
                      className="bg-muted hover:!bg-muted-foreground/10"
                      onClick={() => router.get(route('settings.custom-page.edit', page.id))}
                   >
-                     <span>Edit Page</span>
+                     <span>{text('Edit Page')}</span>
                   </Button>
 
                   <Button
@@ -70,15 +70,15 @@ const TableColumn = (): ColumnDef<Page>[] => [
                      className="bg-muted hover:!bg-muted-foreground/10"
                      onClick={() => {
                         navigator.clipboard.writeText(url);
-                        toast.success('URL copied to clipboard');
+                        toast.success(text('URL copied to clipboard'));
                      }}
                   >
-                     <span>Copy URL</span>
+                     <span>{text('Copy URL')}</span>
                   </Button>
 
                   <Button size="sm" variant="ghost" className="bg-muted hover:!bg-muted-foreground/10">
                      <a target="_blank" href={route('inner.page', page.slug)}>
-                        Preview Page
+                        {text('Preview Page')}
                      </a>
                   </Button>
 
@@ -87,7 +87,7 @@ const TableColumn = (): ColumnDef<Page>[] => [
                         routePath={route('settings.custom-page.destroy', page.id)}
                         actionComponent={
                            <Button size="sm" variant="destructive">
-                              <span>Delete</span>
+                              <span>{text('Delete')}</span>
                            </Button>
                         }
                      />

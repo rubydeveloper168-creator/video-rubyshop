@@ -1,4 +1,5 @@
 import DashboardLayout from '@/layouts/dashboard/layout';
+import { useI18n } from '@/lib/i18n';
 import { ReactNode } from 'react';
 import Google from './partials/google';
 
@@ -7,11 +8,12 @@ interface Props {
 }
 
 const Auth = ({ auths }: Props) => {
+   const { text } = useI18n();
    const components = [Google];
 
    const tabs = auths.map((auth, index) => ({
       ...auth,
-      Component: components[index] ?? <div>No component found</div>,
+      Component: components[index] ?? (() => <div>{text('No component found')}</div>),
    }));
 
    return (

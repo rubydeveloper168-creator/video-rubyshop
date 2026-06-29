@@ -1,6 +1,7 @@
 import { Button } from '@/components/ui/button';
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { useI18n } from '@/lib/i18n';
 import { cn } from '@/lib/utils';
 import { Check, ChevronsUpDown } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
@@ -20,6 +21,7 @@ interface Props {
 }
 
 const Combobox = ({ data, placeholder, onSelect, defaultValue }: Props) => {
+    const { text } = useI18n();
     const [open, setOpen] = useState(false);
     const [value, setValue] = useState(defaultValue || '');
     const initialRenderRef = useRef(true);
@@ -58,9 +60,9 @@ const Combobox = ({ data, placeholder, onSelect, defaultValue }: Props) => {
             </PopoverTrigger>
             <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0">
                 <Command>
-                    <CommandInput placeholder="Search element..." className="focus:border-none focus:ring-0 focus:outline-none" />
+                    <CommandInput placeholder={text('Search element...')} className="focus:border-none focus:ring-0 focus:outline-none" />
                     <CommandList>
-                        <CommandEmpty>No element found.</CommandEmpty>
+                        <CommandEmpty>{text('No element found.')}</CommandEmpty>
                         <CommandGroup className="max-h-[300px] overflow-y-auto">
                             {data.map((item) => (
                                 <CommandItem key={item.value} value={item.value} onSelect={() => handleSelect(item)}>

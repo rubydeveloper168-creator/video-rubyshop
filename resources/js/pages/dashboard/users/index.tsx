@@ -4,6 +4,7 @@ import TableHeader from '@/components/table/table-header';
 import { Card } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableRow } from '@/components/ui/table';
 import DashboardLayout from '@/layouts/dashboard/layout';
+import { useI18n } from '@/lib/i18n';
 import { SharedData } from '@/types/global';
 import { SortingState, flexRender, getCoreRowModel, getFilteredRowModel, getSortedRowModel, useReactTable } from '@tanstack/react-table';
 import * as React from 'react';
@@ -15,11 +16,12 @@ interface Props extends SharedData {
 }
 
 const Index = (props: Props) => {
+   const { text } = useI18n();
    const [sorting, setSorting] = React.useState<SortingState>([]);
 
    const table = useReactTable({
       data: props.users.data,
-      columns: TableColumn,
+      columns: TableColumn(text),
       onSortingChange: setSorting,
       getCoreRowModel: getCoreRowModel(),
       getSortedRowModel: getSortedRowModel(),
@@ -31,7 +33,7 @@ const Index = (props: Props) => {
       <Card>
          <TableFilter
             data={props.users}
-            title="User List"
+            title={text('User List')}
             globalSearch={true}
             tablePageSizes={[10, 15, 20, 25]}
             routeName="users.index"
@@ -43,15 +45,21 @@ const Index = (props: Props) => {
             <TableHeader table={table} tableHeadClass="px-6" />
 
             <TableBody>
-               {table.getRowModel().rows.map((row) => (
-                  <TableRow key={row.id} data-state={row.getIsSelected() && 'selected'}>
-                     {row.getVisibleCells().map((cell) => (
-                        <TableCell key={cell.id} className="px-6">
-                           {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                        </TableCell>
-                     ))}
+               {table.getRowModel().rows?.length ? (
+                  table.getRowModel().rows.map((row) => (
+                     <TableRow key={row.id} data-state={row.getIsSelected() && 'selected'}>
+                        {row.getVisibleCells().map((cell) => (
+                           <TableCell key={cell.id} className="px-6">
+                              {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                           </TableCell>
+                        ))}
+                     </TableRow>
+                  ))
+               ) : (
+                  <TableRow>
+                     <TableCell className="h-24 text-center">{text('No results.')}</TableCell>
                   </TableRow>
-               ))}
+               )}
             </TableBody>
          </Table>
 

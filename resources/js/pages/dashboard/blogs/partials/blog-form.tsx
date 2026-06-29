@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { onHandleChange } from '@/lib/inertia';
+import { useI18n } from '@/lib/i18n';
 import { Link, useForm, usePage } from '@inertiajs/react';
 import { FileText, Image, Save } from 'lucide-react';
 import { FormEvent, useState } from 'react';
@@ -15,6 +16,7 @@ import { BlogCreateEditProps } from '../create-edit';
 const BlogForm = () => {
    const { props } = usePage<BlogCreateEditProps>();
    const { auth, blog, categories, statuses } = props;
+   const { text } = useI18n();
    const [banner, setBanner] = useState(blog?.banner || '/assets/images/blank-image.jpg');
    const [thumbnail, setThumbnail] = useState(blog?.thumbnail || '/assets/images/blank-image.jpg');
 
@@ -52,19 +54,19 @@ const BlogForm = () => {
             <CardHeader>
                <CardTitle className="flex items-center gap-2">
                   <FileText className="h-5 w-5" />
-                  Blog Information
+                  {text('Blog Information')}
                </CardTitle>
-               <CardDescription>Provide the essential details about your blog post</CardDescription>
+               <CardDescription>{text('Provide the essential details about your blog post')}</CardDescription>
             </CardHeader>
 
             <CardContent className="space-y-4">
                <div>
-                  <Label htmlFor="title">Title (80 Character)</Label>
+                  <Label htmlFor="title">{text('Title (80 Character)')}</Label>
                   <Input
                      id="title"
                      value={data.title}
                      onChange={(e) => setData('title', e.target.value)}
-                     placeholder="Enter blog title"
+                     placeholder={text('Enter blog title')}
                      maxLength={80}
                   />
                   <InputError message={errors.title} />
@@ -72,18 +74,18 @@ const BlogForm = () => {
 
                <div className="grid gap-4 md:grid-cols-2">
                   <div>
-                     <Label htmlFor="blog_category_id">Category *</Label>
+                     <Label htmlFor="blog_category_id">{text('Category')} *</Label>
                      <Combobox
                         defaultValue={data.blog_category_id as string}
                         data={transformedCategories || []}
-                        placeholder="Select the course instructor"
+                        placeholder={text('Select category')}
                         onSelect={(selected) => setData('blog_category_id', selected.value)}
                      />
                      <InputError message={errors.blog_category_id} />
                   </div>
 
                   <div>
-                     <Label htmlFor="status">Status *</Label>
+                     <Label htmlFor="status">{text('Status')} *</Label>
                      <Select value={data.status} onValueChange={(value) => setData('status', value)}>
                         <SelectTrigger>
                            <SelectValue />
@@ -101,25 +103,25 @@ const BlogForm = () => {
                </div>
 
                <div>
-                  <Label htmlFor="keywords">Keywords (80 Character)</Label>
+                  <Label htmlFor="keywords">{text('Keywords (80 Character)')}</Label>
                   <Input
                      id="keywords"
                      value={data.keywords}
                      onChange={(e) => setData('keywords', e.target.value)}
-                     placeholder="Enter your keywords"
+                     placeholder={text('Enter your keywords')}
                      maxLength={80}
                   />
                   <InputError message={errors.keywords} />
                </div>
 
                <div>
-                  <Label htmlFor="description">Description *</Label>
+                  <Label htmlFor="description">{text('Description')} *</Label>
                   <TiptapEditor
                      ssr={true}
                      output="html"
                      placeholder={{
-                        paragraph: 'Write your blog content here...',
-                        imageCaption: 'Type caption for image (optional)',
+                        paragraph: text('Write your blog content here...'),
+                        imageCaption: text('Type caption for image (optional)'),
                      }}
                      contentMinHeight={256}
                      contentMaxHeight={640}
@@ -141,13 +143,13 @@ const BlogForm = () => {
             <CardHeader>
                <CardTitle className="flex items-center gap-2">
                   <Image className="h-5 w-5" />
-                  Media Files
+                  {text('Media Files')}
                </CardTitle>
-               <CardDescription>Upload banner and thumbnail images for your blog</CardDescription>
+               <CardDescription>{text('Upload banner and thumbnail images for your blog')}</CardDescription>
             </CardHeader>
             <CardContent className="grid gap-4 md:grid-cols-2">
                <div>
-                  <Label htmlFor="banner">Blog Banner</Label>
+                  <Label htmlFor="banner">{text('Blog Banner')}</Label>
                   <Input id="banner" type="file" accept="image/*" name="banner" onChange={(e) => onHandleChange(e, setData, setBanner)} />
                   <InputError message={errors.banner} />
 
@@ -157,7 +159,7 @@ const BlogForm = () => {
                </div>
 
                <div>
-                  <Label htmlFor="thumbnail">Blog Thumbnail</Label>
+                  <Label htmlFor="thumbnail">{text('Blog Thumbnail')}</Label>
                   <Input id="thumbnail" type="file" accept="image/*" name="thumbnail" onChange={(e) => onHandleChange(e, setData, setThumbnail)} />
                   <InputError message={errors.thumbnail} />
 
@@ -171,11 +173,11 @@ const BlogForm = () => {
          {/* Submit Buttons */}
          <div className="flex items-center justify-end gap-4">
             <Button type="button" variant="outline" asChild>
-               <Link href={route('blogs.index')}>Cancel</Link>
+               <Link href={route('blogs.index')}>{text('Cancel')}</Link>
             </Button>
             <Button type="submit" disabled={processing}>
                <Save className="mr-2 h-4 w-4" />
-               {blog ? 'Update Blog' : 'Add Blog'}
+               {blog ? text('Update Blog') : text('Add Blog')}
             </Button>
          </div>
       </form>

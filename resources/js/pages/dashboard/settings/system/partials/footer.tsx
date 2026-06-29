@@ -3,12 +3,14 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Separator } from '@/components/ui/separator';
 import FooterEditor from '@/layouts/footer/footer-editor';
 import FooterPreview from '@/layouts/footer/footer-preview';
+import { useI18n } from '@/lib/i18n';
 import { usePage } from '@inertiajs/react';
 import { Edit, Eye, X } from 'lucide-react';
 import { useState } from 'react';
 import { SystemProps } from '../index';
 
 const Footer = () => {
+   const { text } = useI18n();
    const { props } = usePage<SystemProps>();
    const { footer } = props;
    const [showEditor, setShowEditor] = useState(false);
@@ -17,7 +19,7 @@ const Footer = () => {
       return (
          <Card>
             <CardContent className="flex items-center justify-center py-8">
-               <p className="text-muted-foreground">Footer configuration not found.</p>
+               <p className="text-muted-foreground">{text('Footer configuration not found.')}</p>
             </CardContent>
          </Card>
       );
@@ -30,22 +32,22 @@ const Footer = () => {
                <div>
                   <CardTitle className="flex items-center gap-2">
                      <Eye className="h-5 w-5" />
-                     Live Footer Preview
+                     {text('Live Footer Preview')}
                   </CardTitle>
                   <CardDescription className="hidden sm:block">
-                     Interactive preview of {footer.title} ({footer.slug})
+                     {text('Interactive preview of')} {footer.title} ({footer.slug})
                   </CardDescription>
                </div>
 
                {showEditor ? (
                   <Button onClick={() => setShowEditor(false)} variant="outline">
                      <X className="mr-2 h-4 w-4" />
-                     Close
+                     {text('Close')}
                   </Button>
                ) : (
                   <Button onClick={() => setShowEditor(true)} className="flex items-center gap-2">
                      <Edit className="h-4 w-4" />
-                     Edit Footer
+                     {text('Edit Footer')}
                   </Button>
                )}
             </div>

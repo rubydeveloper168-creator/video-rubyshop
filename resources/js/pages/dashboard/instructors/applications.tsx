@@ -4,6 +4,7 @@ import TableHeader from '@/components/table/table-header';
 import { Card } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableRow } from '@/components/ui/table';
 import DashboardLayout from '@/layouts/dashboard/layout';
+import { useI18n } from '@/lib/i18n';
 import { SharedData } from '@/types/global';
 import { SortingState, flexRender, getCoreRowModel, getFilteredRowModel, getSortedRowModel, useReactTable } from '@tanstack/react-table';
 import * as React from 'react';
@@ -15,11 +16,12 @@ interface Props extends SharedData {
 }
 
 const Applications = (props: Props) => {
+   const { text } = useI18n();
    const [sorting, setSorting] = React.useState<SortingState>([]);
 
    const table = useReactTable({
       data: props.applications.data,
-      columns: TableColumn,
+      columns: TableColumn(text),
       onSortingChange: setSorting,
       getCoreRowModel: getCoreRowModel(),
       getSortedRowModel: getSortedRowModel(),
@@ -31,7 +33,7 @@ const Applications = (props: Props) => {
       <Card>
          <TableFilter
             data={props.applications}
-            title="Instructor List"
+            title={text('Instructor List')}
             globalSearch={true}
             tablePageSizes={[10, 15, 20, 25]}
             routeName="instructors.applications"
@@ -55,7 +57,7 @@ const Applications = (props: Props) => {
             </TableBody>
          </Table>
 
-         {table.getRowModel().rows?.length <= 0 && <p className="border-border w-full border-b px-6 py-10 text-center">No results found.</p>}
+         {table.getRowModel().rows?.length <= 0 && <p className="border-border w-full border-b px-6 py-10 text-center">{text('No results found.')}</p>}
 
          <TableFooter className="p-5 sm:p-7" routeName="instructors.applications" paginationInfo={props.applications} />
       </Card>

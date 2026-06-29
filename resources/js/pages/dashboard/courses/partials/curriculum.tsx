@@ -6,6 +6,7 @@ import { Card } from '@/components/ui/card';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Separator } from '@/components/ui/separator';
 import useScreen from '@/hooks/use-screen';
+import { useI18n } from '@/lib/i18n';
 import { router, usePage } from '@inertiajs/react';
 import { ArrowDownUp, ListOrdered, MoreVertical, Pencil, Plus, Trash2 } from 'lucide-react';
 import { CourseUpdateProps } from '../update';
@@ -18,6 +19,7 @@ import CourseQrPoster from './course-qr-poster';
 const Curriculum = () => {
    const { props } = usePage<CourseUpdateProps>();
    const { screen } = useScreen();
+   const { text } = useI18n();
 
    return (
       <div className="space-y-6">
@@ -26,20 +28,20 @@ const Curriculum = () => {
          <Card className="p-4 sm:p-6">
             <div className="flex flex-wrap items-center gap-4">
                <SectionForm
-                  title="Add Section"
+                  title={text('Add Section')}
                   handler={
                      <Button variant="ghost" className="bg-muted hover:!bg-muted-foreground/10">
-                        Add Section
+                        {text('Add Section')}
                      </Button>
                   }
                />
 
                <DataSortModal
-                  title="Sort Items"
+                  title={text('Sort Items')}
                   data={props.course.sections}
                   handler={
                      <Button variant="ghost" className="bg-muted hover:!bg-muted-foreground/10">
-                        Sort Section
+                        {text('Sort Section')}
                      </Button>
                   }
                   onOrderChange={(newOrder) => {
@@ -73,29 +75,29 @@ const Curriculum = () => {
                            {screen > 1024 ? (
                               <div className="flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
                                  <QuizForm
-                                    title="Add Quiz"
+                                    title={text('Add Quiz')}
                                     sectionId={section.id}
                                     handler={
                                        <Button variant="ghost" className="bg-muted hover:!bg-muted-foreground/10 h-8">
                                           <Plus className="h-4 w-4" />
-                                          <span>Quiz</span>
+                                          <span>{text('Quiz')}</span>
                                        </Button>
                                     }
                                  />
 
                                  <LessonForm
-                                    title="Add Lesson"
+                                    title={text('Add Lesson')}
                                     sectionId={section.id}
                                     handler={
                                        <Button variant="ghost" className="bg-muted hover:!bg-muted-foreground/10 h-8">
                                           <Plus className="h-4 w-4" />
-                                          <span>Lesson</span>
+                                          <span>{text('Lesson')}</span>
                                        </Button>
                                     }
                                  />
 
                                  <DataSortModal
-                                    title="Sort Items"
+                                    title={text('Sort Items')}
                                     data={section.section_lessons}
                                     handler={
                                        <Button variant="ghost" className="bg-muted hover:!bg-muted-foreground/10 h-8 w-8">
@@ -119,7 +121,7 @@ const Curriculum = () => {
                                  />
 
                                  <SectionForm
-                                    title="Update Section"
+                                    title={text('Update Section')}
                                     section={section}
                                     handler={
                                        <Button variant="ghost" className="bg-muted hover:!bg-muted-foreground/10 h-8 w-8">
@@ -153,31 +155,31 @@ const Curriculum = () => {
                                  </PopoverTrigger>
                                  <PopoverContent align="end" className="flex w-[140px] flex-col space-y-1 p-2">
                                     <QuizForm
-                                       title="Add Quiz"
+                                       title={text('Add Quiz')}
                                        sectionId={section.id}
                                        handler={
                                           <Button variant="ghost" className="bg-muted hover:!bg-muted-foreground/10 h-8 w-full">
-                                             Add Quiz
+                                             {text('Add Quiz')}
                                           </Button>
                                        }
                                     />
 
                                     <LessonForm
-                                       title="Add Lesson"
+                                       title={text('Add Lesson')}
                                        sectionId={section.id}
                                        handler={
                                           <Button variant="ghost" className="bg-muted hover:!bg-muted-foreground/10 h-8 w-full">
-                                             Add Lesson
+                                             {text('Add Lesson')}
                                           </Button>
                                        }
                                     />
 
                                     <DataSortModal
-                                       title="Sort Items"
+                                       title={text('Sort Items')}
                                        data={section.section_lessons}
                                        handler={
                                           <Button variant="ghost" className="bg-muted hover:!bg-muted-foreground/10 h-8 w-full">
-                                             Sort Lessons
+                                             {text('Sort Lessons')}
                                           </Button>
                                        }
                                        onOrderChange={(newOrder) => {
@@ -197,11 +199,11 @@ const Curriculum = () => {
                                     />
 
                                     <SectionForm
-                                       title="Update Section"
+                                       title={text('Update Section')}
                                        section={section}
                                        handler={
                                           <Button variant="ghost" className="bg-muted hover:!bg-muted-foreground/10 h-8 w-full">
-                                             Edit Section
+                                             {text('Edit Section')}
                                           </Button>
                                        }
                                     />
@@ -212,7 +214,7 @@ const Curriculum = () => {
                                        })}
                                        actionComponent={
                                           <Button variant="ghost" className="bg-muted hover:!bg-muted-foreground/10 h-8 w-full">
-                                             Delete Section
+                                             {text('Delete Section')}
                                           </Button>
                                        }
                                     />
@@ -243,7 +245,7 @@ const Curriculum = () => {
                                     <LessonForm
                                        lesson={lesson}
                                        sectionId={section.id}
-                                       title="Update Lesson"
+                                       title={text('Update Lesson')}
                                        handler={
                                           <Button size="icon" variant="secondary" className="h-7 w-7">
                                              <Pencil className="h-3 w-3" />
@@ -255,7 +257,7 @@ const Curriculum = () => {
                            ))
                         ) : (
                            <div className="px-4 py-3 text-center">
-                              <p>There is no lesson added</p>
+                              <p>{text('There is no lesson added')}</p>
                            </div>
                         )}
 
@@ -266,7 +268,7 @@ const Curriculum = () => {
                               <div className="invisible flex items-center gap-2 group-hover:visible">
                                  <QuestionQuestions
                                     quiz={quiz}
-                                    title="Quiz Questions"
+                                    title={text('Quiz Questions')}
                                     handler={
                                        <Button size="icon" variant="secondary" className="h-7 w-7">
                                           <ListOrdered className="h-3 w-3" />
@@ -287,7 +289,7 @@ const Curriculum = () => {
 
                                  <QuizForm
                                     quiz={quiz}
-                                    title="Update Quiz"
+                                    title={text('Update Quiz')}
                                     sectionId={section.id}
                                     handler={
                                        <Button size="icon" variant="secondary" className="h-7 w-7">

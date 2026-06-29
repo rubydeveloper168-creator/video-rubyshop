@@ -1,11 +1,12 @@
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { ColumnDef } from '@tanstack/react-table';
+import { AppLocale } from '@/lib/i18n';
 
-const PayoutsTableColumn: ColumnDef<Payout>[] = [
+const PayoutsTableColumn = (text: (value?: string | null) => string, locale: AppLocale): ColumnDef<Payout>[] => [
    {
       accessorKey: 'profile',
-      header: () => <div className="pl-4">Name</div>,
+      header: () => <div className="pl-4">{text('Name')}</div>,
       cell: ({ row }) => (
          <div className="flex items-center gap-2 pl-4 capitalize">
             <Avatar>
@@ -22,7 +23,7 @@ const PayoutsTableColumn: ColumnDef<Payout>[] = [
    },
    {
       accessorKey: 'amount',
-      header: () => <div className="text-center">Payout amount</div>,
+      header: () => <div className="text-center">{text('Payout amount')}</div>,
       cell: ({ row }) => (
          <div className="text-center capitalize">
             <p>{row.original.amount}$</p>
@@ -31,7 +32,7 @@ const PayoutsTableColumn: ColumnDef<Payout>[] = [
    },
    {
       accessorKey: 'method',
-      header: () => <div className="text-center">Payout Method</div>,
+      header: () => <div className="text-center">{text('Payout Method')}</div>,
       cell: ({ row }) => (
          <div className="text-center capitalize">
             <p>{row.original.payout_method}</p>
@@ -40,20 +41,20 @@ const PayoutsTableColumn: ColumnDef<Payout>[] = [
    },
    {
       accessorKey: 'status',
-      header: () => <div className="text-center">Status</div>,
+      header: () => <div className="text-center">{text('Status')}</div>,
       cell: ({ row }) => <div className="text-center capitalize">{row.getValue('status')}</div>,
    },
    {
       id: 'processed',
-      header: () => <div className="text-center">Payout Date</div>,
-      cell: ({ row }) => <div className="text-center">{row.original.updated_at}</div>,
+      header: () => <div className="text-center">{text('Payout Date')}</div>,
+      cell: ({ row }) => <div className="text-center">{new Date(row.original.updated_at).toLocaleDateString(locale === 'th' ? 'th-TH' : 'en-US', { year: 'numeric', month: 'short', day: 'numeric' })}</div>,
    },
    {
       id: 'action',
-      header: () => <div className="pr-4 text-end">Action</div>,
+      header: () => <div className="pr-4 text-end">{text('Action')}</div>,
       cell: ({ row }) => (
          <div className="pr-4 text-end">
-            <Button>Print</Button>
+            <Button>{text('Print')}</Button>
          </div>
       ),
    },

@@ -1,10 +1,12 @@
 import InputError from '@/components/input-error';
 import LoadingButton from '@/components/loading-button';
 import { Card } from '@/components/ui/card';
+import { useI18n } from '@/lib/i18n';
 import { useForm } from '@inertiajs/react';
 import { Download, RefreshCw } from 'lucide-react';
 
 const ApplicationBackup = () => {
+   const { text } = useI18n();
    // Form for backup functionality
    const { post, errors, processing } = useForm({});
 
@@ -25,9 +27,9 @@ const ApplicationBackup = () => {
             <div className="mb-4">
                <h2 className="flex items-center gap-2 text-xl font-semibold">
                   <Download className="h-5 w-5" />
-                  Application Backup
+                  {text('Application Backup')}
                </h2>
-               <p className="text-muted-foreground mt-1 text-sm">Create a complete backup of your application including files and database</p>
+               <p className="text-muted-foreground mt-1 text-sm">{text('Create a complete backup of your application including files and database')}</p>
             </div>
 
             <form onSubmit={handleBackup}>
@@ -38,26 +40,26 @@ const ApplicationBackup = () => {
                            <Download className="h-5 w-5 text-blue-600" />
                         </div>
                         <div className="ml-3">
-                           <h3 className="text-sm font-medium text-blue-800">What will be backed up?</h3>
+                           <h3 className="text-sm font-medium text-blue-800">{text('What will be backed up?')}</h3>
                            <div className="mt-2 text-sm text-blue-700">
                               <ul className="list-inside list-disc space-y-1">
                                  <li>
-                                    <strong>Source Code:</strong> All application files and code
+                                    <strong>{text('Source Code:')}</strong> {text('All application files and code')}
                                  </li>
                                  <li>
-                                    <strong>Database:</strong> Complete MySQL database dump
+                                    <strong>{text('Database:')}</strong> {text('Complete MySQL database dump')}
                                  </li>
                                  <li>
-                                    <strong>Configuration:</strong> Environment and config files
+                                    <strong>{text('Configuration:')}</strong> {text('Environment and config files')}
                                  </li>
                                  <li>
-                                    <strong>Assets:</strong> Uploaded media and public files
+                                    <strong>{text('Assets:')}</strong> {text('Uploaded media and public files')}
                                  </li>
                               </ul>
                            </div>
                            <div className="mt-3 text-xs text-blue-600">
                               <p>
-                                 <strong>Note:</strong> Every time refresh server before backup.
+                                 <strong>{text('Note:')}</strong> {text('Every time refresh server before backup.')}
                               </p>
                            </div>
                         </div>
@@ -82,14 +84,14 @@ const ApplicationBackup = () => {
                      >
                         <div className="flex items-center gap-2">
                            <RefreshCw className="h-4 w-4" />
-                           <span>Refresh Server</span>
+                           <span>{text('Refresh Server')}</span>
                         </div>
                      </LoadingButton>
 
                      <LoadingButton type="submit" loading={processing}>
                         <div className="flex items-center gap-2">
                            <Download className="h-4 w-4" />
-                           <span>{processing ? 'Creating Backup...' : 'Create Backup'}</span>
+                           <span>{processing ? text('Creating Backup...') : text('Create Backup')}</span>
                         </div>
                      </LoadingButton>
                   </div>

@@ -5,6 +5,7 @@ import { Card } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import DashboardLayout from '@/layouts/dashboard/layout';
+import { useI18n } from '@/lib/i18n';
 import { SharedData } from '@/types/global';
 import { useForm } from '@inertiajs/react';
 import { ReactNode } from 'react';
@@ -16,6 +17,7 @@ interface Props extends SharedData {
 }
 
 const Index = (props: Props) => {
+   const { text } = useI18n();
    const { users, courses, prices } = props;
 
    const { data, setData, post, errors, processing } = useForm({
@@ -45,29 +47,29 @@ const Index = (props: Props) => {
       <Card className="mx-auto max-w-2xl p-6">
          <form onSubmit={handleSubmit} className="space-y-6">
             <div>
-               <Label>User *</Label>
+               <Label>{text('User')} *</Label>
                <Combobox
                   data={transformedUsers}
                   defaultValue={data.user_id}
-                  placeholder="Select a user"
+                  placeholder={text('Select a user')}
                   onSelect={(selected) => setData('user_id', selected.value)}
                />
                <InputError message={errors.user_id} />
             </div>
 
             <div>
-               <Label>Course *</Label>
+               <Label>{text('Course')} *</Label>
                <Combobox
                   data={transformedCourses}
                   defaultValue={data.course_id}
-                  placeholder="Select the course"
+                  placeholder={text('Select the course')}
                   onSelect={(selected) => setData('course_id', selected.value)}
                />
                <InputError message={errors.course_id} />
             </div>
 
             <div>
-               <Label>Enrollment type *</Label>
+               <Label>{text('Enrollment type')} *</Label>
                <RadioGroup
                   defaultValue={data.enrollment_type}
                   className="flex items-center space-x-4 pt-2 pb-1"
@@ -86,7 +88,7 @@ const Index = (props: Props) => {
             </div>
 
             <div className="col-span-2 mt-6 text-right">
-               <LoadingButton loading={processing}>Create Enrollment</LoadingButton>
+               <LoadingButton loading={processing}>{text('Create Enrollment')}</LoadingButton>
             </div>
          </form>
       </Card>

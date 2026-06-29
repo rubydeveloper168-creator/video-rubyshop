@@ -1,5 +1,6 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import DashboardLayout from '@/layouts/dashboard/layout';
+import { useI18n } from '@/lib/i18n';
 import { getQueryParams } from '@/lib/route';
 import { router, usePage } from '@inertiajs/react';
 import { ReactNode } from 'react';
@@ -11,12 +12,14 @@ import Stripe from './partials/stripe';
 const Settings = ({ instructor }: { instructor: Instructor }) => {
    const page = usePage();
    const params = getQueryParams(page.url);
+   const { text } = useI18n();
 
    const components: any = [Paypal, Stripe, Mollie, Paystack];
 
    const tabs = instructor.payout_methods.map((payment, index) => ({
       ...payment,
-      Component: components[index] ?? <div>No component found</div>,
+      title: text(payment.title),
+      Component: components[index] ?? (() => <div>{text('No component found')}</div>),
    }));
 
    return (

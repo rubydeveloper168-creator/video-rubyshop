@@ -7,6 +7,7 @@ import { Separator } from '@/components/ui/separator';
 import { Table, TableBody, TableCell, TableRow } from '@/components/ui/table';
 import { useAuth } from '@/hooks/use-auth';
 import DashboardLayout from '@/layouts/dashboard/layout';
+import { useI18n } from '@/lib/i18n';
 import { SharedData } from '@/types/global';
 import { Link } from '@inertiajs/react';
 import { SortingState, flexRender, getCoreRowModel, getFilteredRowModel, getSortedRowModel, useReactTable } from '@tanstack/react-table';
@@ -20,11 +21,12 @@ interface Props extends SharedData {
 
 const Index = (props: Props) => {
    const { isAdmin } = useAuth();
+   const { text } = useI18n();
    const [sorting, setSorting] = React.useState<SortingState>([]);
 
    const table = useReactTable({
       data: props.courses.data,
-      columns: TableColumn(isAdmin),
+      columns: TableColumn(isAdmin, text),
       onSortingChange: setSorting,
       getCoreRowModel: getCoreRowModel(),
       getSortedRowModel: getSortedRowModel(),
@@ -35,7 +37,7 @@ const Index = (props: Props) => {
    return (
       <div>
          <Link href={route('courses.create')}>
-            <Button>Add New Course</Button>
+            <Button>{text('Add New Course')}</Button>
          </Link>
 
          <Separator className="my-6" />
@@ -43,7 +45,7 @@ const Index = (props: Props) => {
          <Card>
             <TableFilter
                data={props.courses}
-               title="Course List"
+               title={text('Course List')}
                globalSearch={true}
                tablePageSizes={[10, 15, 20, 25]}
                routeName="courses.index"
@@ -65,7 +67,7 @@ const Index = (props: Props) => {
                      ))
                   ) : (
                      <TableRow>
-                        <TableCell className="h-24 text-center">No results.</TableCell>
+                        <TableCell className="h-24 text-center">{text('No results.')}</TableCell>
                      </TableRow>
                   )}
                </TableBody>

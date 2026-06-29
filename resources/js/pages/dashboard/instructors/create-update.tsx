@@ -8,6 +8,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import DashboardLayout from '@/layouts/dashboard/layout';
 import { onHandleChange } from '@/lib/inertia';
+import { useI18n } from '@/lib/i18n';
 import { SharedData } from '@/types/global';
 import { useForm } from '@inertiajs/react';
 import { ReactNode } from 'react';
@@ -18,6 +19,7 @@ interface Props extends SharedData {
 }
 
 const CreateUpdate = ({ instructor, users }: Props) => {
+   const { text } = useI18n();
    // Parse the options and answers if they're strings
    const initialOptions = instructor?.skills ? (typeof instructor.skills === 'string' ? JSON.parse(instructor.skills) : instructor.skills) : [];
 
@@ -52,43 +54,43 @@ const CreateUpdate = ({ instructor, users }: Props) => {
       <Card className="p-4 sm:p-6">
          <form onSubmit={handleSubmit} className="relative space-y-4">
             <div>
-               <Label>Course Instructor *</Label>
-               <Combobox data={transformedUsers} placeholder="Select an user" onSelect={(selected) => setData('user_id', selected.value)} />
+               <Label>{text('Course Instructor')} *</Label>
+               <Combobox data={transformedUsers} placeholder={text('Select a user')} onSelect={(selected) => setData('user_id', selected.value)} />
                <InputError message={errors.user_id} />
             </div>
 
             <div>
-               <Label>Designation</Label>
-               <Input type="text" name="designation" onChange={(e) => onHandleChange(e, setData)} placeholder="Enter your designation" />
+               <Label>{text('Designation')}</Label>
+               <Input type="text" name="designation" onChange={(e) => onHandleChange(e, setData)} placeholder={text('Enter your designation')} />
                <InputError message={errors.designation} />
             </div>
 
             <div>
-               <Label>Resume</Label>
+               <Label>{text('Resume')}</Label>
                <Input readOnly type="file" name="resume" onChange={(e) => onHandleChange(e, setData)} />
                <InputError message={errors.resume} />
             </div>
 
             <div>
-               <Label>Skills</Label>
-               <TagInput defaultTags={data.skills} placeholder="Enter the skills as a tag" onChange={(values: any) => setData('skills', values)} />
+               <Label>{text('Skills')}</Label>
+               <TagInput defaultTags={data.skills} placeholder={text('Enter the skills as a tag')} onChange={(values: any) => setData('skills', values)} />
             </div>
 
             <div className="pb-3">
-               <Label>Biography</Label>
+               <Label>{text('Biography')}</Label>
                <Textarea
                   rows={5}
                   required
                   name="biography"
                   value={data.biography}
                   onChange={(e) => onHandleChange(e, setData)}
-                  placeholder="Write about yourself"
+                  placeholder={text('Write about yourself')}
                />
                <InputError message={errors.biography} />
             </div>
 
             <LoadingButton loading={processing} className="mt-2">
-               {instructor ? 'Update Application' : 'Submit Application'}
+               {instructor ? text('Update instructor application') : text('Submit instructor application')}
             </LoadingButton>
          </form>
       </Card>

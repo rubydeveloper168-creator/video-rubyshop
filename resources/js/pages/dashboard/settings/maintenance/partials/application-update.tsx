@@ -6,11 +6,13 @@ import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { useI18n } from '@/lib/i18n';
 import { useForm } from '@inertiajs/react';
 import { AlertTriangle, CheckCircle, RefreshCw, Upload } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 const ApplicationUpdate = () => {
+   const { text } = useI18n();
    const [open, setOpen] = useState(false);
    const [isSubmit, setIsSubmit] = useState(false);
    const [isFileSelected, setIsFileSelected] = useState(false);
@@ -76,8 +78,8 @@ const ApplicationUpdate = () => {
                   <div className="bg-background/80 absolute inset-0 z-50 flex items-center justify-center rounded-lg backdrop-blur-sm">
                      <div className="text-center">
                         <div className="border-primary mx-auto mb-4 h-8 w-8 animate-spin rounded-full border-4 border-t-transparent"></div>
-                        <p className="text-sm font-medium">Updating application...</p>
-                        <p className="text-muted-foreground mt-1 text-xs">Please do not close this window</p>
+                        <p className="text-sm font-medium">{text('Updating application...')}</p>
+                        <p className="text-muted-foreground mt-1 text-xs">{text('Please do not close this window')}</p>
                      </div>
                   </div>
                )}
@@ -86,33 +88,33 @@ const ApplicationUpdate = () => {
                   <DialogHeader>
                      <DialogTitle className="flex items-center gap-2">
                         <AlertTriangle className="h-5 w-5 text-orange-600" />
-                        Confirm Application Update
+                        {text('Confirm Application Update')}
                      </DialogTitle>
                      <DialogDescription className="space-y-4 text-left">
                         <p>
-                           Are you sure you want to update the application with <strong>"{selectedFileName}"</strong>?
+                           {text('Are you sure you want to update the application with')} <strong>"{selectedFileName}"</strong>?
                         </p>
 
                         <div className="rounded-lg border border-orange-200 bg-orange-50 p-4">
-                           <p className="mb-2 font-medium text-orange-800">This update will:</p>
+                           <p className="mb-2 font-medium text-orange-800">{text('This update will:')}</p>
                            <ul className="list-inside list-disc space-y-1 text-sm text-orange-700">
-                              <li>Put the site in maintenance mode</li>
-                              <li>Replace all application files</li>
-                              <li>Run database migrations</li>
-                              <li>Process may take several minutes</li>
+                              <li>{text('Put the site in maintenance mode')}</li>
+                              <li>{text('Replace all application files')}</li>
+                              <li>{text('Run database migrations')}</li>
+                              <li>{text('Process may take several minutes')}</li>
                            </ul>
                         </div>
 
                         <div className="rounded-lg border border-red-200 bg-red-50 p-4">
-                           <p className="mb-1 font-medium text-red-800">⚠️ Important:</p>
-                           <p className="text-sm text-red-700">Make sure you have created a backup first! This action cannot be undone.</p>
+                           <p className="mb-1 font-medium text-red-800">⚠️ {text('Important:')}</p>
+                           <p className="text-sm text-red-700">{text('Make sure you have created a backup first! This action cannot be undone.')}</p>
                         </div>
                      </DialogDescription>
                   </DialogHeader>
 
                   <form onSubmit={handleSubmit} className="space-y-4 pt-4">
                      <div>
-                        <Label>Select File (.zip only)</Label>
+                        <Label>{text('Select File (.zip only)')}</Label>
 
                         <ChunkedUploaderInput
                            isSubmit={isSubmit}
@@ -143,9 +145,9 @@ const ApplicationUpdate = () => {
                               <CheckCircle className="mt-0.5 h-4 w-4 text-green-600" />
                               <div className="ml-2">
                                  <p className="text-sm text-green-800">
-                                    <strong>Selected file:</strong> {selectedFileName}
+                                    <strong>{text('Selected file:')}</strong> {selectedFileName}
                                  </p>
-                                 <p className="mt-1 text-xs text-blue-600">File selected successfully. Click "Update Application" to proceed.</p>
+                                 <p className="mt-1 text-xs text-blue-600">{text('File selected successfully. Click "Update Application" to proceed.')}</p>
                               </div>
                            </div>
                         </div>
@@ -154,7 +156,7 @@ const ApplicationUpdate = () => {
                      <DialogFooter className="w-full justify-between space-x-2 pt-8">
                         <DialogClose asChild>
                            <Button type="button" variant="outline">
-                              Close
+                              {text('Close')}
                            </Button>
                         </DialogClose>
 
@@ -163,7 +165,7 @@ const ApplicationUpdate = () => {
                            disabled={processing || isSubmit || !isFileSelected}
                            loading={processing || isSubmit}
                         >
-                           {isSubmit ? 'Uploading...' : 'Update Application'}
+                           {isSubmit ? text('Uploading...') : text('Update Application')}
                         </LoadingButton>
                      </DialogFooter>
                   </form>
@@ -175,9 +177,9 @@ const ApplicationUpdate = () => {
             <CardHeader className="p-4 sm:p-6">
                <h2 className="flex items-center gap-2 text-xl font-semibold">
                   <Upload className="text-warning h-5 w-5" />
-                  Application Update
+                  {text('Application Update')}
                </h2>
-               <p className="text-muted-foreground mt-1 text-sm">Upload and install the latest version of your application</p>
+               <p className="text-muted-foreground mt-1 text-sm">{text('Upload and install the latest version of your application')}</p>
             </CardHeader>
 
             <CardContent className="space-y-6 p-4 pt-0 sm:p-6 sm:pt-0">
@@ -187,32 +189,32 @@ const ApplicationUpdate = () => {
                         <AlertTriangle className="h-5 w-5 text-amber-600" />
                      </div>
                      <div className="ml-3">
-                        <h3 className="text-sm font-medium text-amber-800">Important Update Guidelines</h3>
+                        <h3 className="text-sm font-medium text-amber-800">{text('Important Update Guidelines')}</h3>
                         <div className="mt-2 text-sm text-amber-700">
                            <ul className="list-inside list-disc space-y-1">
                               <li>
-                                 <strong>Refresh Server:</strong> Every time refresh server before updating
+                                 <strong>{text('Refresh Server:')}</strong> {text('Every time refresh server before updating')}
                               </li>
                               <li>
-                                 <strong>Backup First:</strong> Always create a backup before updating
+                                 <strong>{text('Backup First:')}</strong> {text('Always create a backup before updating')}
                               </li>
                               <li>
-                                 <strong>File Format:</strong> Upload must be a valid ZIP file
+                                 <strong>{text('File Format:')}</strong> {text('Upload must be a valid ZIP file')}
                               </li>
                               <li>
-                                 <strong>Maintenance Mode:</strong> Site will be temporarily unavailable during update
+                                 <strong>{text('Maintenance Mode:')}</strong> {text('Site will be temporarily unavailable during update')}
                               </li>
                               <li>
-                                 <strong>Migrations:</strong> Database migrations will be automatically applied
+                                 <strong>{text('Migrations:')}</strong> {text('Database migrations will be automatically applied')}
                               </li>
                               <li>
-                                 <strong>Downtime:</strong> Update process may take several minutes
+                                 <strong>{text('Downtime:')}</strong> {text('Update process may take several minutes')}
                               </li>
                               <li>
-                                 <strong>Browser:</strong> Do not refresh or close browser during update
+                                 <strong>{text('Browser:')}</strong> {text('Do not refresh or close browser during update')}
                               </li>
                               <li>
-                                 <strong>Compatibility:</strong> Ensure the update is compatible with your system
+                                 <strong>{text('Compatibility:')}</strong> {text('Ensure the update is compatible with your system')}
                               </li>
                            </ul>
                         </div>
@@ -230,13 +232,13 @@ const ApplicationUpdate = () => {
                   >
                      <div className="flex items-center gap-2">
                         <RefreshCw className="h-4 w-4" />
-                        <span>Refresh Server</span>
+                        <span>{text('Refresh Server')}</span>
                      </div>
                   </LoadingButton>
 
                   <Button type="button" onClick={() => setOpen(true)}>
                      <Upload className="h-4 w-4" />
-                     <span>{isSubmit ? 'Uploading...' : processing ? 'Updating Application...' : 'Update Application'}</span>
+                     <span>{isSubmit ? text('Uploading...') : processing ? text('Updating Application...') : text('Update Application')}</span>
                   </Button>
                </div>
             </CardContent>
