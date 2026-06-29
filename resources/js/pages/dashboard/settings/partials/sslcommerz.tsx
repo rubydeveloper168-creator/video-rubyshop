@@ -7,6 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Switch } from '@/components/ui/switch';
 import sslcommerzCurrency from '@/data/currency/sslcommerz';
 import { onHandleChange } from '@/lib/inertia';
+import { useI18n } from '@/lib/i18n';
 import { useForm } from '@inertiajs/react';
 
 interface SSLCommerzProps {
@@ -14,6 +15,7 @@ interface SSLCommerzProps {
 }
 
 const SSLCommerz = ({ payment }: SSLCommerzProps) => {
+   const { text } = useI18n();
    const { data, setData, post, errors, processing } = useForm({
       ...(payment.fields as SSLCommerzFields),
       type: 'sslcommerz',
@@ -28,12 +30,12 @@ const SSLCommerz = ({ payment }: SSLCommerzProps) => {
       <Card className="p-4 sm:p-6">
          <div className="mb-6 flex items-center justify-between">
             <div>
-               <h2 className="text-xl font-semibold">SSLCommerz Settings</h2>
-               <p className="text-gray-500">Configure SSLCommerz payment gateway</p>
+               <h2 className="text-xl font-semibold">{text('SSLCommerz Settings')}</h2>
+               <p className="text-gray-500">{text('Configure SSLCommerz payment gateway')}</p>
             </div>
 
             <div className="flex items-center space-x-2">
-               <Label htmlFor="status">{data.active ? 'Enabled' : 'Disabled'}</Label>
+               <Label htmlFor="status">{data.active ? text('Enabled') : text('Disabled')}</Label>
                <Switch id="status" checked={data.active} onCheckedChange={(checked) => setData('active', checked)} />
             </div>
          </div>
@@ -41,10 +43,10 @@ const SSLCommerz = ({ payment }: SSLCommerzProps) => {
          <form onSubmit={handleSubmit} className="space-y-6">
             <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                <div>
-                  <Label>Currency</Label>
+                  <Label>{text('Currency')}</Label>
                   <Select value={data.currency} onValueChange={(value) => setData('currency', value)}>
                      <SelectTrigger>
-                        <SelectValue placeholder="Select Currency" />
+                        <SelectValue placeholder={text('Select Currency')} />
                      </SelectTrigger>
                      <SelectContent>
                         {sslcommerzCurrency.map((currency) => (
@@ -58,52 +60,52 @@ const SSLCommerz = ({ payment }: SSLCommerzProps) => {
                </div>
 
                <div className="flex items-center space-x-2">
-                  <span className="text-sm font-medium">Test Mode:</span>
+                  <span className="text-sm font-medium">{text('Test Mode:')}</span>
                   <Switch id="status" checked={data.test_mode} onCheckedChange={(checked) => setData('test_mode', checked)} />
                   <Label htmlFor="status" className="text-gray-500">
-                     {data.test_mode ? 'Using Test Environment' : 'Using Live Environment'}
+                     {data.test_mode ? text('Using Test Environment') : text('Using Live Environment')}
                   </Label>
                </div>
             </div>
 
             {/* API Credentials Section */}
             <div className="border-b pb-6">
-               <h3 className="mb-4 text-lg font-medium">API Credentials</h3>
+               <h3 className="mb-4 text-lg font-medium">{text('API Credentials')}</h3>
                <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                   <div>
-                     <Label>Store ID *</Label>
+                     <Label>{text('Store ID')} *</Label>
                      <Input
                         name="store_id"
                         value={data.store_id || ''}
                         onChange={(e) => onHandleChange(e, setData)}
-                        placeholder="Enter SSLCommerz public key"
+                        placeholder={text('Enter SSLCommerz public key')}
                      />
                      <InputError message={errors.store_id} />
                      <p className="mt-1 text-sm text-gray-500">
-                        {data.test_mode ? 'Use your test mode public key' : 'Use your live mode public key'}
+                        {data.test_mode ? text('Use your test mode public key') : text('Use your live mode public key')}
                      </p>
                   </div>
 
                   <div>
-                     <Label>Store Password *</Label>
+                     <Label>{text('Store Password')} *</Label>
                      <Input
                         name="store_password"
                         value={data.store_password || ''}
                         onChange={(e) => onHandleChange(e, setData)}
-                        placeholder="Enter SSLCommerz secret key"
+                        placeholder={text('Enter SSLCommerz secret key')}
                         type="password"
                      />
                      <InputError message={errors.store_password} />
                      <p className="mt-1 text-sm text-gray-500">
-                        {data.test_mode ? 'Use your test mode secret key' : 'Use your live mode secret key'}
+                        {data.test_mode ? text('Use your test mode secret key') : text('Use your live mode secret key')}
                      </p>
                   </div>
                </div>
             </div>
 
             <div className="flex items-center justify-between">
-               <div className="text-sm text-gray-500">{data.active ? 'SSLCommerz is currently enabled' : 'SSLCommerz is currently disabled'}</div>
-               <LoadingButton loading={processing}>Save Changes</LoadingButton>
+               <div className="text-sm text-gray-500">{data.active ? text('SSLCommerz is currently enabled') : text('SSLCommerz is currently disabled')}</div>
+               <LoadingButton loading={processing}>{text('Save Changes')}</LoadingButton>
             </div>
          </form>
       </Card>

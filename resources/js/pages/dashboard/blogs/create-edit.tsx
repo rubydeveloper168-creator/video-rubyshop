@@ -1,5 +1,6 @@
 import { Button } from '@/components/ui/button';
 import DashboardLayout from '@/layouts/dashboard/layout';
+import { useI18n } from '@/lib/i18n';
 import { SharedData } from '@/types/global';
 import { Head, Link } from '@inertiajs/react';
 import { ArrowLeft } from 'lucide-react';
@@ -13,9 +14,10 @@ export interface BlogCreateEditProps extends SharedData {
 }
 
 const CreateBlog = ({ blog }: BlogCreateEditProps) => {
+   const { text } = useI18n();
    return (
       <>
-         <Head title="Create Blog" />
+         <Head title={text(blog ? 'Update Blog' : 'Create Blog')} />
 
          <div className="space-y-6">
             {/* Header */}
@@ -27,7 +29,7 @@ const CreateBlog = ({ blog }: BlogCreateEditProps) => {
                      </Link>
                   </Button>
 
-                  <h1 className="text-xl font-semibold">{blog ? 'Update' : 'Create'} Blog</h1>
+                  <h1 className="text-xl font-semibold">{blog ? text('Update Blog') : text('Create Blog')}</h1>
                </div>
             </div>
 

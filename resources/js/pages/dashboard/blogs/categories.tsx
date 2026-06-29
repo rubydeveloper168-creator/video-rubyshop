@@ -4,6 +4,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import DashboardLayout from '@/layouts/dashboard/layout';
+import { useI18n } from '@/lib/i18n';
 import { SharedData } from '@/types/global';
 import { Head, router, usePage } from '@inertiajs/react';
 import { Edit, FolderOpen, PauseCircle, PlayCircle, Plus, SortAsc, Trash2 } from 'lucide-react';
@@ -24,26 +25,27 @@ export interface BlogCategoriesPageProps extends SharedData {
 const BlogCategoriesIndex = () => {
    const { props } = usePage<BlogCategoriesPageProps>();
    const { categories, statistics } = props;
+   const { text } = useI18n();
 
    const defaultCategory = categories.find((category) => category.slug === 'default');
    const allCategories = categories.filter((category) => category.slug !== 'default');
 
    return (
       <>
-         <Head title="Blog Categories" />
+         <Head title={text('Blog Categories')} />
 
          <div className="space-y-6">
             {/* Header */}
             <div className="flex items-center justify-between">
-               <h1 className="hidden text-xl font-semibold sm:block">Blog Category</h1>
+               <h1 className="hidden text-xl font-semibold sm:block">{text('Blog Category')}</h1>
 
                <div className="flex items-center gap-4">
                   <DataSortModal
-                     title="Sort Categories"
+                     title={text('Sort Categories')}
                      data={allCategories}
                      handler={
                         <Button variant="ghost" className="bg-muted hover:bg-muted-foreground/6">
-                           <SortAsc /> Sort Categories
+                           <SortAsc /> {text('Sort Categories')}
                         </Button>
                      }
                      onOrderChange={(newOrder, setOpen) => {
@@ -66,11 +68,11 @@ const BlogCategoriesIndex = () => {
                   />
 
                   <CategoryForm
-                     title="Create Category"
+                     title={text('Create Category')}
                      handler={
                         <Button>
                            <Plus className="h-4 w-4" />
-                           Add Category
+                           {text('Add Category')}
                         </Button>
                      }
                   />
@@ -81,7 +83,7 @@ const BlogCategoriesIndex = () => {
             <div className="grid gap-4 md:grid-cols-3">
                <Card>
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                     <CardTitle className="text-sm font-medium">Total Categories</CardTitle>
+                     <CardTitle className="text-sm font-medium">{text('Total Categories')}</CardTitle>
                      <FolderOpen className="text-muted-foreground h-4 w-4" />
                   </CardHeader>
                   <CardContent>
@@ -91,7 +93,7 @@ const BlogCategoriesIndex = () => {
 
                <Card>
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                     <CardTitle className="text-sm font-medium">Active</CardTitle>
+                     <CardTitle className="text-sm font-medium">{text('Active')}</CardTitle>
                      <PlayCircle className="h-4 w-4 text-green-600" />
                   </CardHeader>
                   <CardContent>
@@ -101,7 +103,7 @@ const BlogCategoriesIndex = () => {
 
                <Card>
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                     <CardTitle className="text-sm font-medium">Inactive</CardTitle>
+                     <CardTitle className="text-sm font-medium">{text('Inactive')}</CardTitle>
                      <PauseCircle className="h-4 w-4 text-red-600" />
                   </CardHeader>
                   <CardContent>
@@ -125,7 +127,7 @@ const BlogCategoriesIndex = () => {
                      </CardHeader>
                      <CardContent>
                         <div className="flex items-center justify-between text-sm">
-                           <span className="text-muted-foreground">Total number of blog</span>
+                           <span className="text-muted-foreground">{text('Total number of blog')}</span>
                            <span className="font-medium">{defaultCategory.blogs_count}</span>
                         </div>
                      </CardContent>
@@ -146,7 +148,7 @@ const BlogCategoriesIndex = () => {
 
                            <div className="flex gap-1">
                               <CategoryForm
-                                 title="Update Category"
+                                 title={text('Update Category')}
                                  category={category}
                                  handler={
                                     <Button variant="ghost" size="icon">
@@ -169,7 +171,7 @@ const BlogCategoriesIndex = () => {
                      </CardHeader>
                      <CardContent>
                         <div className="flex items-center justify-between text-sm">
-                           <span className="text-muted-foreground">Total number of blog</span>
+                           <span className="text-muted-foreground">{text('Total number of blog')}</span>
                            <span className="font-medium">{category.blogs_count}</span>
                         </div>
                      </CardContent>
@@ -180,15 +182,15 @@ const BlogCategoriesIndex = () => {
             {categories.length === 0 && (
                <div className="py-12 text-center">
                   <FolderOpen className="text-muted-foreground mx-auto h-12 w-12" />
-                  <h3 className="mt-4 text-lg font-semibold">No categories found</h3>
-                  <p className="text-muted-foreground mt-2">Get started by creating your first blog category</p>
+                  <h3 className="mt-4 text-lg font-semibold">{text('No categories found')}</h3>
+                  <p className="text-muted-foreground mt-2">{text('Get started by creating your first blog category')}</p>
 
                   <CategoryForm
-                     title="Create Category"
+                     title={text('Create Category')}
                      handler={
                         <Button>
                            <Plus className="mr-2 h-4 w-4" />
-                           Add New Category
+                           {text('Add New Category')}
                         </Button>
                      }
                   />

@@ -1,4 +1,5 @@
 import { Button } from '@/components/ui/button';
+import { useI18n } from '@/lib/i18n';
 import { Link } from '@inertiajs/react';
 import { ExternalLink, Pencil } from 'lucide-react';
 import { useEffect, useState } from 'react';
@@ -12,6 +13,7 @@ interface Props {
 
 const LiveClassStatus = ({ courseId, liveClass, zoomConfig }: Props) => {
    const [currentTime, setCurrentTime] = useState(new Date());
+   const { text } = useI18n();
 
    // Get status of a live class
    const getClassStatus = (liveClass: CourseLiveClass): string => {
@@ -91,7 +93,7 @@ const LiveClassStatus = ({ courseId, liveClass, zoomConfig }: Props) => {
 
    return (
       <>
-         <span className={`rounded-full px-2 py-1 text-center text-xs font-medium capitalize ${getStatusColor(status)}`}>{status}</span>
+         <span className={`rounded-full px-2 py-1 text-center text-xs font-medium capitalize ${getStatusColor(status)}`}>{text(status)}</span>
 
          {/* Join button - show for live classes or when about to start */}
          {status === 'live' ? (
@@ -99,38 +101,38 @@ const LiveClassStatus = ({ courseId, liveClass, zoomConfig }: Props) => {
                <Link href={route('live-class.start', liveClass.id)}>
                   <Button size="sm" variant={status === 'live' ? 'default' : 'outline'} className="flex w-full items-center gap-2">
                      <ExternalLink className="h-4 w-4" />
-                     Join Class
+                     {text('Join Class')}
                   </Button>
                </Link>
             ) : (
                <a href={liveClass.additional_info.join_url} target="_blank">
                   <Button size="sm" variant={status === 'live' ? 'default' : 'outline'} className="flex w-full items-center gap-2">
                      <ExternalLink className="h-4 w-4" />
-                     Join Class
+                     {text('Join Class')}
                   </Button>
                </a>
             )
          ) : (
             <Button disabled variant="outline" size="sm" className="flex w-full items-center gap-2">
                <ExternalLink className="h-4 w-4" />
-               Join Class
+               {text('Join Class')}
             </Button>
          )}
 
          {/* Edit and Delete buttons for admins/instructors */}
          {status === 'upcoming' ? (
-            <LiveClassForm
-               courseId={courseId}
-               liveClass={liveClass}
-               title="Edit Live Class"
-               handler={
+               <LiveClassForm
+                  courseId={courseId}
+                  liveClass={liveClass}
+                  title={text('Edit Live Class')}
+                  handler={
                   <Button
                      size="sm"
                      variant="secondary"
                      className="bg-background border-secondary-foreground/20 flex w-full items-center gap-2 border"
                   >
                      <Pencil className="h-4 w-4" />
-                     Edit Class
+                     {text('Edit Class')}
                   </Button>
                }
             />
@@ -142,7 +144,7 @@ const LiveClassStatus = ({ courseId, liveClass, zoomConfig }: Props) => {
                className="bg-background border-secondary-foreground/20 flex w-full items-center gap-2 border"
             >
                <Pencil className="h-4 w-4" />
-               Edit Class
+               {text('Edit Class')}
             </Button>
          )}
       </>

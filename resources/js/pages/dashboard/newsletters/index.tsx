@@ -6,18 +6,20 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import DashboardLayout from '@/layouts/dashboard/layout';
+import { useI18n } from '@/lib/i18n';
 import { Pencil, Plus, Trash2 } from 'lucide-react';
 import { ReactNode } from 'react';
 import NewsletterForm from './partials/newsletter-form';
 import NewsletterSend from './partials/newsletter-send';
 
 const Index = ({ newsletters }: { newsletters: Pagination<Newsletter> }) => {
+   const { text } = useI18n();
    return (
       <>
          <div className="relative flex items-center justify-between gap-4 pb-6">
             <TableFilter
                data={newsletters}
-               title="Newsletter List"
+               title={text('Newsletter List')}
                globalSearch={true}
                tablePageSizes={[10, 15, 20, 25]}
                routeName="newsletters.index"
@@ -25,11 +27,11 @@ const Index = ({ newsletters }: { newsletters: Pagination<Newsletter> }) => {
             />
 
             <NewsletterForm
-               title="Add Newsletter"
+               title={text('Add Newsletter')}
                handler={
                   <Button variant="outline" className="absolute -top-1 right-0 md:static md:mb-1">
                      <Plus />
-                     <span>Add Newsletter</span>
+                     <span>{text('Add Newsletter')}</span>
                   </Button>
                }
             />
@@ -61,7 +63,7 @@ const Index = ({ newsletters }: { newsletters: Pagination<Newsletter> }) => {
                                  <NewsletterSend id={newsletter.id} />
 
                                  <NewsletterForm
-                                    title="Update Newsletter"
+                                    title={text('Update Newsletter')}
                                     newsletter={newsletter}
                                     handler={
                                        <Button size="icon" variant="secondary" className="h-7 w-7">
@@ -78,7 +80,7 @@ const Index = ({ newsletters }: { newsletters: Pagination<Newsletter> }) => {
                      </AccordionItem>
                   ))
                ) : (
-                  <p className="text-muted-foreground p-6 text-center text-sm">No newsletters found</p>
+                  <p className="text-muted-foreground p-6 text-center text-sm">{text('No newsletters found')}</p>
                )}
             </Accordion>
          </Card>

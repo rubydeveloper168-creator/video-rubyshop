@@ -7,6 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import currencies from '@/data/currencies';
 import { onHandleChange } from '@/lib/inertia';
+import { useI18n } from '@/lib/i18n';
 import { SharedData } from '@/types/global';
 import { useForm, usePage } from '@inertiajs/react';
 import { SystemProps } from '..';
@@ -20,6 +21,7 @@ interface MediaFields {
 
 const Website = () => {
    const { props } = usePage<SharedData & SystemProps>();
+   const { text } = useI18n();
 
    const mediaFields: MediaFields = {
       new_logo_dark: null,
@@ -44,48 +46,48 @@ const Website = () => {
          <form onSubmit={handleSubmit} className="space-y-6">
             {/* Website Information */}
             <div className="border-b pb-6">
-               <h2 className="mb-4 text-xl font-semibold">Website Information</h2>
+               <h2 className="mb-4 text-xl font-semibold">{text('Website Information')}</h2>
 
                <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                   <div>
-                     <Label>Website Name *</Label>
-                     <Input name="name" value={data.name || ''} onChange={(e) => onHandleChange(e, setData)} placeholder="Enter Website Name" />
+                     <Label>{text('Website Name')} *</Label>
+                     <Input name="name" value={data.name || ''} onChange={(e) => onHandleChange(e, setData)} placeholder={text('Enter Website Name')} />
                      <InputError message={errors.name} />
                   </div>
 
                   <div>
-                     <Label>Website Title *</Label>
-                     <Input name="title" value={data.title || ''} onChange={(e) => onHandleChange(e, setData)} placeholder="Enter Website Title" />
+                     <Label>{text('Website Title')} *</Label>
+                     <Input name="title" value={data.title || ''} onChange={(e) => onHandleChange(e, setData)} placeholder={text('Enter Website Title')} />
                      <InputError message={errors.title} />
                   </div>
 
                   <div className="md:col-span-2">
-                     <Label>Keywords</Label>
-                     <Input name="keywords" value={data.keywords || ''} onChange={(e) => onHandleChange(e, setData)} placeholder="Enter Keywords" />
+                     <Label>{text('Keywords')}</Label>
+                     <Input name="keywords" value={data.keywords || ''} onChange={(e) => onHandleChange(e, setData)} placeholder={text('Enter Keywords')} />
                      <InputError message={errors.keywords} />
                   </div>
 
                   <div className="md:col-span-2">
-                     <Label>Description</Label>
+                     <Label>{text('Description')}</Label>
                      <Textarea
                         rows={4}
                         name="description"
                         value={data.description || ''}
                         onChange={(e) => onHandleChange(e, setData)}
-                        placeholder="Enter Website Description"
+                        placeholder={text('Enter Website Description')}
                      />
                      <InputError message={errors.description} />
                   </div>
 
                   <div>
-                     <Label>Author</Label>
-                     <Input name="author" value={data.author || ''} onChange={(e) => onHandleChange(e, setData)} placeholder="Enter Author Name" />
+                     <Label>{text('Author')}</Label>
+                     <Input name="author" value={data.author || ''} onChange={(e) => onHandleChange(e, setData)} placeholder={text('Enter Author Name')} />
                      <InputError message={errors.author} />
                   </div>
 
                   <div>
-                     <Label>Slogan</Label>
-                     <Input name="slogan" value={data.slogan || ''} onChange={(e) => onHandleChange(e, setData)} placeholder="Enter Website Slogan" />
+                     <Label>{text('Slogan')}</Label>
+                     <Input name="slogan" value={data.slogan || ''} onChange={(e) => onHandleChange(e, setData)} placeholder={text('Enter Website Slogan')} />
                      <InputError message={errors.slogan} />
                   </div>
                </div>
@@ -93,24 +95,24 @@ const Website = () => {
 
             {/* Contact Information */}
             <div className="border-b pb-6">
-               <h2 className="mb-4 text-xl font-semibold">Contact Information</h2>
+               <h2 className="mb-4 text-xl font-semibold">{text('Contact Information')}</h2>
 
                <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                   <div>
-                     <Label>System Email *</Label>
+                     <Label>{text('System Email')} *</Label>
                      <Input
                         type="email"
                         name="email"
                         value={data.email || ''}
                         onChange={(e) => onHandleChange(e, setData)}
-                        placeholder="Enter System Email"
+                        placeholder={text('Enter System Email')}
                      />
                      <InputError message={errors.email} />
                   </div>
 
                   <div>
-                     <Label>Phone</Label>
-                     <Input name="phone" value={data.phone || ''} onChange={(e) => onHandleChange(e, setData)} placeholder="Enter Phone Number" />
+                     <Label>{text('Phone')}</Label>
+                     <Input name="phone" value={data.phone || ''} onChange={(e) => onHandleChange(e, setData)} placeholder={text('Enter Phone Number')} />
                      <InputError message={errors.phone} />
                   </div>
                </div>
@@ -118,48 +120,48 @@ const Website = () => {
 
             {/* Media Settings */}
             <div className="border-b pb-6">
-               <h2 className="mb-4 text-xl font-semibold">Media</h2>
+               <h2 className="mb-4 text-xl font-semibold">{text('Media')}</h2>
 
                <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                   <div>
-                     <Label>Logo Dark</Label>
+                     <Label>{text('Logo Dark')}</Label>
                      <Input
                         type="file"
                         name="new_logo_dark"
                         accept="image/*"
                         onChange={(e) => onHandleChange(e, setData)}
-                        placeholder="Select Logo"
+                        placeholder={text('Select Logo')}
                      />
                      <InputError message={errors.new_logo_dark} />
                   </div>
 
                   <div>
-                     <Label>Logo Light</Label>
+                     <Label>{text('Logo Light')}</Label>
                      <Input
                         type="file"
                         name="new_logo_light"
                         accept="image/*"
                         onChange={(e) => onHandleChange(e, setData)}
-                        placeholder="Select Logo"
+                        placeholder={text('Select Logo')}
                      />
                      <InputError message={errors.new_logo_light} />
                   </div>
 
                   <div>
-                     <Label>Favicon</Label>
+                     <Label>{text('Favicon')}</Label>
                      <Input
                         type="file"
                         name="new_favicon"
                         accept="image/*"
                         onChange={(e) => onHandleChange(e, setData)}
-                        placeholder="Select Favicon"
+                        placeholder={text('Select Favicon')}
                      />
                      <InputError message={errors.new_favicon} />
                   </div>
 
                   <div>
-                     <Label>Banner</Label>
-                     <Input type="file" name="new_banner" accept="image/*" onChange={(e) => onHandleChange(e, setData)} placeholder="Select Banner" />
+                     <Label>{text('Banner')}</Label>
+                     <Input type="file" name="new_banner" accept="image/*" onChange={(e) => onHandleChange(e, setData)} placeholder={text('Select Banner')} />
                      <InputError message={errors.new_banner} />
                   </div>
                </div>
@@ -168,38 +170,38 @@ const Website = () => {
             {/* Other Settings */}
             {props.system.sub_type === 'collaborative' && (
                <div>
-                  <h2 className="mb-4 text-xl font-semibold">Additional Settings</h2>
+                  <h2 className="mb-4 text-xl font-semibold">{text('Additional Settings')}</h2>
 
                   <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
                      <div>
-                        <Label>{`Course Selling Currency (${data.selling_currency})`}</Label>
+                        <Label>{`${text('Course Selling Currency')} (${data.selling_currency})`}</Label>
                         <Combobox
                            data={currencies}
                            defaultValue={data.selling_currency || ''}
-                           placeholder="Select a selling currency"
+                           placeholder={text('Select a selling currency')}
                            onSelect={(selected) => setData('selling_currency', selected.value)}
                         />
                         <InputError message={errors.selling_currency} />
                      </div>
 
                      <div>
-                        <Label>{'Course Selling Tax (%)'}</Label>
+                        <Label>{text('Course Selling Tax (%)')}</Label>
                         <Input
                            name="selling_tax"
                            value={data.selling_tax || ''}
                            onChange={(e) => onHandleChange(e, setData)}
-                           placeholder="Enter Course Selling Tax Percentage"
+                           placeholder={text('Enter Course Selling Tax Percentage')}
                         />
                         <InputError message={errors.selling_tax} />
                      </div>
 
                      <div>
-                        <Label>{'Instructor Revenue (%)'}</Label>
+                        <Label>{text('Instructor Revenue (%)')}</Label>
                         <Input
                            name="instructor_revenue"
                            value={data.instructor_revenue || ''}
                            onChange={(e) => onHandleChange(e, setData)}
-                           placeholder="Enter Instructor Revenue Percentage"
+                           placeholder={text('Enter Instructor Revenue Percentage')}
                         />
                         <InputError message={errors.instructor_revenue} />
                      </div>
@@ -208,7 +210,7 @@ const Website = () => {
             )}
 
             <div className="flex justify-end">
-               <LoadingButton loading={processing}>Save Changes</LoadingButton>
+               <LoadingButton loading={processing}>{text('Save Changes')}</LoadingButton>
             </div>
          </form>
       </Card>

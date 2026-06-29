@@ -14,6 +14,7 @@ import { Textarea } from '@/components/ui/textarea';
 import courseLanguages from '@/data/course-languages';
 import DashboardLayout from '@/layouts/dashboard/layout';
 import { onHandleChange } from '@/lib/inertia';
+import { useI18n } from '@/lib/i18n';
 import { SharedData } from '@/types/global';
 import { router, useForm } from '@inertiajs/react';
 import { ReactNode, useMemo } from 'react';
@@ -29,6 +30,7 @@ interface Props extends SharedData {
 const Index = (props: Props) => {
    const user = props.auth.user;
    const { labels, prices, expiries, categories, instructors, system } = props;
+   const { text } = useI18n();
 
    const { data, setData, post, errors, processing } = useForm({
       title: '',
@@ -114,31 +116,31 @@ const Index = (props: Props) => {
                {/* Left Column */}
                <div className="space-y-4">
                   <div>
-                     <Label>Title *</Label>
-                     <Input name="title" value={data.title} onChange={(e) => onHandleChange(e, setData)} placeholder="Enter Course Title" />
+                     <Label>{text('Title')} *</Label>
+                     <Input name="title" value={data.title} onChange={(e) => onHandleChange(e, setData)} placeholder={text('Enter Course Title')} />
                      <InputError message={errors.title} />
                   </div>
 
                   <div>
-                     <Label>Short Description</Label>
+                     <Label>{text('Short Description')}</Label>
                      <Textarea
                         rows={5}
                         name="short_description"
                         value={data.short_description}
                         onChange={(e) => onHandleChange(e, setData)}
-                        placeholder="Enter Short Description"
+                        placeholder={text('Enter Short Description')}
                      />
                      <InputError message={errors.short_description} />
                   </div>
 
                   <div>
-                     <Label>Description</Label>
+                     <Label>{text('Description')}</Label>
                      <TiptapEditor
                         ssr={true}
                         output="html"
                         placeholder={{
-                           paragraph: 'Type your content here...',
-                           imageCaption: 'Type caption for image (optional)',
+                           paragraph: text('Type your content here...'),
+                           imageCaption: text('Type caption for image (optional)'),
                         }}
                         contentMinHeight={256}
                         contentMaxHeight={640}
@@ -169,7 +171,7 @@ const Index = (props: Props) => {
                   </div> */}
 
                   <div>
-                     <Label>Enable drip content *</Label>
+                     <Label>{text('Enable drip content')} *</Label>
                      <RadioGroup
                         defaultValue={data.drip_content ? 'on' : 'off'}
                         className="flex items-center space-x-4 pt-2 pb-1"
@@ -177,11 +179,11 @@ const Index = (props: Props) => {
                      >
                         <div className="flex items-center space-x-2">
                            <RadioGroupItem className="cursor-pointer" id="off" value="off" />
-                           <Label htmlFor="off">Off</Label>
+                           <Label htmlFor="off">{text('Off')}</Label>
                         </div>
                         <div className="flex items-center space-x-2">
                            <RadioGroupItem className="cursor-pointer" id="on" value="on" />
-                           <Label htmlFor="on">On</Label>
+                           <Label htmlFor="on">{text('On')}</Label>
                         </div>
                      </RadioGroup>
                      <InputError message={errors.drip_content} />
@@ -191,10 +193,10 @@ const Index = (props: Props) => {
                {/* Right Column */}
                <div className="space-y-4">
                   <div>
-                     <Label>Category *</Label>
+                     <Label>{text('Category')} *</Label>
                      <Combobox
                         data={transformedCategories}
-                        placeholder="Select a category"
+                        placeholder={text('Select a category')}
                         defaultValue={transformedCategories.length > 0 ? transformedCategories[0].value : undefined}
                         onSelect={(selected) => {
                            setData('course_category_id', selected.id as string);
@@ -205,10 +207,10 @@ const Index = (props: Props) => {
                   </div>
 
                   <div>
-                     <Label>Course level *</Label>
+                     <Label>{text('Course level')} *</Label>
                      <Select value={data.level} onValueChange={(value) => setData('level', value)}>
                         <SelectTrigger>
-                           <SelectValue placeholder="Select your course level" />
+                           <SelectValue placeholder={text('Select your course level')} />
                         </SelectTrigger>
                         <SelectContent>
                            {labels.map((label) => (
@@ -223,10 +225,10 @@ const Index = (props: Props) => {
 
                   {user.role === 'admin' && system.sub_type === 'collaborative' && (
                      <div>
-                        <Label>Course Instructor *</Label>
+                        <Label>{text('Course Instructor')} *</Label>
                         <Combobox
                            data={transformedInstructors}
-                           placeholder="Select the course instructor"
+                           placeholder={text('Select the course instructor')}
                            onSelect={(selected) => setData('instructor_id', selected.value)}
                         />
                         <InputError message={errors.instructor_id} />
@@ -234,10 +236,10 @@ const Index = (props: Props) => {
                   )}
 
                   <div>
-                     <Label>Made in *</Label>
+                     <Label>{text('Made in')} *</Label>
                      <Combobox
                         data={courseLanguages}
-                        placeholder="Select your course language"
+                        placeholder={text('Select your course language')}
                         defaultValue="th"
                         onSelect={(selected) => setData('language', selected.value)}
                      />
@@ -246,7 +248,7 @@ const Index = (props: Props) => {
 
                   <Accordion collapsible type="single" value={data.pricing_type}>
                      <div>
-                        <Label>Pricing type *</Label>
+                        <Label>{text('Pricing type')} *</Label>
                         <RadioGroup
                            defaultValue={data.pricing_type}
                            className="flex items-center space-x-4 pt-2 pb-1"
@@ -267,13 +269,13 @@ const Index = (props: Props) => {
                      <AccordionItem value={prices[1]} className="border-none">
                         <AccordionContent className="space-y-4 p-0.5">
                            <div className="pt-3">
-                              <Label>Price *</Label>
+                              <Label>{text('Price')} *</Label>
                               <Input
                                  type="number"
                                  name="price"
                                  value={data.price}
                                  onChange={(e) => onHandleChange(e, setData)}
-                                 placeholder="Enter your course price ($0)"
+                                 placeholder={text('Enter your course price ($0)')}
                               />
                               <InputError message={errors.price} />
                            </div>
@@ -288,7 +290,7 @@ const Index = (props: Props) => {
                                        setData('discount', checked);
                                     }}
                                  />
-                                 <Label htmlFor="discount">Check if this course has discount</Label>
+                                 <Label htmlFor="discount">{text('Check if this course has discount')}</Label>
                               </div>
 
                               {data.discount && (
@@ -298,7 +300,7 @@ const Index = (props: Props) => {
                                        name="discount_price"
                                        value={data.discount_price}
                                        onChange={(e) => onHandleChange(e, setData)}
-                                       placeholder="Enter your discount price ($0)"
+                                       placeholder={text('Enter your discount price ($0)')}
                                     />
                                     <InputError message={errors.discount_price} />
                                  </div>
@@ -310,7 +312,7 @@ const Index = (props: Props) => {
 
                   <Accordion collapsible type="single" value={data.expiry_type}>
                      <div>
-                        <Label>Expiry period type</Label>
+                        <Label>{text('Expiry period type')}</Label>
                         <RadioGroup
                            defaultValue={data.expiry_type}
                            className="flex items-center space-x-4 pt-2 pb-1"
@@ -331,7 +333,7 @@ const Index = (props: Props) => {
                      <AccordionItem value={expiries[1]} className="border-none">
                         <AccordionContent className="space-y-4 p-0.5">
                            <div className="pt-3">
-                              <Label>Expiry date</Label>
+                              <Label>{text('Expiry date')}</Label>
                               <DateTimePicker date={data.expiry_duration} setDate={(date) => setData('expiry_duration', date)} />
                               <InputError message={errors.expiry_duration} />
                            </div>
@@ -340,7 +342,9 @@ const Index = (props: Props) => {
                   </Accordion>
 
                   <div>
-                     <Label>Thumbnail <span className="text-muted-foreground text-xs">(JPG, PNG, WEBP — max 2MB)</span></Label>
+                     <Label>
+                        {text('Thumbnail')} <span className="text-muted-foreground text-xs">{text('(JPG, PNG, WEBP - max 2MB)')}</span>
+                     </Label>
                      <Input type="file" name="thumbnail" accept="image/jpeg,image/png,image/webp,image/gif" onChange={(e) => onHandleChange(e, setData)} />
                      <InputError message={errors.thumbnail} />
                   </div>
@@ -348,7 +352,7 @@ const Index = (props: Props) => {
             </div>
 
             <div className="col-span-2 mt-6 text-right">
-               <LoadingButton loading={processing}>Create Course</LoadingButton>
+               <LoadingButton loading={processing}>{text('Create Course')}</LoadingButton>
             </div>
          </form>
       </Card>

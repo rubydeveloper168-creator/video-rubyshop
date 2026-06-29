@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { onHandleChange } from '@/lib/inertia';
+import { useI18n } from '@/lib/i18n';
 import { useForm, usePage } from '@inertiajs/react';
 import { useState } from 'react';
 import { CourseUpdateProps } from '../../update';
@@ -19,6 +20,7 @@ interface Props {
 const SectionForm = ({ title, section, handler }: Props) => {
    const [open, setOpen] = useState(false);
    const { props } = usePage<CourseUpdateProps>();
+   const { text } = useI18n();
 
    const { data, setData, post, put, errors, processing } = useForm({
       title: section ? section.title : '',
@@ -52,13 +54,13 @@ const SectionForm = ({ title, section, handler }: Props) => {
 
                <form onSubmit={handleSubmit} className="space-y-4 p-0.5">
                   <div>
-                     <Label>Section Title</Label>
+                     <Label>{text('Section Title')}</Label>
                      <Input
                         required
                         type="text"
                         name="title"
                         value={data.title}
-                        placeholder="Enter your section title"
+                        placeholder={text('Enter your section title')}
                         onChange={(e) => onHandleChange(e, setData)}
                      />
                      <InputError message={errors.title} />
@@ -67,11 +69,11 @@ const SectionForm = ({ title, section, handler }: Props) => {
                   <DialogFooter className="flex justify-end space-x-2 pt-4">
                      <DialogClose asChild>
                         <Button type="button" variant="outline">
-                           Close
+                           {text('Close')}
                         </Button>
                      </DialogClose>
 
-                     <LoadingButton loading={processing}>Submit</LoadingButton>
+                     <LoadingButton loading={processing}>{text('Submit')}</LoadingButton>
                   </DialogFooter>
                </form>
             </ScrollArea>

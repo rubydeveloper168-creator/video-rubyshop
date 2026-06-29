@@ -1,5 +1,6 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import DashboardLayout from '@/layouts/dashboard/layout';
+import { useI18n } from '@/lib/i18n';
 import { SharedData } from '@/types/global';
 import { router } from '@inertiajs/react';
 import { BookText, CircleDollarSign, FilePenLine, FlaskConical, FolderInput, Settings, TvMinimalPlay } from 'lucide-react';
@@ -32,6 +33,7 @@ export interface CourseUpdateProps extends SharedData {
 
 const Update = (props: CourseUpdateProps) => {
    const { tab, course } = props;
+   const { text } = useI18n();
 
    return (
       <section className="space-y-8">
@@ -55,7 +57,7 @@ const Update = (props: CourseUpdateProps) => {
                         }
                      >
                         <Icon className="h-4 w-4" />
-                        <span>{name}</span>
+                        <span>{text(name)}</span>
                      </TabsTrigger>
                   ))}
                </TabsList>

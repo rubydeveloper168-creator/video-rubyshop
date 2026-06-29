@@ -2,9 +2,11 @@ import InputError from '@/components/input-error';
 import LoadingButton from '@/components/loading-button';
 import { Input } from '@/components/ui/input';
 import { onHandleChange } from '@/lib/inertia';
+import { useI18n } from '@/lib/i18n';
 import { useForm } from '@inertiajs/react';
 
 const RequirementForm = ({ requirement }: { requirement: CourseRequirement }) => {
+   const { text } = useI18n();
    const {
       data,
       setData,
@@ -34,7 +36,7 @@ const RequirementForm = ({ requirement }: { requirement: CourseRequirement }) =>
                type="text"
                name="requirement"
                value={data.requirement || ''}
-               placeholder="Requirement"
+               placeholder={text('Requirement')}
                onChange={(e) => onHandleChange(e, setData)}
             />
 
@@ -49,10 +51,10 @@ const RequirementForm = ({ requirement }: { requirement: CourseRequirement }) =>
                onClick={handleDelete}
                className="h-7 w-full bg-red-50 text-xs hover:bg-red-100"
             >
-               Remove
+               {text('Remove')}
             </LoadingButton>
             <LoadingButton variant="secondary" className="h-7 w-full text-xs" loading={processing}>
-               Save
+               {text('Save')}
             </LoadingButton>
          </div>
       </form>

@@ -1,5 +1,6 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import DashboardLayout from '@/layouts/dashboard/layout';
+import { useI18n } from '@/lib/i18n';
 import { getQueryParams } from '@/lib/route';
 import { router, usePage } from '@inertiajs/react';
 import { ReactNode } from 'react';
@@ -15,6 +16,7 @@ interface Props {
 }
 
 const Payment = ({ payments }: Props) => {
+   const { text } = useI18n();
    const page = usePage();
    const params = getQueryParams(page.url);
 
@@ -47,7 +49,7 @@ const Payment = ({ payments }: Props) => {
             break;
 
          default:
-            Component = ({ payment }: { payment: any }) => <div>No component found</div>;
+            Component = ({ payment }: { payment: any }) => <div>{text('No component found')}</div>;
             break;
       }
 

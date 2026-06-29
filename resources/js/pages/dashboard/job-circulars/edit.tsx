@@ -1,6 +1,7 @@
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import DashboardLayout from '@/layouts/dashboard/layout';
+import { useI18n } from '@/lib/i18n';
 import { SharedData } from '@/types/global';
 import { Head, Link } from '@inertiajs/react';
 import { ArrowLeft, Eye } from 'lucide-react';
@@ -18,6 +19,7 @@ interface Props extends SharedData {
 }
 
 const EditJobCircular = ({ jobCircular, statuses }: Props) => {
+   const { text } = useI18n();
    const getStatusBadge = (status: string) => {
       const variants: Record<string, 'default' | 'secondary' | 'destructive' | 'outline'> = {
          draft: 'outline',
@@ -45,14 +47,14 @@ const EditJobCircular = ({ jobCircular, statuses }: Props) => {
                   </Button>
 
                   <div className="flex items-center gap-3">
-                     <h1 className="text-xl font-semibold">Edit Job Circular</h1>
+                     <h1 className="text-xl font-semibold">{text('Edit Job Circular')}</h1>
                      {getStatusBadge(jobCircular.status)}
                   </div>
                </div>
                <Button variant="outline" asChild>
                   <Link href={route('job-circulars.show', jobCircular.id)}>
                      <Eye className="mr-2 h-4 w-4" />
-                     Preview
+                     {text('Preview')}
                   </Link>
                </Button>
             </div>

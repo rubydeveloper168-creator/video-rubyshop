@@ -4,6 +4,7 @@ import TiptapEditor from '@/components/text-editor/tiptap-editor';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { useI18n } from '@/lib/i18n';
 import { useForm } from '@inertiajs/react';
 import { ReactNode, useState } from 'react';
 
@@ -13,6 +14,7 @@ interface Props {
 }
 
 const ApplicationApproval = ({ instructor, actionComponent }: Props) => {
+   const { text } = useI18n();
    const [open, setOpen] = useState(false);
    const statuses = ['pending', 'approved', 'rejected'].filter((status) => status !== instructor.status);
 
@@ -37,20 +39,20 @@ const ApplicationApproval = ({ instructor, actionComponent }: Props) => {
          <DialogTrigger asChild>{actionComponent}</DialogTrigger>
          <DialogContent>
             <DialogHeader>
-               <DialogTitle>Are you absolutely sure?</DialogTitle>
+               <DialogTitle>{text('Are you absolutely sure?')}</DialogTitle>
 
                {/* add a form where admin can select status then write a feedback and submit */}
                <form onSubmit={handleSubmit} className="space-y-4">
                   <div>
-                     <Label>Approval Status *</Label>
+                     <Label>{text('Approval Status')} *</Label>
                      <Select required value={data.status} onValueChange={(value) => setData('status', value as any)}>
                         <SelectTrigger>
-                           <SelectValue placeholder="Select the approval status" />
+                           <SelectValue placeholder={text('Select the approval status')} />
                         </SelectTrigger>
                         <SelectContent>
                            {statuses.map((status) => (
                               <SelectItem key={status} value={status} className="capitalize">
-                                 {status}
+                                 {text(status)}
                               </SelectItem>
                            ))}
                         </SelectContent>
@@ -59,13 +61,13 @@ const ApplicationApproval = ({ instructor, actionComponent }: Props) => {
                   </div>
 
                   <div className="pb-6">
-                     <Label>Feedback</Label>
+                     <Label>{text('Feedback')}</Label>
                      <TiptapEditor
                         ssr={true}
                         output="html"
                         placeholder={{
-                           paragraph: 'Type your content here...',
-                           imageCaption: 'Type caption for image (optional)',
+                           paragraph: text('Type your content here...'),
+                           imageCaption: text('Type caption for image (optional)'),
                         }}
                         contentMinHeight={256}
                         contentMaxHeight={640}
@@ -81,7 +83,7 @@ const ApplicationApproval = ({ instructor, actionComponent }: Props) => {
                   </div>
 
                   <LoadingButton loading={processing} className="w-full">
-                     Submit
+                     {text('Submit')}
                   </LoadingButton>
                </form>
             </DialogHeader>

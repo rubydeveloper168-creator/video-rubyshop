@@ -4,10 +4,10 @@ import { router } from '@inertiajs/react';
 import { ColumnDef } from '@tanstack/react-table';
 import { ArrowUpDown } from 'lucide-react';
 
-const TableColumn = (home: Settings<PageFields>, system: Settings<SystemFields>): ColumnDef<Page>[] => [
+const TableColumn = (home: Settings<PageFields>, system: Settings<SystemFields>, text: (value?: string | null) => string): ColumnDef<Page>[] => [
    {
       accessorKey: 'name',
-      header: () => <p className="px-3">Name</p>,
+      header: () => <p className="px-3">{text('Name')}</p>,
       cell: ({ row }) => <div className="px-3 py-1 text-sm font-medium">{row.getValue('name')}</div>,
    },
    {
@@ -16,7 +16,7 @@ const TableColumn = (home: Settings<PageFields>, system: Settings<SystemFields>)
          return (
             <div className="px-3">
                <Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
-                  Type
+                  {text('Type')}
                   <ArrowUpDown className="ml-2 h-4 w-4" />
                </Button>
             </div>
@@ -26,26 +26,26 @@ const TableColumn = (home: Settings<PageFields>, system: Settings<SystemFields>)
    },
    {
       accessorKey: 'use_case',
-      header: () => <p className="px-3">Use Case</p>,
+      header: () => <p className="px-3">{text('Use Case')}</p>,
       cell: ({ row }) => (
          <div className="text-muted-foreground px-3 py-1 text-sm">
-            {row.original.type === 'administrative' ? 'Best for Single Instructor' : 'Best for Multiple Instructors'}
+            {row.original.type === 'administrative' ? text('Best for Single Instructor') : text('Best for Multiple Instructors')}
          </div>
       ),
    },
    {
       accessorKey: 'title',
-      header: () => <p className="px-3">Title</p>,
+      header: () => <p className="px-3">{text('Title')}</p>,
       cell: ({ row }) => <div className="text-muted-foreground px-3 py-1 text-sm">{row.getValue('title')}</div>,
    },
    {
       accessorKey: 'sections',
-      header: () => <p className="px-3">Sections</p>,
+      header: () => <p className="px-3">{text('Sections')}</p>,
       cell: ({ row }) => <div className="text-muted-foreground px-3 py-1 text-sm">{row.original.sections?.length || 0}</div>,
    },
    {
       id: 'action',
-      header: () => <div className="px-3 text-end">Action</div>,
+      header: () => <div className="px-3 text-end">{text('Action')}</div>,
       cell: ({ row }) => {
          const page = row.original;
          const isSelected = page.slug === home?.fields?.page_slug;
@@ -54,7 +54,7 @@ const TableColumn = (home: Settings<PageFields>, system: Settings<SystemFields>)
             <div className="flex items-center justify-end space-x-3 px-3 py-1">
                <Button asChild size="sm" variant="ghost" className="border-border border">
                   <a target="_blank" href={route('home.demo', { slug: page.slug })}>
-                     Preview
+                     {text('Preview')}
                   </a>
                </Button>
 
@@ -74,7 +74,7 @@ const TableColumn = (home: Settings<PageFields>, system: Settings<SystemFields>)
                              })
                      }
                   >
-                     {isSelected ? 'Selected' : 'Select'}
+                     {isSelected ? text('Selected') : text('Select')}
                   </Button>
                )}
             </div>

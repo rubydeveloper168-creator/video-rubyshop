@@ -3,6 +3,7 @@ import ChangePassword from '@/components/account/change-password';
 import ForgetPassword from '@/components/account/forget-password';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import DashboardLayout from '@/layouts/dashboard/layout';
+import { useI18n } from '@/lib/i18n';
 import { getQueryParams } from '@/lib/route';
 import { Head, router, usePage } from '@inertiajs/react';
 import { nanoid } from 'nanoid';
@@ -16,30 +17,31 @@ interface Props {
 const Account = ({ instructor }: Props) => {
    const page = usePage();
    const params = getQueryParams(page.url);
+   const { text } = useI18n();
 
    const tabs = [
       {
          id: nanoid(),
          slug: 'profile-update',
-         title: 'Profile Update',
+         title: text('Profile Update'),
          Component: () => <UpdateProfile instructor={instructor} />,
       },
       {
          id: nanoid(),
          slug: 'change-email',
-         title: 'Change Email',
+         title: text('Change Email'),
          Component: ChangeEmail,
       },
       {
          id: nanoid(),
          slug: 'change-password',
-         title: 'Change Password',
+         title: text('Change Password'),
          Component: ChangePassword,
       },
       {
          id: nanoid(),
          slug: 'forget-password',
-         title: 'Forget Password',
+         title: text('Forget Password'),
          Component: ForgetPassword,
       },
       // {
@@ -52,7 +54,7 @@ const Account = ({ instructor }: Props) => {
 
    return (
       <>
-         <Head title="Account Settings" />
+         <Head title={text('Account Settings')} />
 
          <Tabs value={params['tab'] ?? tabs[0].slug} className="grid grid-rows-1 gap-5 md:grid-cols-4 md:px-3">
             <div>

@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableRow } from '@/components/ui/table';
 import DashboardLayout from '@/layouts/dashboard/layout';
+import { useI18n } from '@/lib/i18n';
 import { cn } from '@/lib/utils';
 import InstructorTableColumn from '@/pages/dashboard/payouts/partials/payouts-table-columns';
 import AdminTableColumn from '@/pages/dashboard/payouts/partials/request-table-columns';
@@ -43,6 +44,7 @@ const breadcrumbs = [
 const Dashboard = (props: DashboardProps) => {
    const { auth, system, statistics, revenueData, courseStatusDistribution, pendingWithdrawals } = props;
    const isAdmin = auth.user.role === 'admin';
+   const { text } = useI18n();
 
    // Format revenue data for chart
    const chartData = useMemo(() => {
@@ -70,15 +72,15 @@ const Dashboard = (props: DashboardProps) => {
 
    return (
       <div className="space-y-7">
-         <Head title="Dashboard" />
+         <Head title={text('Dashboard')} />
 
          {/* Statistics Cards */}
          <div className={cn('grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3', isAdmin ? 'lg:grid-cols-5' : 'lg:grid-cols-4')}>
-            <StatCard title="Courses" value={statistics.courses} icon={<FiBookOpen className="h-6 w-6 text-blue-500" />} />
-            <StatCard title="Lessons" value={statistics.lessons} icon={<FiVideo className="h-6 w-6 text-green-500" />} />
-            <StatCard title="Enrollment" value={statistics.enrollments} icon={<FiUserCheck className="h-6 w-6 text-amber-500" />} />
-            <StatCard title="Students" value={statistics.students} icon={<FiUsers className="h-6 w-6 text-purple-500" />} />
-            {isAdmin && <StatCard title="Instructor" value={statistics.instructors} icon={<FiUserPlus className="h-6 w-6 text-rose-500" />} />}
+            <StatCard title={text('Courses')} value={statistics.courses} icon={<FiBookOpen className="h-6 w-6 text-blue-500" />} />
+            <StatCard title={text('Lessons')} value={statistics.lessons} icon={<FiVideo className="h-6 w-6 text-green-500" />} />
+            <StatCard title={text('Enrollment')} value={statistics.enrollments} icon={<FiUserCheck className="h-6 w-6 text-amber-500" />} />
+            <StatCard title={text('Students')} value={statistics.students} icon={<FiUsers className="h-6 w-6 text-purple-500" />} />
+            {isAdmin && <StatCard title={text('Instructor')} value={statistics.instructors} icon={<FiUserPlus className="h-6 w-6 text-rose-500" />} />}
          </div>
 
          {/* Revenue Chart - Full Width */}
@@ -87,7 +89,7 @@ const Dashboard = (props: DashboardProps) => {
          {/* Course Status Chart */}
          <div className="grid grid-cols-2 gap-6 lg:grid-cols-12">
             <Card className="col-span-full p-6 lg:col-span-4">
-               <h3 className="mb-4 text-lg font-medium">Course Status</h3>
+               <h3 className="mb-4 text-lg font-medium">{text('Course Status')}</h3>
 
                <div className="flex items-center justify-center">
                   <ResponsiveContainer width="100%" height={300}>
@@ -119,7 +121,7 @@ const Dashboard = (props: DashboardProps) => {
                            ))}
                         </Pie>
                         <Legend layout="horizontal" align="center" verticalAlign="bottom" iconType="circle" />
-                        <Tooltip formatter={(value) => [value, 'Courses']} />
+                        <Tooltip formatter={(value) => [value, text('Courses')]} />
                      </PieChart>
                   </ResponsiveContainer>
                </div>
@@ -128,10 +130,10 @@ const Dashboard = (props: DashboardProps) => {
             {system.sub_type === 'collaborative' ? (
                <Card className="col-span-full lg:col-span-8">
                   <div className="flex items-center justify-between gap-6 p-6">
-                     <h3 className="text-lg font-medium">Latest Pending Withdrawal Request</h3>
+                     <h3 className="text-lg font-medium">{text('Latest Pending Withdrawal Request')}</h3>
 
                      <Button asChild variant="outline">
-                        <Link href={isAdmin ? route('payouts.request.index') : route('payouts.index')}>View All</Link>
+                        <Link href={isAdmin ? route('payouts.request.index') : route('payouts.index')}>{text('View All')}</Link>
                      </Button>
                   </div>
 
@@ -149,7 +151,7 @@ const Dashboard = (props: DashboardProps) => {
                            ))
                         ) : (
                            <TableRow>
-                              <TableCell className="h-24 text-center">No results.</TableCell>
+                              <TableCell className="h-24 text-center">{text('No results.')}</TableCell>
                            </TableRow>
                         )}
                      </TableBody>

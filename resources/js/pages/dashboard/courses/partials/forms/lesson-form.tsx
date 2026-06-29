@@ -13,6 +13,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Textarea } from '@/components/ui/textarea';
 import { getFileMetadata } from '@/lib/file-metadata';
 import { onHandleChange } from '@/lib/inertia';
+import { useI18n } from '@/lib/i18n';
 import { cn } from '@/lib/utils';
 import { useForm, usePage } from '@inertiajs/react';
 import { useEffect, useState } from 'react';
@@ -44,6 +45,7 @@ const LessonForm = ({ title, handler, lesson, sectionId }: Props) => {
    const [isFileUploaded, setIsFileUploaded] = useState(false);
 
    const { props } = usePage<CourseUpdateProps>();
+   const { text } = useI18n();
 
    const { data, setData, post, put, reset, processing, errors, clearErrors } = useForm({
       title: lesson ? lesson.title : '',
@@ -139,7 +141,7 @@ const LessonForm = ({ title, handler, lesson, sectionId }: Props) => {
                   <Tabs value={lesson ? 'form' : lessonType} onValueChange={setLessonType}>
                      <TabsContent value="type">
                         <div className="space-y-1">
-                           <Label className="font-semibold">Select lesson type</Label>
+                           <Label className="font-semibold">{text('Select lesson type')}</Label>
                            <RadioGroup
                               value={data.lesson_type}
                               onValueChange={(lesson) => setData('lesson_type', lesson)}
@@ -154,7 +156,7 @@ const LessonForm = ({ title, handler, lesson, sectionId }: Props) => {
                                     )}
                                  >
                                     <RadioGroupItem className="cursor-pointer" value={type.value} disabled={type.flag} />
-                                    <span>{type.label}</span>
+                                    <span>{text(type.label)}</span>
                                  </Label>
                               ))}
                            </RadioGroup>
@@ -163,8 +165,8 @@ const LessonForm = ({ title, handler, lesson, sectionId }: Props) => {
 
                      <TabsContent value="form" className="space-y-4 p-0.5">
                         <div>
-                           <Label>Title *</Label>
-                           <Input required name="title" value={data.title} placeholder="Lesson title" onChange={(e) => onHandleChange(e, setData)} />
+                           <Label>{text('Title')} *</Label>
+                           <Input required name="title" value={data.title} placeholder={text('Lesson title')} onChange={(e) => onHandleChange(e, setData)} />
                            <InputError message={errors.title} />
                         </div>
 
@@ -172,7 +174,7 @@ const LessonForm = ({ title, handler, lesson, sectionId }: Props) => {
                         {['video_url'].includes(data.lesson_type) && (
                            <>
                               <div>
-                                 <Label htmlFor="lesson_provider">Video URL Provider</Label>
+                                 <Label htmlFor="lesson_provider">{text('Video URL Provider')}</Label>
                                  <Select
                                     required
                                     name="lesson_provider"
@@ -180,7 +182,7 @@ const LessonForm = ({ title, handler, lesson, sectionId }: Props) => {
                                     onValueChange={(provider) => setData('lesson_provider', provider)}
                                  >
                                     <SelectTrigger className="w-full">
-                                       <SelectValue placeholder="Select a provider" />
+                                       <SelectValue placeholder={text('Select a provider')} />
                                     </SelectTrigger>
                                     <SelectContent>
                                        <SelectItem value="youtube">YouTube</SelectItem>
@@ -190,14 +192,14 @@ const LessonForm = ({ title, handler, lesson, sectionId }: Props) => {
 
                               <div>
                                  <Label>
-                                    Video URL
+                                    {text('Video URL')}
                                     <span className="text-xs text-gray-500">(Provide the shareable url only)</span>
                                  </Label>
                                  <Input
                                     required
                                     name="lesson_src"
                                     value={data.lesson_src || ''}
-                                    placeholder={`Type your ${data.lesson_provider} video url`}
+                                    placeholder={text('Type your provider video url')}
                                     onChange={(e) => onHandleChange(e, setData)}
                                  />
                                  <InputError message={errors.lesson_src} />
@@ -207,7 +209,7 @@ const LessonForm = ({ title, handler, lesson, sectionId }: Props) => {
 
                         {['video', 'document', 'image'].includes(data.lesson_type) && (
                            <div>
-                              <Label>Select {data.lesson_type}</Label>
+                              <Label>{text('Select lesson file')}</Label>
 
                               <ChunkedUploaderInput
                                  isSubmit={isSubmit}
@@ -239,13 +241,13 @@ const LessonForm = ({ title, handler, lesson, sectionId }: Props) => {
                         {data.lesson_type === 'embed' && (
                            <div>
                               <Label>
-                                 Embed source
+                                 {text('Embed source')}
                                  <span className="text-xs text-gray-500">(Provide the source url only)</span>
                               </Label>
                               <Textarea
                                  required
                                  name="embed_source"
-                                 placeholder="Enter the embed source url"
+                                 placeholder={text('Enter the embed source url')}
                                  value={data.embed_source}
                                  rows={4}
                                  onChange={(e) => onHandleChange(e, setData)}
@@ -256,13 +258,13 @@ const LessonForm = ({ title, handler, lesson, sectionId }: Props) => {
 
                         {data.lesson_type === 'text' && (
                            <div>
-                              <Label>Enter your text</Label>
+                              <Label>{text('Enter your text')}</Label>
                               <TiptapEditor
                                  ssr={true}
                                  output="html"
                                  placeholder={{
-                                    paragraph: 'Type your content here...',
-                                    imageCaption: 'Type caption for image (optional)',
+                                    paragraph: text('Type your content here...'),
+                                    imageCaption: text('Type caption for image (optional)'),
                                  }}
                                  contentMinHeight={256}
                                  contentMaxHeight={640}
@@ -280,7 +282,7 @@ const LessonForm = ({ title, handler, lesson, sectionId }: Props) => {
 
                         {['video_url', 'video'].includes(data.lesson_type) && (
                            <div>
-                              <Label htmlFor="duration">Duration</Label>
+                              <Label htmlFor="duration">{text('Duration')}</Label>
                               <Input
                                  required
                                  maxLength={8}
@@ -296,13 +298,13 @@ const LessonForm = ({ title, handler, lesson, sectionId }: Props) => {
                         )}
 
                         <div>
-                           <Label htmlFor="summary">Summary</Label>
+                           <Label htmlFor="summary">{text('Summary')}</Label>
                            <TiptapEditor
                               ssr={true}
                               output="html"
                               placeholder={{
-                                 paragraph: 'Type your content here...',
-                                 imageCaption: 'Type caption for image (optional)',
+                                 paragraph: text('Type your content here...'),
+                                 imageCaption: text('Type caption for image (optional)'),
                               }}
                               contentMinHeight={256}
                               contentMaxHeight={640}
@@ -313,7 +315,7 @@ const LessonForm = ({ title, handler, lesson, sectionId }: Props) => {
                         </div>
 
                         <div>
-                           <Label>Lesson type</Label>
+                           <Label>{text('Lesson access type')}</Label>
                            <RadioGroup
                               required
                               defaultValue={data.is_free ? 'free' : 'paid'}
@@ -337,18 +339,18 @@ const LessonForm = ({ title, handler, lesson, sectionId }: Props) => {
                         <div className="flex w-full items-center gap-4">
                            <DialogClose asChild>
                               <Button type="button" variant="outline">
-                                 Close
+                                 {text('Close')}
                               </Button>
                            </DialogClose>
 
                            {!lesson && (
                               <TabsList className="p-0">
                                  <TabsTrigger asChild value="form" className={cn(lessonType === 'form' ? 'hidden' : 'block')}>
-                                    <Button>Next</Button>
+                                    <Button>{text('Next')}</Button>
                                  </TabsTrigger>
 
                                  <TabsTrigger asChild value="type" className={cn(lessonType === 'type' ? 'hidden' : 'block')}>
-                                    <Button>Back</Button>
+                                    <Button>{text('Back')}</Button>
                                  </TabsTrigger>
                               </TabsList>
                            )}
@@ -356,7 +358,7 @@ const LessonForm = ({ title, handler, lesson, sectionId }: Props) => {
 
                         {(lesson || lessonType === 'form') && (
                            <LoadingButton loading={processing || isSubmit} disabled={processing || isSubmit}>
-                              {isSubmit ? 'Uploading...' : 'Save Lesson'}
+                              {isSubmit ? text('Uploading...') : text('Save Lesson')}
                            </LoadingButton>
                         )}
                      </DialogFooter>

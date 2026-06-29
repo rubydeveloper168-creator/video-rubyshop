@@ -1,4 +1,5 @@
 import DashboardLayout from '@/layouts/dashboard/layout';
+import { useI18n } from '@/lib/i18n';
 import { SharedData } from '@/types/global';
 import { Head, usePage } from '@inertiajs/react';
 import { AlertTriangle, CheckCircle } from 'lucide-react';
@@ -13,23 +14,24 @@ export interface MaintenancePageProps extends SharedData {
 }
 
 const Maintenance = ({ version }: MaintenancePageProps) => {
+   const { text } = useI18n();
    const page = usePage<MaintenancePageProps>();
 
    return (
       <>
-         <Head title="App Maintenance" />
+         <Head title={text('App Maintenance')} />
 
          <div className="md:px-3">
             <div className="mb-6 flex flex-col justify-between gap-7 sm:flex-row sm:items-center">
                <div>
-                  <h1 className="text-2xl font-bold text-nowrap">App Maintenance</h1>
-                  <p className="text-muted-foreground text-sm md:text-base">Update, backup and restore your application safely and automatically.</p>
+                  <h1 className="text-2xl font-bold text-nowrap">{text('App Maintenance')}</h1>
+                  <p className="text-muted-foreground text-sm md:text-base">{text('Update, backup and restore your application safely and automatically.')}</p>
                </div>
 
                <div>
-                  <h1 className="text-2xl font-bold text-nowrap">App Version</h1>
+                  <h1 className="text-2xl font-bold text-nowrap">{text('App Version')}</h1>
                   <p className="text-muted-foreground text-sm text-nowrap md:text-base">
-                     Current Version: <span className="text-primary font-bold">{version}</span>
+                     {text('Current Version:')} <span className="text-primary font-bold">{version}</span>
                   </p>
                </div>
             </div>

@@ -5,6 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { onHandleChange } from '@/lib/inertia';
+import { useI18n } from '@/lib/i18n';
 import { SharedData } from '@/types/global';
 import { useForm, usePage } from '@inertiajs/react';
 import { Camera } from 'lucide-react';
@@ -26,6 +27,7 @@ type SocialLinksMap = {
 const UpdateProfile = ({ instructor }: { instructor: Instructor }) => {
    const { auth, system, errors } = usePage<SharedData>().props;
    const user = auth.user;
+   const { text } = useI18n();
    const [userPhoto, setUserPhoto] = useState(user.photo);
 
    const [socialLinks, setSocialLinks] = useState<SocialLinksMap>({
@@ -56,9 +58,9 @@ const UpdateProfile = ({ instructor }: { instructor: Instructor }) => {
 
          setSocialLinks(linkMap);
       } catch (error) {
-         toast.error('Failed to parse social links');
+         toast.error(text('Failed to parse social links'));
       }
-   }, []);
+   }, [text]);
 
    useEffect(() => {
       parseSocialLinks(user.social_links);
@@ -126,95 +128,95 @@ const UpdateProfile = ({ instructor }: { instructor: Instructor }) => {
                   <input hidden type="file" id="formFileSm" name="photo" onChange={(e) => onHandleChange(e, onImageChange)} />
                </div>
 
-               <small className="text-xs text-gray-500">Allowed: JPG, JPEG, PNG, SVG File, Maximum 2MB</small>
+               <small className="text-xs text-gray-500">{text('Allowed: JPG, JPEG, PNG, SVG File, Maximum 2MB')}</small>
 
                {errors.photo && <p className="mt-1 text-sm text-red-500">{errors.photo}</p>}
             </div>
 
             <div className="grid w-full grid-cols-1 gap-6 md:grid-cols-2">
                <div>
-                  <Label>Website</Label>
+                  <Label>{text('Website')}</Label>
                   <Input
                      type="url"
                      name="website"
                      value={socialLinks.website}
                      onChange={(e) => updateSocialLink('website', e.target.value)}
                      className="mt-1"
-                     placeholder="https://example.com"
+                     placeholder={text('https://example.com')}
                   />
                </div>
 
                <div>
-                  <Label>GitHub</Label>
+                  <Label>{text('GitHub')}</Label>
                   <Input
                      type="url"
                      name="github"
                      value={socialLinks.github}
                      onChange={(e) => updateSocialLink('github', e.target.value)}
                      className="mt-1"
-                     placeholder="https://github.com/my-profile"
+                     placeholder={text('https://github.com/my-profile')}
                   />
                </div>
 
                <div>
-                  <Label>Twitter</Label>
+                  <Label>{text('Twitter')}</Label>
                   <Input
                      type="url"
                      name="twitter"
                      value={socialLinks.twitter}
                      onChange={(e) => updateSocialLink('twitter', e.target.value)}
                      className="mt-1"
-                     placeholder="https://twitter.com/my-profile"
+                     placeholder={text('https://twitter.com/my-profile')}
                   />
                </div>
 
                <div>
-                  <Label htmlFor="linkedin">LinkedIn</Label>
+                  <Label htmlFor="linkedin">{text('LinkedIn')}</Label>
                   <Input
                      id="linkedin"
                      name="linkedin"
                      value={socialLinks.linkedin}
                      onChange={(e) => updateSocialLink('linkedin', e.target.value)}
                      className="mt-1"
-                     placeholder="https://linkedin.com/my-profile"
+                     placeholder={text('https://linkedin.com/my-profile')}
                   />
                </div>
             </div>
          </div>
 
          <div>
-            <Label htmlFor="name">Full Name</Label>
-            <Input id="name" name="name" value={data.name} onChange={(e) => onHandleChange(e, setData)} className="mt-1" placeholder="John Doe" />
+            <Label htmlFor="name">{text('Full Name')}</Label>
+            <Input id="name" name="name" value={data.name} onChange={(e) => onHandleChange(e, setData)} className="mt-1" placeholder={text('John Doe')} />
             <InputError message={errors.name} />
          </div>
 
          {((user.role === 'admin' && user.instructor_id) || user.role === 'instructor') && (
             <>
                <div>
-                  <Label>Designation</Label>
-                  <Input name="designation" value={data.designation} onChange={(e) => onHandleChange(e, setData)} placeholder="Software Engineer" />
+                  <Label>{text('Designation')}</Label>
+                  <Input name="designation" value={data.designation} onChange={(e) => onHandleChange(e, setData)} placeholder={text('Software Engineer')} />
                   <InputError message={errors.designation} />
                </div>
                {user.role === 'instructor' && (
                   <div>
-                     <Label>Resume</Label>
+                     <Label>{text('Resume')}</Label>
                      <Input readOnly type="file" name="resume" onChange={(e) => onHandleChange(e, setData)} />
                      <InputError message={errors.resume} />
                   </div>
                )}
                <div>
-                  <Label>Skills</Label>
-                  <TagInput defaultTags={data.skills} placeholder="Enter the skills as a tag" onChange={(values: any) => setData('skills', values)} />
+                  <Label>{text('Skills')}</Label>
+                  <TagInput defaultTags={data.skills} placeholder={text('Enter the skills as a tag')} onChange={(values: any) => setData('skills', values)} />
                </div>
                <div className="pb-3">
-                  <Label>Biography</Label>
+                  <Label>{text('Biography')}</Label>
                   <Textarea
                      rows={5}
                      required
                      name="biography"
                      value={data.biography}
                      onChange={(e) => onHandleChange(e, setData)}
-                     placeholder="Write about yourself"
+                     placeholder={text('Write about yourself')}
                   />
                   <InputError message={errors.biography} />
                </div>
@@ -222,7 +224,7 @@ const UpdateProfile = ({ instructor }: { instructor: Instructor }) => {
          )}
 
          <div className="col-span-full pt-2">
-            <LoadingButton loading={processing}>Save Changes</LoadingButton>
+            <LoadingButton loading={processing}>{text('Save Changes')}</LoadingButton>
          </div>
       </form>
    );

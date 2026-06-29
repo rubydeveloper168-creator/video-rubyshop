@@ -5,14 +5,14 @@ import { ColumnDef } from '@tanstack/react-table';
 import { ArrowUpDown, Pencil, Trash2 } from 'lucide-react';
 import CourseStatusFilter from './course-status-filter';
 
-const TableColumn = (isAdmin: boolean): ColumnDef<Course>[] => [
+const TableColumn = (isAdmin: boolean, text: (value?: string | null) => string): ColumnDef<Course>[] => [
    {
       accessorKey: 'name',
       header: ({ column }) => {
          return (
             <div className="flex items-center pl-4">
                <Button variant="ghost" className="p-0 hover:bg-transparent" onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
-                  Instructor
+                  {text('Instructor')}
                   <ArrowUpDown />
                </Button>
             </div>
@@ -27,7 +27,7 @@ const TableColumn = (isAdmin: boolean): ColumnDef<Course>[] => [
    },
    {
       accessorKey: 'title',
-      header: 'Course Title',
+      header: text('Course Title'),
       cell: ({ row }) => (
          <div className="py-1 capitalize">
             <Link
@@ -54,7 +54,7 @@ const TableColumn = (isAdmin: boolean): ColumnDef<Course>[] => [
       header: ({ column }) => {
          return (
             <div className="flex items-center justify-center">
-               <p>Category</p>
+               <p>{text('Category')}</p>
             </div>
          );
       },
@@ -69,7 +69,7 @@ const TableColumn = (isAdmin: boolean): ColumnDef<Course>[] => [
       header: ({ column }) => {
          return (
             <div className="flex items-center justify-center">
-               <p>Category Child</p>
+               <p>{text('Category Child')}</p>
             </div>
          );
       },
@@ -84,20 +84,20 @@ const TableColumn = (isAdmin: boolean): ColumnDef<Course>[] => [
       header: ({ column }) => (
          <div className="flex items-center justify-center">
             <Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
-               Price
+               {text('Price')}
                <ArrowUpDown />
             </Button>
          </div>
       ),
       cell: ({ row }) => (
          <div className="py-1 text-center capitalize">
-            <p>{row.original.price ?? 'free'}</p>
+            <p>{row.original.price ?? text('free')}</p>
          </div>
       ),
    },
    {
       id: 'actions',
-      header: () => <div className="pr-4 text-end">Action</div>,
+      header: () => <div className="pr-4 text-end">{text('Action')}</div>,
       cell: ({ row }) => {
          const course = row.original;
 
@@ -121,7 +121,7 @@ const TableColumn = (isAdmin: boolean): ColumnDef<Course>[] => [
                {isAdmin && (
                   <DeleteModal
                      routePath={route('courses.destroy', course.id)}
-                     message="After deleting the course, all the related data, like, course sections, lessons, quizzes, enrollments, etc will be deleted automatically."
+                     message={text('After deleting the course, all the related data, like, course sections, lessons, quizzes, enrollments, etc will be deleted automatically.')}
                      actionComponent={
                         <Button size="icon" variant="ghost" className="bg-destructive/8 hover:bg-destructive/6 h-8 w-8 p-0">
                            <Trash2 className="text-destructive text-sm" />

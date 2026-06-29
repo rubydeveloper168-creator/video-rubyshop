@@ -3,6 +3,7 @@ import TiptapRenderer from '@/components/text-editor/tiptap-renderer/client-rend
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
+import { useI18n } from '@/lib/i18n';
 import { zoomIsEnabled } from '@/lib/zoom';
 import { Link, usePage } from '@inertiajs/react';
 import { format, parseISO } from 'date-fns';
@@ -15,6 +16,7 @@ const LiveClass = () => {
    const { props } = usePage<CourseUpdateProps>();
    const { course, zoomConfig } = props;
    const isZoomEnabled = zoomIsEnabled(zoomConfig);
+   const { text } = useI18n();
 
    // Get live classes from course data
    const liveClasses = course.live_classes || [];
@@ -24,25 +26,25 @@ const LiveClass = () => {
          <div className="space-y-6">
             {/* Header */}
             <div className="flex items-center justify-between">
-               <h2 className="text-xl font-bold">Live Classes</h2>
+               <h2 className="text-xl font-bold">{text('Live Classes')}</h2>
 
                <div className="flex items-center gap-3">
                   {/* Create New Live Class Dialog */}
                   {isZoomEnabled ? (
                      <LiveClassForm
                         courseId={course.id}
-                        title="Schedule New Live Class"
+                        title={text('Schedule New Live Class')}
                         handler={
                            <Button className="flex items-center gap-2">
                               <Plus className="h-4 w-4" />
-                              Schedule Live Class
+                              {text('Schedule Live Class')}
                            </Button>
                         }
                      />
                   ) : (
                      <Button disabled className="flex items-center gap-2">
                         <Plus className="h-4 w-4" />
-                        Schedule Live Class
+                        {text('Schedule Live Class')}
                      </Button>
                   )}
                </div>
@@ -53,16 +55,16 @@ const LiveClass = () => {
                {liveClasses.length === 0 ? (
                   <div>
                      <p className="bg-destructive/5 dark:bg-destructive/30 rounded-lg p-3 text-center text-sm text-red-500">
-                        Zoom is not enabled for this course. Please enable Zoom to schedule live classes.{' '}
+                        {text('Zoom is not enabled for this course. Please enable Zoom to schedule live classes.')}{' '}
                         <Link href={route('settings.live-class')} className="text-blue-500 hover:underline">
-                           Enable Zoom
+                           {text('Enable Zoom')}
                         </Link>
                      </p>
 
                      <div className="p-8 text-center">
                         <Calendar className="mx-auto mb-4 h-12 w-12 text-gray-400" />
-                        <h3 className="mb-2 text-lg font-medium">No Live Classes Scheduled</h3>
-                        <p className="text-gray-500">Schedule your first live class to get started with Zoom.</p>
+                        <h3 className="mb-2 text-lg font-medium">{text('No Live Classes Scheduled')}</h3>
+                        <p className="text-gray-500">{text('Schedule your first live class to get started with Zoom.')}</p>
                      </div>
                   </div>
                ) : (
@@ -84,7 +86,7 @@ const LiveClass = () => {
                                     </div>
                                     <div className="flex items-center gap-2">
                                        <Users className="h-4 w-4" />
-                                       <span>Instructor: {course.instructor?.user?.name || 'Unknown'}</span>
+                                       <span>{text('Instructor:')} {course.instructor?.user?.name || text('Unknown')}</span>
                                     </div>
                                  </div>
                               </div>
@@ -97,7 +99,7 @@ const LiveClass = () => {
                                     actionComponent={
                                        <Button size="sm" variant="outline" className="flex w-full items-center gap-1 text-red-600 hover:text-red-700">
                                           <Trash2 className="h-3 w-3" />
-                                          Delete Class
+                                          {text('Delete Class')}
                                        </Button>
                                     }
                                  />
@@ -108,7 +110,7 @@ const LiveClass = () => {
                               <Accordion type="single" collapsible className="mt-4 w-full">
                                  <AccordionItem value="item-1" className="bg-muted overflow-hidden rounded-lg border-none">
                                     <AccordionTrigger className="[&[data-state=open]]:!bg-secondary-lighter px-4 py-2 text-base font-medium hover:no-underline">
-                                       Class Note
+                                       {text('Class Note')}
                                     </AccordionTrigger>
                                     <AccordionContent className="p-4">
                                        <TiptapRenderer>{liveClass.class_note}</TiptapRenderer>

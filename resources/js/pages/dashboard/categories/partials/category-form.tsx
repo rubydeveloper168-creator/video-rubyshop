@@ -9,6 +9,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import { onHandleChange } from '@/lib/inertia';
+import { useI18n } from '@/lib/i18n';
 import { useForm } from '@inertiajs/react';
 import { useState } from 'react';
 
@@ -20,6 +21,7 @@ interface Props {
 }
 
 const CategoryForm = ({ title, category, lastPosition, handler }: Props) => {
+   const { text } = useI18n();
    const [open, setOpen] = useState(false);
    const [openIcon, setOpenIcon] = useState(false);
 
@@ -57,31 +59,31 @@ const CategoryForm = ({ title, category, lastPosition, handler }: Props) => {
             <ScrollArea className="max-h-[90vh] p-6">
                <DialogHeader className="mb-6">
                   <DialogTitle>{title}</DialogTitle>
-                  <DialogDescription>Manage category information and settings</DialogDescription>
+                  <DialogDescription>{text('Manage category information and settings')}</DialogDescription>
                </DialogHeader>
 
                <form onSubmit={handleSubmit} className="space-y-4 p-0.5">
                   <div>
-                     <Label>Category Name</Label>
+                     <Label>{text('Category Name')}</Label>
                      <Input
                         required
                         type="text"
                         name="title"
                         value={data.title}
-                        placeholder="Enter your category name"
+                        placeholder={text('Enter your category name')}
                         onChange={(e) => onHandleChange(e, setData)}
                      />
                      <InputError message={errors.title} />
                   </div>
                   <div>
-                     <Label>Category Icon</Label>
+                     <Label>{text('Category Icon')}</Label>
                      <Input
                         required
                         readOnly
                         type="text"
                         name="icon"
                         value={data.icon}
-                        placeholder="Pick your category icon"
+                        placeholder={text('Pick your category icon')}
                         onClick={() => setOpenIcon(true)}
                      />
                      <InputError message={errors.icon} />
@@ -90,8 +92,8 @@ const CategoryForm = ({ title, category, lastPosition, handler }: Props) => {
                         <DialogContent className="p-0">
                            <ScrollArea className="max-h-[90vh] p-6">
                               <DialogHeader className="mb-6">
-                                 <DialogTitle>Icon Picker</DialogTitle>
-                                 <DialogDescription>Choose an icon for the category</DialogDescription>
+                                 <DialogTitle>{text('Icon Picker')}</DialogTitle>
+                                 <DialogDescription>{text('Choose an icon for the category')}</DialogDescription>
                               </DialogHeader>
 
                               <IconPicker
@@ -105,29 +107,29 @@ const CategoryForm = ({ title, category, lastPosition, handler }: Props) => {
                      </Dialog>
                   </div>
                   <div>
-                     <Label>Category Status</Label>
+                     <Label>{text('Category Status')}</Label>
                      <Select value={JSON.stringify(data.status)} onValueChange={(e) => setData('status', JSON.parse(e))}>
                         <SelectTrigger>
-                           <SelectValue placeholder="Select the status" />
+                           <SelectValue placeholder={text('Select the status')} />
                         </SelectTrigger>
                         <SelectContent>
-                           <SelectItem value="1">Active</SelectItem>
-                           <SelectItem value="0">Deactive</SelectItem>
+                           <SelectItem value="1">{text('Active')}</SelectItem>
+                           <SelectItem value="0">{text('Deactive')}</SelectItem>
                         </SelectContent>
                      </Select>
                   </div>
                   <div>
-                     <Label>Category Description (optional)</Label>
+                     <Label>{text('Category Description (optional)')}</Label>
                      <Textarea
                         name="description"
                         value={data.description}
-                        placeholder="Enter your description"
+                        placeholder={text('Enter your description')}
                         onChange={(e) => onHandleChange(e, setData)}
                      />
                      <InputError message={errors.description} />
                   </div>
                   <div>
-                     <Label>Thumbnail (optional)</Label>
+                     <Label>{text('Thumbnail (optional)')}</Label>
                      <Input type="file" name="thumbnail" onChange={(e) => onHandleChange(e, setData)} />
                      <InputError message={errors.thumbnail} />
                   </div>
@@ -135,11 +137,11 @@ const CategoryForm = ({ title, category, lastPosition, handler }: Props) => {
                   <DialogFooter className="flex justify-end space-x-2 pt-4">
                      <DialogClose asChild>
                         <Button type="button" variant="outline">
-                           Close
+                           {text('Close')}
                         </Button>
                      </DialogClose>
 
-                     <LoadingButton loading={processing}>Submit</LoadingButton>
+                     <LoadingButton loading={processing}>{text('Submit')}</LoadingButton>
                   </DialogFooter>
                </form>
             </ScrollArea>

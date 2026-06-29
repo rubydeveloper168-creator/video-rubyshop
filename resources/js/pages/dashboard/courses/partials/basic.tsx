@@ -11,6 +11,7 @@ import { Textarea } from '@/components/ui/textarea';
 import courseLanguages from '@/data/course-languages';
 import DashboardLayout from '@/layouts/dashboard/layout';
 import { onHandleChange } from '@/lib/inertia';
+import { useI18n } from '@/lib/i18n';
 import { useForm, usePage } from '@inertiajs/react';
 import { ReactNode, useMemo } from 'react';
 import { CourseUpdateProps } from '../update';
@@ -18,6 +19,7 @@ import { CourseUpdateProps } from '../update';
 const Basic = () => {
    const { props } = usePage<CourseUpdateProps>();
    const { auth, system, tab, labels, categories, course, instructors } = props;
+   const { text } = useI18n();
 
    const { data, setData, post, errors, processing } = useForm({
       tab: tab,
@@ -89,31 +91,31 @@ const Basic = () => {
       <Card className="container p-4 sm:p-6">
          <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-               <Label>Title *</Label>
-               <Input name="title" value={data.title} onChange={(e) => onHandleChange(e, setData)} placeholder="Enter Course Title" />
+               <Label>{text('Title')} *</Label>
+               <Input name="title" value={data.title} onChange={(e) => onHandleChange(e, setData)} placeholder={text('Enter Course Title')} />
                <InputError message={errors.title} />
             </div>
 
             <div>
-               <Label>Short Description</Label>
+               <Label>{text('Short Description')}</Label>
                <Textarea
                   rows={5}
                   name="short_description"
                   value={data.short_description}
                   onChange={(e) => onHandleChange(e, setData)}
-                  placeholder="Enter Short Description"
+                  placeholder={text('Enter Short Description')}
                />
                <InputError message={errors.short_description} />
             </div>
 
             <div>
-               <Label>Description</Label>
+               <Label>{text('Description')}</Label>
                <TiptapEditor
                   ssr={true}
                   output="html"
                   placeholder={{
-                     paragraph: 'Type your content here...',
-                     imageCaption: 'Type caption for image (optional)',
+                     paragraph: text('Type your content here...'),
+                     imageCaption: text('Type caption for image (optional)'),
                   }}
                   contentMinHeight={256}
                   contentMaxHeight={640}
@@ -130,11 +132,11 @@ const Basic = () => {
 
             {auth.user.role === 'admin' && system.sub_type === 'collaborative' && (
                <div>
-                  <Label>Course Instructor *</Label>
+                  <Label>{text('Course Instructor')} *</Label>
                   <Combobox
                      defaultValue={data.instructor_id as string}
                      data={transformedInstructors || []}
-                     placeholder="Select the course instructor"
+                     placeholder={text('Select the course instructor')}
                      onSelect={(selected) => setData('instructor_id', selected.value)}
                   />
                   <InputError message={errors.instructor_id} />
@@ -143,10 +145,10 @@ const Basic = () => {
 
             <div className="grid gap-6 md:grid-cols-2">
                <div>
-                  <Label>Category *</Label>
+                  <Label>{text('Category')} *</Label>
                   <Combobox
                      data={transformedCategories}
-                     placeholder="Select a category"
+                     placeholder={text('Select a category')}
                      defaultValue={selectedCategory?.title || ''}
                      onSelect={(selected) => {
                         setData('course_category_id', selected.id as number);
@@ -157,10 +159,10 @@ const Basic = () => {
                </div>
 
                <div>
-                  <Label>Course Level *</Label>
+                  <Label>{text('Course Level')} *</Label>
                   <Select value={data.level} onValueChange={(value) => setData('level', value)}>
                      <SelectTrigger>
-                        <SelectValue placeholder="Select your course level" />
+                        <SelectValue placeholder={text('Select your course level')} />
                      </SelectTrigger>
                      <SelectContent>
                         {labels.map((label) => (
@@ -174,18 +176,18 @@ const Basic = () => {
                </div>
 
                <div>
-                  <Label>Made In *</Label>
+                  <Label>{text('Made In')} *</Label>
                   <Combobox
                      defaultValue={data.language}
                      data={courseLanguages}
-                     placeholder="Select your course language"
+                     placeholder={text('Select your course language')}
                      onSelect={(selected) => setData('language', selected.value)}
                   />
                   <InputError message={errors.language} />
                </div>
 
                <div>
-                  <Label>Enable Drip Content *</Label>
+                  <Label>{text('Enable Drip Content')} *</Label>
                   <RadioGroup
                      defaultValue={data.drip_content ? 'on' : 'off'}
                      className="flex items-center space-x-4 pt-2 pb-1"
@@ -193,11 +195,11 @@ const Basic = () => {
                   >
                      <div className="flex items-center space-x-2">
                         <RadioGroupItem className="cursor-pointer" id="off" value="off" />
-                        <Label htmlFor="off">Off</Label>
+                        <Label htmlFor="off">{text('Off')}</Label>
                      </div>
                      <div className="flex items-center space-x-2">
                         <RadioGroupItem className="cursor-pointer" id="on" value="on" />
-                        <Label htmlFor="on">On</Label>
+                        <Label htmlFor="on">{text('On')}</Label>
                      </div>
                   </RadioGroup>
                   <InputError message={errors.drip_content} />
@@ -205,7 +207,7 @@ const Basic = () => {
             </div>
 
             <div className="mt-8">
-               <LoadingButton loading={processing}>Save Changes</LoadingButton>
+               <LoadingButton loading={processing}>{text('Save Changes')}</LoadingButton>
             </div>
          </form>
       </Card>

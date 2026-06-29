@@ -7,6 +7,7 @@ import { Label } from '@/components/ui/label';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
+import { useI18n } from '@/lib/i18n';
 import { useForm } from '@inertiajs/react';
 import { useEffect, useState } from 'react';
 
@@ -17,6 +18,7 @@ interface Props {
 }
 
 const CategoryForm = ({ title, handler, category }: Props) => {
+   const { text } = useI18n();
    const [open, setOpen] = useState(false);
    const [openIcon, setOpenIcon] = useState(false);
 
@@ -65,26 +67,26 @@ const CategoryForm = ({ title, handler, category }: Props) => {
             <form onSubmit={handleSubmit}>
                <div className="space-y-4 py-4">
                   <div className="space-y-2">
-                     <Label htmlFor="name">Title</Label>
+                     <Label htmlFor="name">{text('Title')}</Label>
                      <Input
                         id="name"
                         value={data.name}
                         onChange={(e) => setData('name', e.target.value)}
                         className={errors.name ? 'border-red-500' : ''}
-                        placeholder="Enter category name"
+                        placeholder={text('Enter category name')}
                      />
                      <InputError message={errors.name} />
                   </div>
 
                   <div>
-                     <Label>Category Icon</Label>
+                     <Label>{text('Category Icon')}</Label>
                      <Input
                         required
                         readOnly
                         type="text"
                         name="icon"
                         value={data.icon}
-                        placeholder="Pick your category icon"
+                        placeholder={text('Pick your category icon')}
                         onClick={() => setOpenIcon(true)}
                      />
                      <InputError message={errors.icon} />
@@ -93,7 +95,7 @@ const CategoryForm = ({ title, handler, category }: Props) => {
                         <DialogContent className="p-0">
                            <ScrollArea className="max-h-[90vh] p-6">
                               <DialogHeader className="mb-6">
-                                 <DialogTitle>Icon Picker</DialogTitle>
+                                 <DialogTitle>{text('Icon Picker')}</DialogTitle>
                               </DialogHeader>
 
                               <IconPicker
@@ -108,27 +110,27 @@ const CategoryForm = ({ title, handler, category }: Props) => {
                   </div>
 
                   <div>
-                     <Label htmlFor="status">Status</Label>
+                     <Label htmlFor="status">{text('Status')}</Label>
                      <Select value={data.status} onValueChange={(value) => setData('status', value)}>
                         <SelectTrigger>
                            <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
-                           <SelectItem value="active">Active</SelectItem>
-                           <SelectItem value="inactive">Inactive</SelectItem>
+                           <SelectItem value="active">{text('Active')}</SelectItem>
+                           <SelectItem value="inactive">{text('Inactive')}</SelectItem>
                         </SelectContent>
                      </Select>
                      <InputError message={errors.status} />
                   </div>
 
                   <div className="space-y-2">
-                     <Label htmlFor="description">Subtitle (80 Character)</Label>
+                     <Label htmlFor="description">{text('Subtitle (80 Character)')}</Label>
                      <Textarea
                         id="description"
                         value={data.description || ''}
                         onChange={(e) => setData('description', e.target.value)}
                         className={errors.description ? 'border-red-500' : ''}
-                        placeholder="Enter category description"
+                        placeholder={text('Enter category description')}
                         maxLength={80}
                         rows={3}
                      />
@@ -139,11 +141,11 @@ const CategoryForm = ({ title, handler, category }: Props) => {
                <DialogFooter>
                   <DialogClose>
                      <Button type="button" variant="outline">
-                        Close
+                        {text('Close')}
                      </Button>
                   </DialogClose>
                   <Button type="submit" disabled={processing}>
-                     {category ? 'Update Category' : 'Add Category'}
+                     {category ? text('Update Category') : text('Add Category')}
                   </Button>
                </DialogFooter>
             </form>

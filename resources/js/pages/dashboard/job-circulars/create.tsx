@@ -1,14 +1,16 @@
 import { Button } from '@/components/ui/button';
 import DashboardLayout from '@/layouts/dashboard/layout';
+import { useI18n } from '@/lib/i18n';
 import { Head, Link } from '@inertiajs/react';
 import { ArrowLeft } from 'lucide-react';
 import { ReactNode } from 'react';
 import JobCircularForm from './partials/job-circular-form';
 
 const CreateJobCircular = () => {
+   const { text } = useI18n();
    return (
       <>
-         <Head title="Create Job Circular" />
+         <Head title={text('Create Job Circular')} />
 
          <div className="space-y-6">
             {/* Header */}
@@ -20,7 +22,7 @@ const CreateJobCircular = () => {
                      </Link>
                   </Button>
 
-                  <h1 className="text-xl font-semibold">Create Job Circular</h1>
+                  <h1 className="text-xl font-semibold">{text('Create Job Circular')}</h1>
                </div>
             </div>
 

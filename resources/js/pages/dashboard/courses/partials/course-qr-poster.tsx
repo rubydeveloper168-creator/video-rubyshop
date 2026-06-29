@@ -2,6 +2,7 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
+import { useI18n } from '@/lib/i18n';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
@@ -33,12 +34,13 @@ interface CourseQrPosterProps extends SharedData {
 const CourseQrPoster = () => {
    const { props } = usePage<CourseQrPosterProps>();
    const { course, watchHistory, system } = props;
+   const { text } = useI18n();
 
    const [targetMode, setTargetMode] = useState<QrTargetMode>(!!watchHistory ? 'player' : 'overview');
    const [posterLayout, setPosterLayout] = useState<PosterLayout>('warning');
    const [customUrl, setCustomUrl] = useState('');
-   const [posterTitle, setPosterTitle] = useState('SCAN TO OPEN');
-   const [posterNote, setPosterNote] = useState('Open this course on your phone');
+   const [posterTitle, setPosterTitle] = useState(text('SCAN TO OPEN'));
+   const [posterNote, setPosterNote] = useState(text('Open this course on your phone'));
    const [previewOpen, setPreviewOpen] = useState(false);
    const [showSettings, setShowSettings] = useState(false);
    const [previewSeed, setPreviewSeed] = useState(0);
@@ -69,7 +71,7 @@ const CourseQrPoster = () => {
 
    const posterExport = useMemo(() => ({
       courseTitle: course.title,
-      categoryTitle: course.course_category?.title || 'Course access',
+      categoryTitle: course.course_category?.title || text('Course access'),
       childTitle: course.course_category_child?.title || '',
       posterTitle,
       posterNote,
@@ -79,7 +81,8 @@ const CourseQrPoster = () => {
       brandName: system.fields.name || 'RubyShop',
       brandLogo: system.fields.logo_light || system.fields.logo_dark || defaultBrandLogo,
       qrUrl,
-   }), [course, system, posterTitle, posterNote, resolvedUrl, posterLayout, targetMode, qrUrl]);
+      text,
+   }), [course, system, posterTitle, posterNote, resolvedUrl, posterLayout, targetMode, qrUrl, text]);
 
    const [previewSvgUrl, setPreviewSvgUrl] = useState('');
 
@@ -123,20 +126,20 @@ const CourseQrPoster = () => {
 
       try {
          await navigator.clipboard.writeText(resolvedUrl);
-         toast.success('URL copied to clipboard.');
+         toast.success(text('URL copied to clipboard.'));
       } catch {
-         toast.error('Unable to copy URL.');
+         toast.error(text('Unable to copy URL.'));
       }
    };
 
    const regeneratePreview = () => {
       if (!resolvedUrl) {
-         toast.error('Add a URL before regenerating the poster preview.');
+         toast.error(text('Add a URL before regenerating the poster preview.'));
          return;
       }
 
       setPreviewSeed((seed) => seed + 1);
-      toast.success('Poster preview regenerated.');
+      toast.success(text('Poster preview regenerated.'));
    };
 
    const downloadPosterSvg = () => {
@@ -152,7 +155,7 @@ const CourseQrPoster = () => {
       a.click();
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
-      toast.success('Poster SVG downloaded.');
+      toast.success(text('Poster SVG downloaded.'));
    };
 
    const downloadPosterImage = async (format: 'png' | 'jpeg') => {
@@ -194,7 +197,7 @@ const CourseQrPoster = () => {
          stage = 'encode image';
          const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, format === 'jpeg' ? 'image/jpeg' : 'image/png', format === 'jpeg' ? 0.96 : undefined));
          if (!blob) {
-            toast.error(`Unable to export ${format.toUpperCase()}.`);
+            toast.error(`${text('Unable to export')} ${format.toUpperCase()}.`);
             return;
          }
 
@@ -206,11 +209,11 @@ const CourseQrPoster = () => {
          a.click();
          document.body.removeChild(a);
          URL.revokeObjectURL(url);
-         toast.success(`Poster ${format.toUpperCase()} downloaded.`);
+         toast.success(`${text('Poster')} ${format.toUpperCase()} ${text('downloaded.')}`);
       } catch (error) {
          console.error(`Poster export ${format.toUpperCase()} failed at ${stage}`, error);
          const message = error instanceof Error ? error.message : 'Unknown export error';
-         toast.error(`Unable to export ${format.toUpperCase()} at ${stage}: ${message}`);
+         toast.error(`${text('Unable to export')} ${format.toUpperCase()} ${text('at')} ${stage}: ${message}`);
       }
    };
 
@@ -221,7 +224,7 @@ const CourseQrPoster = () => {
       const popup = window.open('', '_blank', 'width=1200,height=1600');
 
       if (!popup) {
-         toast.error('Unable to open print preview.');
+         toast.error(text('Unable to open print preview.'));
          return;
       }
 
@@ -263,33 +266,33 @@ const CourseQrPoster = () => {
             <body><div class="print-sheet">${svg}</div><script>setTimeout(function(){ window.focus(); window.print(); }, 400);</script></body>
          </html>`);
       popup.document.close();
-      toast.success('Print preview opened.');
+      toast.success(text('Print preview opened.'));
    };
 
    return (
       <Card className="border-border/60 bg-background p-4 sm:p-6">
          <div className="mb-4 flex flex-wrap items-start justify-between gap-3">
             <div className="space-y-1">
-               <h3 className="text-lg font-semibold">Course QR Poster</h3>
-               <p className="text-muted-foreground text-sm">Generate a RubyShop-style poster for the course overview, current player link, or any custom URL.</p>
+               <h3 className="text-lg font-semibold">{text('Course QR Poster')}</h3>
+               <p className="text-muted-foreground text-sm">{text('Generate a RubyShop-style poster for the course overview, current player link, or any custom URL.')}</p>
             </div>
 
             <div className="flex flex-wrap gap-2">
                <Button type="button" variant="outline" size="sm" onClick={copyUrl} disabled={!resolvedUrl}>
                   <Copy className="mr-2 h-4 w-4" />
-                  Copy URL
+                  {text('Copy URL')}
                </Button>
                {resolvedUrl ? (
                   <Button type="button" size="sm" asChild>
                      <a href={resolvedUrl} target="_blank" rel="noreferrer">
                         <ExternalLink className="mr-2 h-4 w-4" />
-                        Open target
+                        {text('Open target')}
                      </a>
                   </Button>
                ) : (
                   <Button type="button" size="sm" disabled>
                      <ExternalLink className="mr-2 h-4 w-4" />
-                     Open target
+                     {text('Open target')}
                   </Button>
                )}
             </div>
@@ -303,82 +306,82 @@ const CourseQrPoster = () => {
                className="text-muted-foreground hover:text-foreground flex items-center gap-1.5 text-sm transition-colors"
             >
                {showSettings ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
-               {showSettings ? 'Hide settings' : 'Show settings'}
+               {showSettings ? text('Hide settings') : text('Show settings')}
             </button>
 
             {/* Collapsible settings */}
             {showSettings && (
                <div className="space-y-4">
                   <div className="space-y-2">
-                     <Label>Target</Label>
+                     <Label>{text('Target')}</Label>
                      <Select value={targetMode} onValueChange={(value) => setTargetMode(value as QrTargetMode)}>
                         <SelectTrigger>
-                           <SelectValue placeholder="Select target" />
+                           <SelectValue placeholder={text('Select target')} />
                         </SelectTrigger>
                         <SelectContent>
-                           <SelectItem value="overview">Course overview</SelectItem>
+                           <SelectItem value="overview">{text('Course overview')}</SelectItem>
                            <SelectItem value="player" disabled={!canUsePlayer}>
-                              Current player link
+                              {text('Current player link')}
                            </SelectItem>
-                           <SelectItem value="custom">Custom URL</SelectItem>
+                           <SelectItem value="custom">{text('Custom URL')}</SelectItem>
                         </SelectContent>
                      </Select>
-                     {!canUsePlayer && <p className="text-muted-foreground text-xs">Player link needs a watch history. Overview is safer for public posters.</p>}
+                     {!canUsePlayer && <p className="text-muted-foreground text-xs">{text('Player link needs a watch history. Overview is safer for public posters.')}</p>}
                   </div>
 
                   <div className="space-y-2">
-                     <Label>Poster Layout</Label>
+                     <Label>{text('Poster Layout')}</Label>
                      <Select value={posterLayout} onValueChange={(value) => setPosterLayout(value as PosterLayout)}>
                         <SelectTrigger>
-                           <SelectValue placeholder="Select layout" />
+                           <SelectValue placeholder={text('Select layout')} />
                         </SelectTrigger>
                         <SelectContent>
-                           <SelectItem value="warning">Warning poster</SelectItem>
-                           <SelectItem value="catalog">Catalog poster</SelectItem>
+                           <SelectItem value="warning">{text('Warning poster')}</SelectItem>
+                           <SelectItem value="catalog">{text('Catalog poster')}</SelectItem>
                         </SelectContent>
                      </Select>
                   </div>
 
                   {targetMode === 'custom' && (
                      <div className="space-y-2">
-                        <Label>Custom URL</Label>
-                        <Input value={customUrl} onChange={(e) => setCustomUrl(e.target.value)} placeholder="https://example.com/your-link" />
+                        <Label>{text('Custom URL')}</Label>
+                        <Input value={customUrl} onChange={(e) => setCustomUrl(e.target.value)} placeholder={text('https://example.com/your-link')} />
                      </div>
                   )}
 
                   <div className="space-y-2">
-                     <Label>Section Title</Label>
+                     <Label>{text('Section Title')}</Label>
                      <Input value={posterTitle} onChange={(e) => setPosterTitle(e.target.value)} />
                   </div>
 
                   <div className="space-y-2">
-                     <Label>Poster Note</Label>
+                     <Label>{text('Poster Note')}</Label>
                      <Textarea value={posterNote} onChange={(e) => setPosterNote(e.target.value)} rows={3} />
                   </div>
 
                   <div className="space-y-3 rounded-lg border bg-muted/20 p-3">
                      <div className="flex items-center justify-between gap-3">
                         <div className="space-y-1">
-                           <Label>Export</Label>
-                           <p className="text-muted-foreground text-xs">Sticker size is fixed for print and downloads.</p>
+                           <Label>{text('Export')}</Label>
+                           <p className="text-muted-foreground text-xs">{text('Sticker size is fixed for print and downloads.')}</p>
                         </div>
                         <div className="rounded-md border border-border/60 bg-background px-3 py-2 text-sm font-medium">
-                           Sticker
+                           {text('Sticker')}
                         </div>
                      </div>
 
                      <div className="grid gap-2 sm:grid-cols-2">
                         <Button type="button" variant="outline" size="sm" onClick={printPoster} disabled={!resolvedUrl} className="w-full justify-start">
-                           Print
+                           {text('Print')}
                         </Button>
                         <Button type="button" variant="outline" size="sm" onClick={downloadPosterSvg} disabled={!resolvedUrl} className="w-full justify-start">
-                           Download SVG
+                           {text('Download SVG')}
                         </Button>
                         <Button type="button" variant="outline" size="sm" onClick={() => downloadPosterImage('png')} disabled={!resolvedUrl} className="w-full justify-start">
-                           Download PNG
+                           {text('Download PNG')}
                         </Button>
                         <Button type="button" variant="outline" size="sm" onClick={() => downloadPosterImage('jpeg')} disabled={!resolvedUrl} className="w-full justify-start">
-                           Download JPG
+                           {text('Download JPG')}
                         </Button>
                      </div>
                   </div>
@@ -387,15 +390,15 @@ const CourseQrPoster = () => {
 
             <div className="rounded-lg border bg-muted/10 p-4">
                <div className="space-y-1">
-                  <p className="font-medium">Poster Preview</p>
-                  <p className="text-muted-foreground text-xs">Open the full QR poster in a modal to view, print, or download it.</p>
+                  <p className="font-medium">{text('Poster Preview')}</p>
+                  <p className="text-muted-foreground text-xs">{text('Open the full QR poster in a modal to view, print, or download it.')}</p>
                </div>
                <div className="mt-3 grid gap-2 sm:grid-cols-2">
                   <Button type="button" className="w-full justify-start" onClick={() => setPreviewOpen(true)} disabled={!resolvedUrl}>
-                     Open poster preview
+                     {text('Open poster preview')}
                   </Button>
                   <Button type="button" variant="outline" className="w-full justify-start" onClick={regeneratePreview} disabled={!resolvedUrl}>
-                     Regenerate preview
+                     {text('Regenerate preview')}
                   </Button>
                </div>
             </div>
@@ -405,8 +408,8 @@ const CourseQrPoster = () => {
             <DialogContent className="max-h-[95vh] max-w-[480px] overflow-hidden p-0 sm:max-w-[480px]">
                <div className="flex max-h-[95vh] flex-col">
                   <DialogHeader className="border-b px-6 py-4 text-left">
-                     <DialogTitle>Poster Preview</DialogTitle>
-                     <DialogDescription>View the RubyShop QR poster, then print or download it.</DialogDescription>
+                     <DialogTitle>{text('Poster Preview')}</DialogTitle>
+                     <DialogDescription>{text('View the RubyShop QR poster, then print or download it.')}</DialogDescription>
                   </DialogHeader>
 
                   <div className="flex-1 overflow-auto bg-neutral-100 p-4">
@@ -415,12 +418,12 @@ const CourseQrPoster = () => {
                            <img
                               key={`${previewSeed}-${posterTitle}-${posterNote}-${targetMode}-${posterLayout}-${resolvedUrl}`}
                               src={previewSvgUrl}
-                              alt="Poster preview"
+                              alt={text('Poster preview')}
                               className="h-auto w-full rounded-2xl shadow-md"
                            />
                         ) : (
                            <div className="flex h-64 items-center justify-center rounded-2xl border border-dashed border-black/20 text-sm text-black/40">
-                              Add a URL to preview poster
+                              {text('Add a URL to preview poster')}
                            </div>
                         )}
                      </div>
@@ -428,22 +431,22 @@ const CourseQrPoster = () => {
 
                   <div className="border-t bg-background px-6 py-4">
                      <div className="flex flex-wrap items-center justify-between gap-3">
-                        <p className="text-muted-foreground text-xs">Use the buttons below to export the current poster layout.</p>
+                        <p className="text-muted-foreground text-xs">{text('Use the buttons below to export the current poster layout.')}</p>
                         <div className="flex flex-wrap gap-2">
                            <Button type="button" variant="outline" size="sm" onClick={regeneratePreview} disabled={!resolvedUrl}>
-                              Regenerate
+                              {text('Regenerate')}
                            </Button>
                            <Button type="button" variant="outline" size="sm" onClick={printPoster} disabled={!resolvedUrl}>
-                              Print
+                              {text('Print')}
                            </Button>
                            <Button type="button" variant="outline" size="sm" onClick={downloadPosterSvg} disabled={!resolvedUrl}>
-                              Download SVG
+                              {text('Download SVG')}
                            </Button>
                            <Button type="button" variant="outline" size="sm" onClick={() => downloadPosterImage('png')} disabled={!resolvedUrl}>
-                              Download PNG
+                              {text('Download PNG')}
                            </Button>
                            <Button type="button" variant="outline" size="sm" onClick={() => downloadPosterImage('jpeg')} disabled={!resolvedUrl}>
-                              Download JPG
+                              {text('Download JPG')}
                            </Button>
                         </div>
                      </div>
@@ -477,9 +480,9 @@ const WarningPoster = ({
       posterNote,
       course.course_category?.title
          ? `${course.course_category.title}${course.course_category_child?.title ? ` • ${course.course_category_child.title}` : ''}`
-         : 'General course access',
-      targetMode === 'player' ? 'Opens the lesson player directly on your device' : 'Opens the public course overview page',
-      'Scan with any smartphone camera — no app required',
+         : text('General course access'),
+      targetMode === 'player' ? text('Opens the lesson player directly on your device') : text('Opens the public course overview page'),
+      text('Scan with any smartphone camera - no app required'),
       `${rubyShopContact.phone} • ${rubyShopContact.hours}`,
    ];
 
@@ -577,7 +580,7 @@ const CatalogPoster = ({
          <div className="grid gap-4 md:grid-cols-[minmax(0,1fr)_270px]">
             <div className="space-y-4">
                <div className="rounded-[24px] border-[3px] border-black bg-[#ffe56f] p-4">
-                  <p className="text-[10px] font-black uppercase tracking-[0.35em] text-black/60">Featured categories</p>
+                  <p className="text-[10px] font-black uppercase tracking-[0.35em] text-black/60">{text('Featured categories')}</p>
                   <div className="mt-3 flex flex-wrap gap-2">
                      {rubyShopHighlights.map((item) => (
                         <span key={item} className="rounded-full border-2 border-black bg-white px-3 py-1 text-xs font-bold text-black shadow-[0_6px_12px_rgba(0,0,0,0.12)]">
@@ -588,20 +591,20 @@ const CatalogPoster = ({
                </div>
 
                <div className="grid gap-2 sm:grid-cols-2">
-                  <PosterBadge title="Target" value={targetMode === 'player' ? 'Current player session' : targetMode === 'custom' ? 'Custom URL' : 'Course overview'} />
-                  <PosterBadge title="Scan note" value={posterNote} />
+                  <PosterBadge title={text('Target')} value={targetMode === 'player' ? text('Current player session') : targetMode === 'custom' ? text('Custom URL') : text('Course overview')} />
+                  <PosterBadge title={text('Scan note')} value={posterNote} />
                </div>
 
                <div className="grid gap-3 sm:grid-cols-2 md:grid-cols-3">
-                  <PosterInfoBox title="Address" value={rubyShopContact.address} />
-                  <PosterInfoBox title="Phone" value={rubyShopContact.phone} />
-                  <PosterInfoBox title="Hours" value={rubyShopContact.hours} />
+                  <PosterInfoBox title={text('Address')} value={rubyShopContact.address} />
+                  <PosterInfoBox title={text('Phone')} value={rubyShopContact.phone} />
+                  <PosterInfoBox title={text('Hours')} value={rubyShopContact.hours} />
                </div>
             </div>
 
             <div className="rounded-[22px] border-[3px] border-black bg-white p-3 text-center shadow-[0_10px_30px_rgba(0,0,0,0.22)]">
                <div className="rounded-[18px] bg-[#111] px-3 py-3 text-[#ffd633]">
-                  <p className="text-[10px] font-black uppercase tracking-[0.3em] text-white/75">Scan to open</p>
+                  <p className="text-[10px] font-black uppercase tracking-[0.3em] text-white/75">{text('Scan to open')}</p>
                   <p className="mt-1 text-[22px] font-black leading-tight">{course.title}</p>
                </div>
 
@@ -610,14 +613,14 @@ const CatalogPoster = ({
                      <img src={qrUrl} alt="Course QR code" className="mx-auto h-[320px] w-[320px] rounded-xl bg-white p-1" crossOrigin="anonymous" />
                   ) : (
                      <div className="mx-auto flex h-[244px] w-[244px] items-center justify-center rounded-xl border border-dashed border-black/40 bg-white text-sm text-black/70">
-                        Add a URL to preview QR
+                        {text('Add a URL to preview QR')}
                      </div>
                   )}
                </div>
 
                <div className="mt-3 rounded-xl bg-[#111] px-3 py-2 text-white">
-                  <p className="text-[11px] font-bold uppercase tracking-[0.22em] text-[#ffd633]">Target URL</p>
-                  <p className="mt-1 break-all text-xs font-mono text-white/85">{resolvedUrl || 'No URL selected'}</p>
+                  <p className="text-[11px] font-bold uppercase tracking-[0.22em] text-[#ffd633]">{text('Target URL')}</p>
+                  <p className="mt-1 break-all text-xs font-mono text-white/85">{resolvedUrl || text('No URL selected')}</p>
                </div>
             </div>
          </div>
@@ -627,10 +630,10 @@ const CatalogPoster = ({
          <div className="flex flex-wrap items-center justify-between gap-3">
             <div>
                <p className="text-sm font-semibold">{system.fields.name || 'RubyShop'}</p>
-               <p className="text-[10px] uppercase tracking-[0.2em] text-white/80">Open the course overview or player directly by QR</p>
+               <p className="text-[10px] uppercase tracking-[0.2em] text-white/80">{text('Open the course overview or player directly by QR')}</p>
             </div>
             <div className="rounded-full border border-black/30 bg-[#ffd633] px-3 py-1 text-[10px] font-black uppercase tracking-[0.22em] text-black">
-               {targetMode === 'player' ? 'Player QR' : targetMode === 'custom' ? 'Custom QR' : 'Overview QR'}
+               {targetMode === 'player' ? text('Player QR') : targetMode === 'custom' ? text('Custom QR') : text('Overview QR')}
             </div>
          </div>
       </div>
@@ -670,6 +673,7 @@ const buildPosterSvg = (props: {
    brandName: string;
    brandLogo: string;
    qrUrl: string;
+   text: (value?: string | null) => string;
 }) => {
    const width = props.layout === 'catalog' ? 1080 : 1024;
    const height = props.layout === 'catalog' ? 1500 : 1448;
@@ -682,10 +686,10 @@ const buildPosterSvg = (props: {
 
    // Warning poster items
    const warningItems = [
-      props.targetMode === 'player' ? 'Opens the lesson player directly on your device' : 'Opens the public course overview page',
-      'Use for posters, packaging inserts, and showroom displays',
-      "Keep the QR scannable at arm's length",
-      'Print on sticker paper for clean scanning',
+      props.targetMode === 'player' ? props.text('Opens the lesson player directly on your device') : props.text('Opens the public course overview page'),
+      props.text('Use for posters, packaging inserts, and showroom displays'),
+      props.text("Keep the QR scannable at arm's length"),
+      props.text('Print on sticker paper for clean scanning'),
    ];
    const ITEM_Y = 460;
    const ITEM_GAP = 130;

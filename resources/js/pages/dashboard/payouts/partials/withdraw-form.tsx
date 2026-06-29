@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { onHandleChange } from '@/lib/inertia';
+import { useI18n } from '@/lib/i18n';
 import { useForm } from '@inertiajs/react';
 import { useState } from 'react';
 
@@ -16,6 +17,7 @@ interface Props {
 
 const WithdrawForm = ({ title, handler }: Props) => {
    const [open, setOpen] = useState(false);
+   const { text } = useI18n();
 
    const { data, setData, post, errors, processing } = useForm({
       amount: '',
@@ -37,18 +39,18 @@ const WithdrawForm = ({ title, handler }: Props) => {
             <ScrollArea className="max-h-[90vh] p-6">
                <DialogHeader className="mb-6">
                   <DialogTitle>{title}</DialogTitle>
-                  <DialogDescription>Submit a withdrawal request for your earnings</DialogDescription>
+                  <DialogDescription>{text('Submit a withdrawal request for your earnings')}</DialogDescription>
                </DialogHeader>
 
                <form onSubmit={handleSubmit} className="space-y-4 p-0.5">
                   <div>
-                     <Label>Amount</Label>
+                     <Label>{text('Amount')}</Label>
                      <Input
                         required
                         type="number"
                         name="amount"
                         value={data.amount}
-                        placeholder="Enter your amount"
+                        placeholder={text('Enter your amount')}
                         onChange={(e) => onHandleChange(e, setData)}
                      />
                      <InputError message={errors.amount} />
@@ -57,11 +59,11 @@ const WithdrawForm = ({ title, handler }: Props) => {
                   <DialogFooter className="flex justify-end space-x-2 pt-4">
                      <DialogClose asChild>
                         <Button type="button" variant="outline">
-                           Close
+                           {text('Close')}
                         </Button>
                      </DialogClose>
 
-                     <LoadingButton loading={processing}>Submit</LoadingButton>
+                     <LoadingButton loading={processing}>{text('Submit')}</LoadingButton>
                   </DialogFooter>
                </form>
             </ScrollArea>

@@ -7,6 +7,7 @@ import { Separator } from '@/components/ui/separator';
 import { Table, TableBody, TableCell, TableRow } from '@/components/ui/table';
 import { useAuth } from '@/hooks/use-auth';
 import DashboardLayout from '@/layouts/dashboard/layout';
+import { useI18n } from '@/lib/i18n';
 import { SharedData } from '@/types/global';
 import { Link } from '@inertiajs/react';
 import { SortingState, flexRender, getCoreRowModel, getFilteredRowModel, getSortedRowModel, useReactTable } from '@tanstack/react-table';
@@ -20,11 +21,12 @@ interface Props extends SharedData {
 
 const Index = (props: Props) => {
    const { isAdmin } = useAuth();
+   const { text } = useI18n();
    const [sorting, setSorting] = React.useState<SortingState>([]);
 
    const table = useReactTable({
       data: props.instructors.data,
-      columns: TableColumn(isAdmin),
+      columns: TableColumn(isAdmin, text),
       onSortingChange: setSorting,
       getCoreRowModel: getCoreRowModel(),
       getSortedRowModel: getSortedRowModel(),
@@ -35,7 +37,7 @@ const Index = (props: Props) => {
    return (
       <div>
          <Link href={route('instructors.create')}>
-            <Button>Add New Instructor</Button>
+            <Button>{text('Add New Instructor')}</Button>
          </Link>
 
          <Separator className="my-6" />
@@ -43,7 +45,7 @@ const Index = (props: Props) => {
          <Card>
             <TableFilter
                data={props.instructors}
-               title="Instructor List"
+               title={text('Instructor List')}
                globalSearch={true}
                tablePageSizes={[10, 15, 20, 25]}
                routeName="instructors.index"
@@ -67,7 +69,9 @@ const Index = (props: Props) => {
                </TableBody>
             </Table>
 
-            {table.getRowModel().rows?.length <= 0 && <p className="border-border w-full border-b px-6 py-10 text-center">No results found.</p>}
+            {table.getRowModel().rows?.length <= 0 && (
+               <p className="border-border w-full border-b px-6 py-10 text-center">{text('No results found.')}</p>
+            )}
 
             <TableFooter className="p-5 sm:p-7" routeName="instructors.index" paginationInfo={props.instructors} />
          </Card>

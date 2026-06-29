@@ -6,6 +6,7 @@ import { Dialog, DialogClose, DialogContent, DialogHeader, DialogTitle, DialogTr
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { useI18n } from '@/lib/i18n';
 import { useForm } from '@inertiajs/react';
 import { useState } from 'react';
 
@@ -18,6 +19,7 @@ interface Props {
 
 const LiveClassForm = ({ title, liveClass, handler, courseId }: Props) => {
    const [open, setOpen] = useState(false);
+   const { text } = useI18n();
 
    const { data, setData, post, put, reset, errors, processing } = useForm({
       course_id: courseId,
@@ -55,30 +57,30 @@ const LiveClassForm = ({ title, liveClass, handler, courseId }: Props) => {
 
                <form onSubmit={handleSubmit} className="space-y-4">
                   <div>
-                     <Label>Class Topic *</Label>
+                     <Label>{text('Class Topic')} *</Label>
                      <Input
                         type="text"
                         value={data.class_topic}
                         onChange={(e) => setData('class_topic', e.target.value)}
-                        placeholder="Enter class topic"
+                        placeholder={text('Enter class topic')}
                         required
                      />
                      <InputError message={errors.class_topic} />
                   </div>
 
                   <div>
-                     <Label>Start Date & Time *</Label>
+                     <Label>{text('Start Date & Time')} *</Label>
                      <DateTimePicker date={data.class_date_and_time} setDate={(date) => setData('class_date_and_time', date)} />
                      <InputError message={errors.class_date_and_time} />
                   </div>
 
                   <div>
-                     <Label>Class Notes (Optional)</Label>
+                     <Label>{text('Class Notes')} {text('(Optional)')}</Label>
                      <TiptapEditor
                         output="html"
                         placeholder={{
-                           paragraph: 'Type your content here...',
-                           imageCaption: 'Type caption for image (optional)',
+                           paragraph: text('Type your content here...'),
+                           imageCaption: text('Type caption for image (optional)'),
                         }}
                         contentMinHeight={256}
                         contentMaxHeight={640}
@@ -96,12 +98,12 @@ const LiveClassForm = ({ title, liveClass, handler, courseId }: Props) => {
                   <div className="flex justify-end gap-3">
                      <DialogClose asChild>
                         <Button type="button" variant="outline">
-                           Cancel
+                           {text('Cancel')}
                         </Button>
                      </DialogClose>
 
                      <Button type="submit" disabled={processing}>
-                        {processing ? 'Scheduling...' : 'Schedule Class'}
+                        {processing ? text('Scheduling...') : text('Schedule Class')}
                      </Button>
                   </div>
                </form>

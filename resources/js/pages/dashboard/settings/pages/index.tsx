@@ -6,6 +6,7 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Table, TableBody, TableCell, TableRow } from '@/components/ui/table';
 import DashboardLayout from '@/layouts/dashboard/layout';
+import { useI18n } from '@/lib/i18n';
 import { cn } from '@/lib/utils';
 import { PageSelectProps } from '@/types/page';
 import { Head, router } from '@inertiajs/react';
@@ -16,6 +17,7 @@ import CustomTableColumn from './partials/custom-pages-table-columns';
 import HomeTableColumn from './partials/home-pages-table-columns';
 
 const Pages = ({ pages, home, system }: PageSelectProps) => {
+   const { text } = useI18n();
    const [modal, setModal] = React.useState<boolean>(false);
    const [systemType, setSystemType] = React.useState<string>(system.sub_type);
    // Memoize the filtered data to prevent unnecessary recalculations
@@ -24,8 +26,8 @@ const Pages = ({ pages, home, system }: PageSelectProps) => {
    const customPages = React.useMemo(() => pages.filter((page) => page.type === 'inner_page'), [pages]);
 
    // Memoize column definitions
-   const homeColumns = React.useMemo(() => HomeTableColumn(home, system), [home, system]);
-   const customColumns = React.useMemo(() => CustomTableColumn(), []);
+   const homeColumns = React.useMemo(() => HomeTableColumn(home, system, text), [home, system, text]);
+   const customColumns = React.useMemo(() => CustomTableColumn(text), [text]);
 
    const homePagesTable = useReactTable({
       data: homePages,
@@ -45,22 +47,22 @@ const Pages = ({ pages, home, system }: PageSelectProps) => {
 
    return (
       <>
-         <Head title="Page Settings" />
+         <Head title={text('Page Settings')} />
 
          <div className="mx-auto space-y-10 md:px-3">
             <div className="mb-6 flex items-center justify-between">
-               <h1 className="text-2xl font-bold">Page Settings</h1>
+               <h1 className="text-2xl font-bold">{text('Page Settings')}</h1>
             </div>
 
             <Card>
                <div className="flex items-center justify-between p-4">
                   <div>
-                     <h2 className="text-lg font-medium">Available Home Pages</h2>
-                     <p className="text-muted-foreground text-sm">List of all home pages in the system</p>
+                     <h2 className="text-lg font-medium">{text('Available Home Pages')}</h2>
+                     <p className="text-muted-foreground text-sm">{text('List of all home pages in the system')}</p>
                   </div>
 
                   <div>
-                     <Label htmlFor="system-type">System Type</Label>
+                     <Label htmlFor="system-type">{text('System Type')}</Label>
                      <Select
                         name="system-type"
                         value={system.sub_type}
@@ -70,14 +72,14 @@ const Pages = ({ pages, home, system }: PageSelectProps) => {
                         }}
                      >
                         <SelectTrigger className="cursor-pointer">
-                           <SelectValue placeholder="Select system type" />
+                           <SelectValue placeholder={text('Select system type')} />
                         </SelectTrigger>
                         <SelectContent>
                            <SelectItem value="collaborative" className="cursor-pointer">
-                              Collaborative
+                              {text('Collaborative')}
                            </SelectItem>
                            <SelectItem value="administrative" className="cursor-pointer">
-                              Administrative
+                              {text('Administrative')}
                            </SelectItem>
                         </SelectContent>
                      </Select>
@@ -85,7 +87,7 @@ const Pages = ({ pages, home, system }: PageSelectProps) => {
                      <Dialog open={modal} onOpenChange={setModal}>
                         <DialogContent className={cn('px-6 py-8 sm:max-w-[425px]')}>
                            <div className="bg-destructive/5 rounded-xl p-4">
-                              <p className="text-destructive text-center text-sm">Are you sure to update system type?</p>
+                              <p className="text-destructive text-center text-sm">{text('Are you sure to update system type?')}</p>
                            </div>
 
                            <div className="mb-0 flex items-center justify-center gap-6">
@@ -93,7 +95,7 @@ const Pages = ({ pages, home, system }: PageSelectProps) => {
                                  onClick={() => setModal(false)}
                                  className="text-destructive border-destructive border bg-transparent px-5 hover:bg-transparent"
                               >
-                                 Cancel
+                                 {text('Cancel')}
                               </Button>
 
                               <Button
@@ -113,7 +115,7 @@ const Pages = ({ pages, home, system }: PageSelectProps) => {
                                  }}
                                  className="hover:bg-primary-hover bg-primary px-5"
                               >
-                                 Submit
+                                 {text('Submit')}
                               </Button>
                            </div>
                         </DialogContent>
@@ -139,7 +141,7 @@ const Pages = ({ pages, home, system }: PageSelectProps) => {
                         ))
                      ) : (
                         <TableRow>
-                           <TableCell className="h-24 text-center">No results.</TableCell>
+                           <TableCell className="h-24 text-center">{text('No results.')}</TableCell>
                         </TableRow>
                      )}
                   </TableBody>
@@ -149,14 +151,14 @@ const Pages = ({ pages, home, system }: PageSelectProps) => {
             <Card>
                <div className="flex flex-col items-start justify-between gap-4 p-4 md:flex-row md:items-center">
                   <div>
-                     <h2 className="text-lg font-medium">Available Custom Pages</h2>
+                     <h2 className="text-lg font-medium">{text('Available Custom Pages')}</h2>
                      <p className="text-muted-foreground text-sm">
-                        Page slug will be the page path. Example:{' '}
+                        {text('Page slug will be the page path. Example:')}{' '}
                         <span className="text-secondary-foreground">http://app-domain.com/cookie-policy</span>
                      </p>
                   </div>
 
-                  <CustomPageCreateForm title="Add New Page" actionComponent={<Button>Add New Page</Button>} />
+                  <CustomPageCreateForm title={text('Add New Page')} actionComponent={<Button>{text('Add New Page')}</Button>} />
                </div>
 
                <Table className="border-border border-y last:border-b-0">
@@ -177,7 +179,7 @@ const Pages = ({ pages, home, system }: PageSelectProps) => {
                         ))
                      ) : (
                         <TableRow>
-                           <TableCell className="h-24 text-center">No results.</TableCell>
+                           <TableCell className="h-24 text-center">{text('No results.')}</TableCell>
                         </TableRow>
                      )}
                   </TableBody>

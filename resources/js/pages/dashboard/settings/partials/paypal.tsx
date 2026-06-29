@@ -7,6 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Switch } from '@/components/ui/switch';
 import paypalCurrencies from '@/data/currency/paypal';
 import { onHandleChange } from '@/lib/inertia';
+import { useI18n } from '@/lib/i18n';
 import { useForm } from '@inertiajs/react';
 
 interface PaypalProps {
@@ -14,6 +15,7 @@ interface PaypalProps {
 }
 
 const Paypal = ({ payment }: PaypalProps) => {
+   const { text } = useI18n();
    const { data, setData, post, errors, processing } = useForm({
       ...(payment.fields as PaypalFields),
       type: 'paypal',
@@ -29,12 +31,12 @@ const Paypal = ({ payment }: PaypalProps) => {
       <Card className="p-4 sm:p-6">
          <div className="mb-6 flex items-center justify-between">
             <div>
-               <h2 className="text-xl font-semibold">PayPal Settings</h2>
-               <p className="text-gray-500">Configure PayPal payment gateway</p>
+               <h2 className="text-xl font-semibold">{text('PayPal Settings')}</h2>
+               <p className="text-gray-500">{text('Configure PayPal payment gateway')}</p>
             </div>
 
             <div className="flex items-center space-x-2">
-               <Label htmlFor="status">{data.active ? 'Enabled' : 'Disabled'}</Label>
+               <Label htmlFor="status">{data.active ? text('Enabled') : text('Disabled')}</Label>
                <Switch id="status" checked={data.active} onCheckedChange={(checked) => setData('active', checked)} />
             </div>
          </div>
@@ -42,10 +44,10 @@ const Paypal = ({ payment }: PaypalProps) => {
          <form onSubmit={handleSubmit} className="space-y-6">
             <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                <div>
-                  <Label>Currency</Label>
+                  <Label>{text('Currency')}</Label>
                   <Select value={data.currency} onValueChange={(value) => setData('currency', value)}>
                      <SelectTrigger>
-                        <SelectValue placeholder="Select Currency" />
+                        <SelectValue placeholder={text('Select Currency')} />
                      </SelectTrigger>
                      <SelectContent>
                         {paypalCurrencies.map((currency) => (
@@ -59,37 +61,37 @@ const Paypal = ({ payment }: PaypalProps) => {
                </div>
 
                <div className="flex items-center space-x-2">
-                  <span className="text-sm font-medium">Test Mode:</span>
+                  <span className="text-sm font-medium">{text('Test Mode:')}</span>
                   <Switch id="status" checked={data.test_mode} onCheckedChange={(checked) => setData('test_mode', checked)} />
                   <Label htmlFor="status" className="text-gray-500">
-                     {data.test_mode ? 'Using Sandbox Environment' : 'Using Production Environment'}
+                     {data.test_mode ? text('Using Sandbox Environment') : text('Using Production Environment')}
                   </Label>
                </div>
             </div>
 
             {/* Sandbox Credentials Section */}
             <div className={`border-b pb-6 ${!data.test_mode ? 'opacity-60' : ''}`}>
-               <h3 className="mb-4 text-lg font-medium">Sandbox Credentials</h3>
+               <h3 className="mb-4 text-lg font-medium">{text('Sandbox Credentials')}</h3>
                <div className="grid grid-cols-1 gap-6 md:grid-cols-1">
                   <div>
-                     <Label>Client ID *</Label>
+                     <Label>{text('Client ID')} *</Label>
                      <Input
                         name="sandbox_client_id"
                         value={data.sandbox_client_id || ''}
                         onChange={(e) => onHandleChange(e, setData)}
-                        placeholder="Enter sandbox client ID"
+                        placeholder={text('Enter sandbox client ID')}
                         disabled={!data.test_mode}
                      />
                      <InputError message={errors.sandbox_client_id} />
                   </div>
 
                   <div>
-                     <Label>Secret Key *</Label>
+                     <Label>{text('Secret Key')} *</Label>
                      <Input
                         name="sandbox_secret_key"
                         value={data.sandbox_secret_key || ''}
                         onChange={(e) => onHandleChange(e, setData)}
-                        placeholder="Enter sandbox secret key"
+                        placeholder={text('Enter sandbox secret key')}
                         disabled={!data.test_mode}
                         type="password"
                      />
@@ -100,27 +102,27 @@ const Paypal = ({ payment }: PaypalProps) => {
 
             {/* Production Credentials Section */}
             <div className={`border-b pb-6 ${data.test_mode ? 'opacity-60' : ''}`}>
-               <h3 className="mb-4 text-lg font-medium">Production Credentials</h3>
+               <h3 className="mb-4 text-lg font-medium">{text('Production Credentials')}</h3>
                <div className="grid grid-cols-1 gap-6 md:grid-cols-1">
                   <div>
-                     <Label>Client ID *</Label>
+                     <Label>{text('Client ID')} *</Label>
                      <Input
                         name="production_client_id"
                         value={data.production_client_id || ''}
                         onChange={(e) => onHandleChange(e, setData)}
-                        placeholder="Enter production client ID"
+                        placeholder={text('Enter production client ID')}
                         disabled={data.test_mode}
                      />
                      <InputError message={errors.production_client_id} />
                   </div>
 
                   <div>
-                     <Label>Secret Key *</Label>
+                     <Label>{text('Secret Key')} *</Label>
                      <Input
                         name="production_secret_key"
                         value={data.production_secret_key || ''}
                         onChange={(e) => onHandleChange(e, setData)}
-                        placeholder="Enter production secret key"
+                        placeholder={text('Enter production secret key')}
                         disabled={data.test_mode}
                         type="password"
                      />
@@ -130,8 +132,8 @@ const Paypal = ({ payment }: PaypalProps) => {
             </div>
 
             <div className="flex items-center justify-between">
-               <div className="text-sm text-gray-500">{data.active ? 'PayPal is currently enabled' : 'PayPal is currently disabled'}</div>
-               <LoadingButton loading={processing}>Save Changes</LoadingButton>
+               <div className="text-sm text-gray-500">{data.active ? text('PayPal is currently enabled') : text('PayPal is currently disabled')}</div>
+               <LoadingButton loading={processing}>{text('Save Changes')}</LoadingButton>
             </div>
          </form>
       </Card>

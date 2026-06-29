@@ -9,6 +9,7 @@ import { Separator } from '@/components/ui/separator';
 import VideoPlayer from '@/components/video-player';
 import DashboardLayout from '@/layouts/dashboard/layout';
 import { onHandleChange } from '@/lib/inertia';
+import { useI18n } from '@/lib/i18n';
 import { useForm, usePage } from '@inertiajs/react';
 import { ReactNode, useEffect, useMemo, useState } from 'react';
 import { CourseUpdateProps } from '../update';
@@ -16,6 +17,7 @@ import { CourseUpdateProps } from '../update';
 const Media = () => {
    const { props } = usePage<CourseUpdateProps>();
    const { tab, course } = props;
+   const { text } = useI18n();
 
    const [isSubmit, setIsSubmit] = useState(false);
    const [isFileSelected, setIsFileSelected] = useState(false);
@@ -86,7 +88,7 @@ const Media = () => {
       <Card className="container p-4 sm:p-6">
          <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-               <Label>Thumbnail</Label>
+               <Label>{text('Thumbnail')}</Label>
                <Input type="file" name="thumbnail" onChange={(e) => onHandleChange(e, setData, setThumbnailBanner)} />
                <InputError message={errors.thumbnail} />
 
@@ -94,7 +96,7 @@ const Media = () => {
             </div>
 
             <div>
-               <Label>Banner</Label>
+               <Label>{text('Banner')}</Label>
                <Input type="file" name="banner" onChange={(e) => onHandleChange(e, setData, setPreviewBanner)} />
                <InputError message={errors.banner} />
 
@@ -104,7 +106,7 @@ const Media = () => {
             <Separator />
 
             <div>
-               <Label>Preview Video Type</Label>
+               <Label>{text('Preview Video Type')}</Label>
                <RadioGroup
                   defaultValue={data.preview_type}
                   onValueChange={(value) => setData('preview_type', value)}
@@ -113,13 +115,13 @@ const Media = () => {
                   <div className="flex items-center space-x-2">
                      <RadioGroupItem className="cursor-pointer" id="video_url" value="video_url" />
                      <Label htmlFor="video_url" className="capitalize">
-                        Video Url
+                        {text('Video Url')}
                      </Label>
                   </div>
                   <div className="flex items-center space-x-2">
                      <RadioGroupItem className="cursor-pointer" id="video" value="video" />
                      <Label htmlFor="video" className="capitalize">
-                        Video File
+                        {text('Video File')}
                      </Label>
                   </div>
                </RadioGroup>
@@ -127,13 +129,13 @@ const Media = () => {
             </div>
 
             <div>
-               <Label>Preview Video</Label>
+               <Label>{text('Preview Video')}</Label>
                {data.preview_type === 'video_url' ? (
                   <Input
                      type="url"
                      name="preview"
                      value={data.preview}
-                     placeholder="Enter your video url"
+                     placeholder={text('Enter your video url')}
                      onChange={(e) => onHandleChange(e, setData)}
                   />
                ) : (
@@ -160,7 +162,7 @@ const Media = () => {
                )}
                <InputError message={errors.preview} />
                <p className="text-xs text-gray-500">
-                  {data.preview_type === 'video_url' ? 'Supported URL: youtube or vimeo' : 'Supported Video file: .mp4 or .webm or .ogg'}
+                  {data.preview_type === 'video_url' ? text('Supported URL: youtube or vimeo') : text('Supported Video file: .mp4 or .webm or .ogg')}
                </p>
 
                {/* <video src={course.preview}></video> */}
@@ -169,7 +171,7 @@ const Media = () => {
 
             <div className="mt-8">
                <LoadingButton loading={processing || isSubmit} disabled={processing || isSubmit}>
-                  Save Changes
+                  {text('Save Changes')}
                </LoadingButton>
             </div>
          </form>

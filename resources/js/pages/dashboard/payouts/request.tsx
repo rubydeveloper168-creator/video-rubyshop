@@ -4,14 +4,16 @@ import TableHeader from '@/components/table/table-header';
 import { Card } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableRow } from '@/components/ui/table';
 import DashboardLayout from '@/layouts/dashboard/layout';
+import { useI18n } from '@/lib/i18n';
 import { flexRender, getCoreRowModel, getFilteredRowModel, getSortedRowModel, useReactTable } from '@tanstack/react-table';
 import { ReactNode } from 'react';
 import TableColumn from './partials/request-table-columns';
 
 const Request = ({ payouts }: { payouts: Pagination<Payout> }) => {
+   const { locale, text } = useI18n();
    const table = useReactTable({
       data: payouts.data,
-      columns: TableColumn,
+      columns: TableColumn(text, locale),
       getCoreRowModel: getCoreRowModel(),
       getSortedRowModel: getSortedRowModel(),
       getFilteredRowModel: getFilteredRowModel(),
@@ -21,7 +23,7 @@ const Request = ({ payouts }: { payouts: Pagination<Payout> }) => {
       <Card>
          <TableFilter
             data={payouts}
-            title="Payout Request"
+            title={text('Payout Request')}
             globalSearch={true}
             tablePageSizes={[10, 15, 20, 25]}
             routeName="payouts.request.index"
@@ -42,7 +44,7 @@ const Request = ({ payouts }: { payouts: Pagination<Payout> }) => {
                   ))
                ) : (
                   <TableRow>
-                     <TableCell className="h-24 text-center">No results.</TableCell>
+                     <TableCell className="h-24 text-center">{text('No results.')}</TableCell>
                   </TableRow>
                )}
             </TableBody>

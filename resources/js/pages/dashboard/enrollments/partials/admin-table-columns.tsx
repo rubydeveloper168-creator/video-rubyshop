@@ -1,10 +1,11 @@
 import DeleteModal from '@/components/inertia/delete-modal';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { AppLocale } from '@/lib/i18n';
 import { ColumnDef } from '@tanstack/react-table';
 import { Trash2 } from 'lucide-react';
 
-const AdminTableColumn: ColumnDef<Enrollment>[] = [
+const AdminTableColumn = (text: (value?: string | null) => string, locale: AppLocale): ColumnDef<Enrollment>[] => [
    {
       id: 'index',
       header: () => <div className="pl-4">#</div>,
@@ -12,7 +13,7 @@ const AdminTableColumn: ColumnDef<Enrollment>[] = [
    },
    {
       id: 'name',
-      header: 'Name',
+      header: text('Name'),
       cell: ({ row }) => {
          const user = row.original.user;
          return (
@@ -36,7 +37,7 @@ const AdminTableColumn: ColumnDef<Enrollment>[] = [
    },
    {
       id: 'enrolled_course',
-      header: 'Enrolled Course',
+      header: text('Enrolled Course'),
       cell: ({ row }) => (
          <div className="max-w-md">
             <p className="line-clamp-1">{row.original.course.title}</p>
@@ -45,11 +46,11 @@ const AdminTableColumn: ColumnDef<Enrollment>[] = [
    },
    {
       id: 'enrolled_date',
-      header: 'Enrolled Date',
+      header: text('Enrolled Date'),
       cell: ({ row }) => {
          // Convert to a readable date format
          const date = new Date(row.original.entry_date);
-         const formattedDate = date.toLocaleDateString('en-US', {
+         const formattedDate = date.toLocaleDateString(locale === 'th' ? 'th-TH' : 'en-US', {
             month: 'long',
             day: '2-digit',
             year: 'numeric',
@@ -60,14 +61,14 @@ const AdminTableColumn: ColumnDef<Enrollment>[] = [
    },
    {
       id: 'expiry_date',
-      header: 'Expiry Date',
+      header: text('Expiry Date'),
       cell: ({ row }) => {
          if (!row.original.expiry_date) {
-            return <Badge className="bg-green-100 text-green-800 hover:bg-green-100">Lifetime access</Badge>;
+            return <Badge className="bg-green-100 text-green-800 hover:bg-green-100">{text('Lifetime access')}</Badge>;
          }
 
          const date = new Date(row.original.expiry_date);
-         const formattedDate = date.toLocaleDateString('en-US', {
+         const formattedDate = date.toLocaleDateString(locale === 'th' ? 'th-TH' : 'en-US', {
             month: 'long',
             day: '2-digit',
             year: 'numeric',
@@ -78,7 +79,7 @@ const AdminTableColumn: ColumnDef<Enrollment>[] = [
    },
    {
       id: 'actions',
-      header: () => <div className="pr-4 text-end">Action</div>,
+      header: () => <div className="pr-4 text-end">{text('Action')}</div>,
       cell: ({ row }) => {
          return (
             <div className="flex justify-end pr-4">

@@ -6,14 +6,14 @@ import { ColumnDef } from '@tanstack/react-table';
 import { ArrowUpDown, Pencil, Trash2 } from 'lucide-react';
 import EditForm from './edit-form';
 
-const TableColumn: ColumnDef<User>[] = [
+const TableColumn = (text: (value?: string | null) => string): ColumnDef<User>[] => [
    {
       accessorKey: 'name',
       header: ({ column }) => {
          return (
             <div className="flex items-center">
                <Button variant="ghost" className="p-0 hover:bg-transparent" onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
-                  Name
+                  {text('Name')}
                   <ArrowUpDown />
                </Button>
             </div>
@@ -38,16 +38,16 @@ const TableColumn: ColumnDef<User>[] = [
    },
    {
       accessorKey: 'status',
-      header: 'Status',
+      header: text('Status'),
       cell: ({ row }) => (
          <div className="capitalize">
-            <span>{row.original.status === 1 ? 'Active' : 'Inactive'}</span>
+            <span>{row.original.status === 1 ? text('Active') : text('Inactive')}</span>
          </div>
       ),
    },
    {
       accessorKey: 'role',
-      header: 'Role',
+      header: text('Role'),
       cell: ({ row }) => (
          <div className="capitalize">
             <span>{row.original.role}</span>
@@ -56,7 +56,7 @@ const TableColumn: ColumnDef<User>[] = [
    },
    {
       id: 'actions',
-      header: () => <div className="text-end">Action</div>,
+      header: () => <div className="text-end">{text('Action')}</div>,
       cell: ({ row }) => {
          return (
             <div className="flex justify-end gap-2 py-1">
@@ -71,7 +71,7 @@ const TableColumn: ColumnDef<User>[] = [
 
                <DeleteModal
                   routePath={route('users.destroy', row.original.id)}
-                  message="After deleting the instructor, the admin will be the assign as a new instructor, of this instructor all the courses."
+                  message={text('After deleting the instructor, the admin will be the assign as a new instructor, of this instructor all the courses.')}
                   actionComponent={
                      <Button size="icon" variant="ghost" className="bg-destructive/8 hover:bg-destructive/6 h-8 w-8 p-0">
                         <Trash2 className="text-destructive text-sm" />

@@ -3,6 +3,7 @@ import LoadingButton from '@/components/loading-button';
 import { theme } from '@/components/text-editor/source-editor/theme';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
+import { useI18n } from '@/lib/i18n';
 import { SharedData } from '@/types/global';
 import { autocompletion, closeBrackets, closeBracketsKeymap, completionKeymap } from '@codemirror/autocomplete';
 import { defaultKeymap, history, historyKeymap } from '@codemirror/commands';
@@ -16,6 +17,7 @@ import { useEffect, useRef } from 'react';
 import { SystemProps } from '..';
 
 const Style = () => {
+   const { text } = useI18n();
    const { props } = usePage<SharedData & SystemProps>();
    const initialFields = props.system.fields as SystemFields;
 
@@ -75,8 +77,8 @@ const Style = () => {
    return (
       <Card>
          <CardHeader className="p-4 sm:p-6">
-            <CardTitle className="flex items-center gap-2">Custom Global Style</CardTitle>
-            <CardDescription className="hidden sm:block">Write custom CSS that will be applied globally to the site.</CardDescription>
+            <CardTitle className="flex items-center gap-2">{text('Custom Global Style')}</CardTitle>
+            <CardDescription className="hidden sm:block">{text('Write custom CSS that will be applied globally to the site.')}</CardDescription>
          </CardHeader>
 
          <Separator />
@@ -104,7 +106,7 @@ const Style = () => {
                </div>
 
                <div className="flex justify-end">
-                  <LoadingButton loading={processing}>Save Changes</LoadingButton>
+                  <LoadingButton loading={processing}>{text('Save Changes')}</LoadingButton>
                </div>
             </form>
          </CardContent>
