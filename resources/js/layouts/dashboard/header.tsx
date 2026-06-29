@@ -13,14 +13,9 @@ const DashboardHeader = ({ breadcrumbs = [] }: { breadcrumbs?: BreadcrumbItem[] 
                <Breadcrumbs breadcrumbs={breadcrumbs} />
             </div>
 
-            <div className="flex items-center gap-2">
+            <div className="shrink-0 flex items-center gap-2">
                <Appearance />
-               <div className="hidden sm:block">
-                  <LanguageSwitcher showLabel />
-               </div>
-               <div className="sm:hidden">
-                  <LanguageSwitcher compact />
-               </div>
+               <LanguageSwitcher showLabel />
                <Notification />
             </div>
          </div>
