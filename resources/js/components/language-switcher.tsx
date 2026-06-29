@@ -12,10 +12,21 @@ const LanguageSwitcher = ({ compact = false, showLabel = false }: { compact?: bo
    const { locale, setLocale, t } = useI18n();
    const currentLocale = locales.find((item) => item.value === locale) || locales[0];
 
+   console.log('[LanguageSwitcher] render', {
+      compact,
+      showLabel,
+      locale,
+      currentShortLabel: currentLocale.shortLabel,
+   });
+
    return (
       <DropdownMenu>
          <DropdownMenuTrigger asChild>
-            <Button variant="outline" size={compact ? 'icon' : 'sm'} className={compact ? 'h-9 w-9' : 'h-9 gap-2 px-3'}>
+            <Button
+               variant="secondary"
+               size={compact ? 'icon' : 'sm'}
+               className={compact ? 'h-9 w-9 shrink-0 rounded-full' : 'h-9 shrink-0 gap-2 rounded-full px-3'}
+            >
                <Languages className="h-4 w-4" />
                {!compact && <span>{showLabel ? `${t('common.language')}: ${currentLocale.shortLabel}` : currentLocale.shortLabel}</span>}
                <span className="sr-only">{t('common.language')}</span>
