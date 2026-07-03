@@ -6,13 +6,50 @@ import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { createRoot } from 'react-dom/client';
 import { initializeTheme } from './hooks/use-appearance';
 
-const csrfToken = document.querySelector<HTMLMetaElement>('meta[name="csrf-token"]')?.content;
+const readCookie = (name: string) => {
+   return document.cookie
+      .split('; ')
+      .find((row) => row.startsWith(`${name}=`))
+      ?.split('=')
+      .slice(1)
+      .join('=');
+};
+
+const currentCsrfToken = () => {
+   const xsrfCookie = readCookie('XSRF-TOKEN');
+
+   if (xsrfCookie) {
+      return decodeURIComponent(xsrfCookie);
+   }
+
+   return document.querySelector<HTMLMetaElement>('meta[name="csrf-token"]')?.content || '';
+};
+
+const applyCsrfHeaders = (headers: Record<string, unknown> | { set?: (name: string, value: string) => void }, token: string) => {
+   if (!token) return;
+
+   if (typeof headers.set === 'function') {
+      headers.set('X-CSRF-TOKEN', token);
+      headers.set('X-XSRF-TOKEN', token);
+      return;
+   }
+
+   headers['X-CSRF-TOKEN'] = token;
+   headers['X-XSRF-TOKEN'] = token;
+};
 
 axios.defaults.withCredentials = true;
+axios.defaults.xsrfCookieName = 'XSRF-TOKEN';
+axios.defaults.xsrfHeaderName = 'X-XSRF-TOKEN';
 
-if (csrfToken) {
-   axios.defaults.headers.common['X-CSRF-TOKEN'] = csrfToken;
-}
+applyCsrfHeaders(axios.defaults.headers.common, currentCsrfToken());
+
+axios.interceptors.request.use((config) => {
+   config.headers = config.headers || {};
+   applyCsrfHeaders(config.headers, currentCsrfToken());
+
+   return config;
+});
 
 // Global Axios interceptor — logs every 4xx/5xx response body to console
 axios.interceptors.response.use(
