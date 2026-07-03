@@ -15,38 +15,56 @@ const readCookie = (name: string) => {
       .join('=');
 };
 
-const currentCsrfToken = () => {
+const metaCsrfToken = () => document.querySelector<HTMLMetaElement>('meta[name="csrf-token"]')?.content || '';
+
+const xsrfCookieToken = () => {
    const xsrfCookie = readCookie('XSRF-TOKEN');
 
-   if (xsrfCookie) {
-      return decodeURIComponent(xsrfCookie);
-   }
-
-   return document.querySelector<HTMLMetaElement>('meta[name="csrf-token"]')?.content || '';
+   return xsrfCookie ? decodeURIComponent(xsrfCookie) : '';
 };
 
-const applyCsrfHeaders = (headers: Record<string, unknown> | { set?: (name: string, value: string) => void }, token: string) => {
-   if (!token) return;
+const setHeader = (headers: Record<string, unknown> | { set?: (name: string, value: string) => void }, name: string, value: string) => {
+   if (!value) return;
 
    if (typeof headers.set === 'function') {
-      headers.set('X-CSRF-TOKEN', token);
-      headers.set('X-XSRF-TOKEN', token);
+      headers.set(name, value);
       return;
    }
 
-   headers['X-CSRF-TOKEN'] = token;
-   headers['X-XSRF-TOKEN'] = token;
+   headers[name] = value;
+};
+
+const removeHeader = (headers: Record<string, unknown> | { delete?: (name: string) => void }, name: string) => {
+   if (typeof headers.delete === 'function') {
+      headers.delete(name);
+      return;
+   }
+
+   delete headers[name];
+};
+
+const applyCsrfHeaders = (headers: Record<string, unknown> | { set?: (name: string, value: string) => void }) => {
+   const xsrfToken = xsrfCookieToken();
+
+   if (xsrfToken) {
+      removeHeader(headers, 'X-CSRF-TOKEN');
+      setHeader(headers, 'X-XSRF-TOKEN', xsrfToken);
+      return;
+   }
+
+   removeHeader(headers, 'X-XSRF-TOKEN');
+   setHeader(headers, 'X-CSRF-TOKEN', metaCsrfToken());
 };
 
 axios.defaults.withCredentials = true;
 axios.defaults.xsrfCookieName = 'XSRF-TOKEN';
 axios.defaults.xsrfHeaderName = 'X-XSRF-TOKEN';
 
-applyCsrfHeaders(axios.defaults.headers.common, currentCsrfToken());
+applyCsrfHeaders(axios.defaults.headers.common);
 
 axios.interceptors.request.use((config) => {
    config.headers = config.headers || {};
-   applyCsrfHeaders(config.headers, currentCsrfToken());
+   applyCsrfHeaders(config.headers);
 
    return config;
 });
