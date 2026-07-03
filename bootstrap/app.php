@@ -52,6 +52,11 @@ return Application::configure(basePath: dirname(__DIR__))
 
         $middleware->encryptCookies(except: ['appearance']);
 
+        $middleware->validateCsrfTokens(except: [
+            'audit-track/*',
+            'logout',
+        ]);
+
         $middleware->web(append: [
             HandleAppearance::class,
             HandleInertiaRequests::class,
