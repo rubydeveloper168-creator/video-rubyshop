@@ -9,7 +9,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { SharedData } from '@/types/global';
 import { usePage } from '@inertiajs/react';
 import { AlertTriangle, ChevronDown, ChevronUp, Copy, ExternalLink, QrCode } from 'lucide-react';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { toast } from 'sonner';
 
 type QrTargetMode = 'overview' | 'player' | 'custom';
@@ -44,7 +44,7 @@ const CourseQrPoster = () => {
    const [previewOpen, setPreviewOpen] = useState(false);
    const [showSettings, setShowSettings] = useState(false);
    const [previewSeed, setPreviewSeed] = useState(0);
-   const [previewObjectUrl, setPreviewObjectUrl] = useState('');
+   const previewObjectUrlRef = useRef<string | null>(null);
 
    const overviewUrl = useMemo(() => absoluteUrl(route('course.details', { slug: course.slug, id: course.id })), [course.id, course.slug]);
 
@@ -88,15 +88,15 @@ const CourseQrPoster = () => {
 
    useEffect(() => {
       if (!resolvedUrl) {
+         if (previewObjectUrlRef.current) {
+            URL.revokeObjectURL(previewObjectUrlRef.current);
+            previewObjectUrlRef.current = null;
+         }
          setPreviewSvgUrl('');
          return;
       }
-      if (previewObjectUrl) {
-         URL.revokeObjectURL(previewObjectUrl);
-         setPreviewObjectUrl('');
-      }
       let cancelled = false;
-      let nextObjectUrl = '';
+      let nextObjectUrl: string | null = null;
       (async () => {
          const [brandLogo, qrDataUrl] = await Promise.all([
             inlineImageAsDataUrl(posterExport.brandLogo),
@@ -110,16 +110,28 @@ const CourseQrPoster = () => {
          });
          const blob = new Blob([svg], { type: 'image/svg+xml;charset=utf-8' });
          nextObjectUrl = URL.createObjectURL(blob);
-         setPreviewObjectUrl(nextObjectUrl);
          setPreviewSvgUrl(nextObjectUrl);
+         if (previewObjectUrlRef.current) {
+            URL.revokeObjectURL(previewObjectUrlRef.current);
+         }
+         previewObjectUrlRef.current = nextObjectUrl;
       })();
       return () => {
          cancelled = true;
-         if (nextObjectUrl) {
+         if (nextObjectUrl && previewObjectUrlRef.current !== nextObjectUrl) {
             URL.revokeObjectURL(nextObjectUrl);
          }
       };
    }, [posterExport, previewSeed, resolvedUrl]);
+
+   useEffect(() => {
+      return () => {
+         if (previewObjectUrlRef.current) {
+            URL.revokeObjectURL(previewObjectUrlRef.current);
+            previewObjectUrlRef.current = null;
+         }
+      };
+   }, []);
 
    const copyUrl = async () => {
       if (!resolvedUrl) return;
@@ -416,7 +428,6 @@ const CourseQrPoster = () => {
                      <div className="mx-auto w-full max-w-[380px]">
                         {previewSvgUrl ? (
                            <img
-                              key={`${previewSeed}-${posterTitle}-${posterNote}-${targetMode}-${posterLayout}-${resolvedUrl}`}
                               src={previewSvgUrl}
                               alt={text('Poster preview')}
                               className="h-auto w-full rounded-2xl shadow-md"
