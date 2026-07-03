@@ -6,6 +6,14 @@ import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { createRoot } from 'react-dom/client';
 import { initializeTheme } from './hooks/use-appearance';
 
+const csrfToken = document.querySelector<HTMLMetaElement>('meta[name="csrf-token"]')?.content;
+
+axios.defaults.withCredentials = true;
+
+if (csrfToken) {
+   axios.defaults.headers.common['X-CSRF-TOKEN'] = csrfToken;
+}
+
 // Global Axios interceptor — logs every 4xx/5xx response body to console
 axios.interceptors.response.use(
    (response) => response,

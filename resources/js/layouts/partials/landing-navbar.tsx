@@ -113,7 +113,7 @@ const LandingNavbar = () => {
                                     </DropdownMenuItem>
                                  ))}
 
-                              <DropdownMenuItem className="cursor-pointer px-3" onClick={() => router.post('/logout')}>
+                              <DropdownMenuItem className="cursor-pointer px-3" onClick={() => router.post(route('logout'))}>
                                  <LogOut className="mr-1 h-4 w-4" />
                                  <span>{t('common.logOut')}</span>
                               </DropdownMenuItem>
