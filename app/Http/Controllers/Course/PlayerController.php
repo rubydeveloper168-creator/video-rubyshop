@@ -39,6 +39,8 @@ class PlayerController extends Controller
         $user = Auth::user();
         $watchHistory = $this->sectionService->initWatchHistory($request->course_id, 'lesson', $user->id);
 
+        abort_if(!$watchHistory, 404, 'This course has no lessons yet.');
+
         return redirect()->route('course.player', [
             'type' => $watchHistory->current_watching_type,
             'watch_history' => $watchHistory->id,

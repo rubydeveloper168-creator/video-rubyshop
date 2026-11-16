@@ -6,6 +6,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ChunkedUploadController;
 use App\Http\Controllers\Course\CourseController;
 use App\Http\Controllers\Course\CourseEnrollmentController;
+use App\Http\Controllers\Course\CoursePublicShareController;
 use App\Http\Controllers\Course\CourseFaqController;
 use App\Http\Controllers\Course\CourseOutcomeController;
 use App\Http\Controllers\Course\CourseRequirementController;
@@ -29,6 +30,8 @@ Route::prefix('dashboard')->group(function () {
    Route::resource('courses', CourseController::class)->except(['update', 'destroy']);
    Route::post('courses/{id}', [CourseController::class, 'update'])->name('courses.update');
    Route::put('course/status/{id}', [CourseController::class, 'status'])->name('course.status')->middleware('smtpConfig', 'checkSmtp');
+   Route::put('courses/{id}/public-share', [CoursePublicShareController::class, 'update'])->name('courses.public-share.update');
+   Route::delete('courses/{id}/public-share', [CoursePublicShareController::class, 'destroy'])->name('courses.public-share.destroy');
 
    Route::resource('course/faqs', CourseFaqController::class)->only(['store', 'update', 'destroy']);
    Route::resource('course/outcomes', CourseOutcomeController::class)->only(['store', 'update', 'destroy']);

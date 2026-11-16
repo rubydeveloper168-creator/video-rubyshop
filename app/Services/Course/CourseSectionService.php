@@ -333,7 +333,7 @@ class CourseSectionService extends MediaService
          ->where('user_id', $user_id)
          ->first();
 
-      if ($lesson->count() >= 0 && !$history) {
+      if ($lesson->count() > 0 && !$history) {
          $lesson = $lesson->orderBy('sort', 'asc')->first();
 
          $coursePlay = new CoursePlayerService();

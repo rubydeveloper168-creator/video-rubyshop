@@ -68,6 +68,7 @@ interface Course extends TableCommon {
    course_category_child?: CourseCategoryChild;
    course_category_id: number | string;
    course_category_child_id: number | string;
+   public_share_enabled?: boolean;
    [key: string]: any;
 }
 

@@ -59,6 +59,7 @@ class HandleInertiaRequests extends Middleware
             ...parent::share($request),
             'page' => app('intro_page'),
             'auth' => ['user' => $user],
+            'csrf_token' => fn () => csrf_token(),
             'system' => app('system_settings'),
             'customize' => $request->query('customize', false),
             'navbar' => $this->settingsService->getNavbar('navbar_1'),
