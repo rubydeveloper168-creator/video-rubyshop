@@ -30,7 +30,7 @@ services:
     ports:
       - "3307:3306"
     environment:
-      MYSQL_ROOT_PASSWORD: root258369
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
       MYSQL_DATABASE: video_lms
       MYSQL_USER: video_user
       MYSQL_PASSWORD: video_pass
@@ -49,7 +49,7 @@ services:
     image: redis:7-alpine
     container_name: video_redis
     ports:
-      - "6380:6379"
+      - "127.0.0.1:6380:6379"
     networks:
       - video_network
     healthcheck:

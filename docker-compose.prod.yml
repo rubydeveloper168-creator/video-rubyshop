@@ -22,7 +22,7 @@ services:
     image: mysql:8.0
     container_name: video_mysql
     environment:
-      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD:-root258369}
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
       MYSQL_DATABASE: ${DB_DATABASE:-rubyshop_video}
     volumes:
       - mysql_data:/var/lib/mysql
@@ -30,7 +30,7 @@ services:
     networks:
       - video_network
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-p${DB_PASSWORD:-root258369}"]
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-p${DB_PASSWORD}"]
       interval: 10s
       timeout: 5s
       retries: 10
