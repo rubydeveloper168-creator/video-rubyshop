@@ -337,8 +337,8 @@ class CourseController extends Controller
         $course = $this->courseService->getUserCourseById($id, $user);
         abort_if(is_null($course), 404);
 
-        // Load category relations needed by the QR poster
-        $course->load('course_category', 'course_category_child');
+        // Load category and lesson relations needed by the QR poster
+        $course->load('course_category', 'course_category_child', 'sections.section_lessons');
         $watchHistory = $this->coursePlayerService->getWatchHistory($course->id, $user->id);
 
         return Inertia::render('dashboard/courses/quick-poster', [
