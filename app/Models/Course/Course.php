@@ -48,6 +48,17 @@ class Course extends Model implements HasMedia
         'instructor_id',
         'course_category_id',
         'course_category_child_id',
+
+        'public_share_enabled',
+        'public_share_key_hash',
+    ];
+
+    protected $hidden = [
+        'public_share_key_hash',
+    ];
+
+    protected $casts = [
+        'public_share_enabled' => 'boolean',
     ];
 
     public function course_category(): BelongsTo

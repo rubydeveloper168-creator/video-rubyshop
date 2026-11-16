@@ -13,6 +13,7 @@ use Illuminate\Support\Arr;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 
 class CourseService extends MediaService
@@ -267,6 +268,44 @@ class CourseService extends MediaService
    {
       $course = Course::find($id);
       $course->delete();
+   }
+
+   /**
+    * Owner (matching instructor) or admin may manage a course's public share settings.
+    */
+   function canManagePublicShare(Course $course, User $user): bool
+   {
+      return $user->role === 'admin' || ($user->role === 'instructor' && $user->instructor_id
+         && (string) $course->instructor_id === (string) $user->instructor_id);
+   }
+
+   /**
+    * Hash and store a new public access key, enabling the public share link.
+    * Rotating the key invalidates every previously unlocked session, since
+    * unlock sessions are only valid while they match the current hash.
+    */
+   function savePublicShareKey(Course $course, string $accessKey): Course
+   {
+      $course->update([
+         'public_share_enabled' => true,
+         'public_share_key_hash' => Hash::make($accessKey),
+      ]);
+
+      return $course;
+   }
+
+   /**
+    * Disable the public share link and clear the stored hash so no
+    * previously unlocked session can remain valid.
+    */
+   function disablePublicShare(Course $course): Course
+   {
+      $course->update([
+         'public_share_enabled' => false,
+         'public_share_key_hash' => null,
+      ]);
+
+      return $course;
    }
 
    /**
