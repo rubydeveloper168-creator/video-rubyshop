@@ -1,0 +1,37 @@
+# Secrets / VCS (never bake into the image)
+.env
+.env.*
+!.env.example
+.git
+.gitignore
+
+# Heavy or local-only data (storage/hls are Docker volumes at runtime)
+*.zip
+*.tar
+*.tar.*
+*.tgz
+*.sql
+*.bak*
+**/node_modules
+node_modules-test
+public/build
+public/hls
+public/storage
+storage/app
+storage/logs
+storage/pail
+storage/framework/cache
+storage/framework/sessions
+storage/framework/views
+bootstrap/cache/*.php
+
+# Not needed in prod image (composer runs --no-dev)
+tests
+test
+.phpunit.result.cache
+.idea
+.vscode
+.DS_Store
+
+# NOTE: vendor is intentionally kept: vite.config.ts aliases ziggy-js to vendor/tightenco/ziggy.
+# NOTE: docker.env is kept: the Dockerfile copies it to .env when .env is missing.
