@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Course\CourseController;
 use App\Http\Controllers\Course\PlayerController;
+use App\Http\Controllers\Course\PublicLessonController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\InstructorController;
 use App\Http\Controllers\JobCircularController;
@@ -29,6 +30,12 @@ Route::controller(CourseController::class)->group(function () {
 Route::middleware('auth')->controller(PlayerController::class)->group(function () {
     Route::get('play-course/{type}/{watch_history}/{lesson_id}', 'course_player')->name('course.player');
     Route::get('play-course/finish/{watch_history}', 'finish_course')->name('course.player.finish');
+});
+
+// Public (no-login) course lesson viewer, reached only via a course's QR/share link.
+Route::controller(PublicLessonController::class)->prefix('watch')->name('public.lesson.')->group(function () {
+    Route::get('{course}/{lesson}', 'show')->name('show');
+    Route::post('{course}/unlock', 'unlock')->name('unlock')->middleware('throttle:10,1');
 });
 
 Route::get('instructors/{instructor}', [InstructorController::class, 'show'])->name('instructors.show');

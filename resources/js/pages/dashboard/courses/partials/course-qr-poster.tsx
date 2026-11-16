@@ -1,18 +1,20 @@
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
+import InputError from '@/components/input-error';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { useI18n } from '@/lib/i18n';
+import { cn } from '@/lib/utils';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import { SharedData } from '@/types/global';
-import { usePage } from '@inertiajs/react';
-import { AlertTriangle, ChevronDown, ChevronUp, Copy, ExternalLink, QrCode } from 'lucide-react';
+import { useForm, usePage } from '@inertiajs/react';
+import { AlertTriangle, ChevronDown, ChevronUp, Copy, ExternalLink, Lock, QrCode } from 'lucide-react';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { toast } from 'sonner';
 
-type QrTargetMode = 'overview' | 'player' | 'custom';
+type QrTargetMode = 'overview' | 'player' | 'public' | 'custom';
 type PosterLayout = 'warning' | 'catalog';
 type ExportPreset = 'sticker';
 
@@ -36,7 +38,7 @@ const CourseQrPoster = () => {
    const { course, watchHistory, system } = props;
    const { text } = useI18n();
 
-   const [targetMode, setTargetMode] = useState<QrTargetMode>(!!watchHistory ? 'player' : 'overview');
+   const [targetMode, setTargetMode] = useState<QrTargetMode>(watchHistory ? 'player' : 'overview');
    const [posterLayout, setPosterLayout] = useState<PosterLayout>('warning');
    const [customUrl, setCustomUrl] = useState('');
    const [posterTitle, setPosterTitle] = useState(text('SCAN TO OPEN'));
@@ -60,14 +62,83 @@ const CourseQrPoster = () => {
       );
    }, [overviewUrl, watchHistory]);
 
+   // Public links must never carry a personal watch-history position — the owner
+   // picks a specific video lesson instead, so every scanner lands on the same lesson.
+   const videoLessons = useMemo(
+      () =>
+         (course.sections || [])
+            .flatMap((section) => section.section_lessons || [])
+            .filter((lesson) => lesson.status && ['video', 'video_url'].includes(lesson.lesson_type)),
+      [course.sections],
+   );
+
+   const [publicLessonId, setPublicLessonId] = useState<string>(() => String(videoLessons[0]?.id || ''));
+   const [generatedKey, setGeneratedKey] = useState('');
+
+   const canUsePublic = !!generatedKey && !!course.public_share_enabled && course.status === 'approved' && videoLessons.length > 0;
+
+   const publicUrl = useMemo(() => {
+      if (!canUsePublic || !publicLessonId) return '';
+      return `${absoluteUrl(route('public.lesson.show', { course: course.id, lesson: publicLessonId }))}#${new URLSearchParams({ key: generatedKey })}`;
+   }, [canUsePublic, course.id, publicLessonId, generatedKey]);
+
    const resolvedUrl = useMemo(() => {
       if (targetMode === 'player') return playerUrl;
+      if (targetMode === 'public') return publicUrl;
       if (targetMode === 'custom') return customUrl.trim();
       return overviewUrl;
-   }, [customUrl, overviewUrl, playerUrl, targetMode]);
+   }, [customUrl, overviewUrl, playerUrl, publicUrl, targetMode]);
 
    const qrUrl = resolvedUrl ? `https://quickchart.io/qr?size=320&margin=1&text=${encodeURIComponent(resolvedUrl)}` : '';
    const canUsePlayer = !!watchHistory;
+
+   const shareForm = useForm({ access_key: '' });
+   const [downloadingQr, setDownloadingQr] = useState(false);
+
+   const generatePublicQr = () => {
+      if (!publicLessonId || course.status !== 'approved') return;
+      const accessKey = Array.from(crypto.getRandomValues(new Uint8Array(16)), (value) => value.toString(16).padStart(2, '0')).join('');
+      shareForm.transform(() => ({ access_key: accessKey }));
+      shareForm.put(route('courses.public-share.update', { id: course.id }), {
+         preserveScroll: true,
+         onSuccess: () => {
+            setGeneratedKey(accessKey);
+            setTargetMode('public');
+            const url = `${absoluteUrl(route('public.lesson.show', { course: course.id, lesson: publicLessonId }))}#${new URLSearchParams({ key: accessKey })}`;
+            void downloadQr(url);
+         },
+      });
+   };
+
+   const downloadQr = async (url: string) => {
+      setDownloadingQr(true);
+      try {
+         const response = await fetch(`https://quickchart.io/qr?size=1024&margin=4&text=${encodeURIComponent(url)}`);
+         if (!response.ok) throw new Error('QR download failed');
+         const imageUrl = URL.createObjectURL(await response.blob());
+         const link = document.createElement('a');
+         link.href = imageUrl;
+         link.download = `${slugify(course.title)}-qr.png`;
+         document.body.appendChild(link);
+         link.click();
+         link.remove();
+         URL.revokeObjectURL(imageUrl);
+      } catch {
+         toast.error(text('Unable to download QR code. Please try Download QR only again.'));
+      } finally {
+         setDownloadingQr(false);
+      }
+   };
+
+   const disableShare = () => {
+      shareForm.delete(route('courses.public-share.destroy', { id: course.id }), {
+         preserveScroll: true,
+         onSuccess: () => {
+            setGeneratedKey('');
+            if (targetMode === 'public') setTargetMode('overview');
+         },
+      });
+   };
 
    const posterExport = useMemo(() => ({
       courseTitle: course.title,
@@ -290,6 +361,15 @@ const CourseQrPoster = () => {
             </div>
 
             <div className="flex flex-wrap gap-2">
+               <Button type="button" size="sm" onClick={generatePublicQr} disabled={shareForm.processing || downloadingQr || !publicLessonId || course.status !== 'approved'}>
+                  <QrCode className="mr-2 h-4 w-4" />
+                  {text('Generate QR code')}
+               </Button>
+               {canUsePublic && (
+                  <Button type="button" variant="outline" size="sm" onClick={() => void downloadQr(publicUrl)} disabled={downloadingQr || shareForm.processing}>
+                     {text('Download QR only')}
+                  </Button>
+               )}
                <Button type="button" variant="outline" size="sm" onClick={copyUrl} disabled={!resolvedUrl}>
                   <Copy className="mr-2 h-4 w-4" />
                   {text('Copy URL')}
@@ -311,6 +391,8 @@ const CourseQrPoster = () => {
          </div>
 
          <div className="space-y-4">
+            <p className="text-muted-foreground text-sm">{text('Generate QR code automatically attaches an access key. Scan to watch without logging in or entering a key. Generating again replaces the previous QR access.')}</p>
+            <InputError message={shareForm.errors.access_key} />
             {/* Toggle button */}
             <button
                type="button"
@@ -324,6 +406,28 @@ const CourseQrPoster = () => {
             {/* Collapsible settings */}
             {showSettings && (
                <div className="space-y-4">
+                  <div className="space-y-3 rounded-lg border bg-muted/20 p-3">
+                     <div className="flex items-center justify-between gap-3">
+                        <div className="flex items-center gap-2">
+                           <Lock className="text-muted-foreground h-4 w-4" />
+                           <Label>{text('Public sharing')}</Label>
+                        </div>
+                        <span className={cn('rounded-full px-2 py-0.5 text-xs font-medium', course.public_share_enabled ? 'bg-green-100 text-green-700' : 'bg-muted text-muted-foreground')}>
+                           {course.public_share_enabled ? text('Enabled') : text('Disabled')}
+                        </span>
+                     </div>
+                     <p className="text-muted-foreground text-xs">
+                        {text('The QR contains its access key and opens the video automatically. Generate a new QR to replace the previous access.')}
+                     </p>
+                     <div className="flex flex-wrap items-end gap-2">
+                        {course.public_share_enabled && (
+                           <Button type="button" size="sm" variant="outline" onClick={disableShare} disabled={shareForm.processing}>
+                              {text('Disable')}
+                           </Button>
+                        )}
+                     </div>
+                  </div>
+
                   <div className="space-y-2">
                      <Label>{text('Target')}</Label>
                      <Select value={targetMode} onValueChange={(value) => setTargetMode(value as QrTargetMode)}>
@@ -335,11 +439,33 @@ const CourseQrPoster = () => {
                            <SelectItem value="player" disabled={!canUsePlayer}>
                               {text('Current player link')}
                            </SelectItem>
+                           <SelectItem value="public" disabled={!canUsePublic}>
+                              {text('Public video link (no login)')}
+                           </SelectItem>
                            <SelectItem value="custom">{text('Custom URL')}</SelectItem>
                         </SelectContent>
                      </Select>
                      {!canUsePlayer && <p className="text-muted-foreground text-xs">{text('Player link needs a watch history. Overview is safer for public posters.')}</p>}
+                     {!canUsePublic && <p className="text-muted-foreground text-xs">{text('Use Generate QR code above for an approved course with a video lesson.')}</p>}
                   </div>
+
+                  {targetMode === 'public' && videoLessons.length > 0 && (
+                     <div className="space-y-2">
+                        <Label>{text('Lesson to open')}</Label>
+                        <Select value={publicLessonId} onValueChange={setPublicLessonId}>
+                           <SelectTrigger>
+                              <SelectValue placeholder={text('Select a lesson')} />
+                           </SelectTrigger>
+                           <SelectContent>
+                              {videoLessons.map((lesson) => (
+                                 <SelectItem key={lesson.id} value={String(lesson.id)}>
+                                    {lesson.title}
+                                 </SelectItem>
+                              ))}
+                           </SelectContent>
+                        </Select>
+                     </div>
+                  )}
 
                   <div className="space-y-2">
                      <Label>{text('Poster Layout')}</Label>
@@ -487,12 +613,17 @@ const WarningPoster = ({
    resolvedUrl: string;
    targetMode: QrTargetMode;
 }) => {
+   const { text } = useI18n();
    const items = [
       posterNote,
       course.course_category?.title
          ? `${course.course_category.title}${course.course_category_child?.title ? ` • ${course.course_category_child.title}` : ''}`
          : text('General course access'),
-      targetMode === 'player' ? text('Opens the lesson player directly on your device') : text('Opens the public course overview page'),
+      targetMode === 'player'
+         ? text('Opens the lesson player directly on your device')
+         : targetMode === 'public'
+           ? text('Scan to watch immediately, no login required')
+           : text('Opens the public course overview page'),
       text('Scan with any smartphone camera - no app required'),
       `${rubyShopContact.phone} • ${rubyShopContact.hours}`,
    ];
@@ -569,7 +700,9 @@ const CatalogPoster = ({
    qrUrl: string;
    resolvedUrl: string;
    targetMode: QrTargetMode;
-}) => (
+}) => {
+   const { text } = useI18n();
+   return (
    <div className="overflow-hidden rounded-[28px] border-[3px] border-black bg-[#f6c51a] shadow-[0_18px_50px_rgba(0,0,0,0.2)]">
       <div className="bg-black px-5 py-3 text-white">
          <div className="flex items-center justify-between gap-4">
@@ -602,7 +735,7 @@ const CatalogPoster = ({
                </div>
 
                <div className="grid gap-2 sm:grid-cols-2">
-                  <PosterBadge title={text('Target')} value={targetMode === 'player' ? text('Current player session') : targetMode === 'custom' ? text('Custom URL') : text('Course overview')} />
+                  <PosterBadge title={text('Target')} value={targetMode === 'public' ? text('Public video (automatic access)') : targetMode === 'player' ? text('Current player session') : targetMode === 'custom' ? text('Custom URL') : text('Course overview')} />
                   <PosterBadge title={text('Scan note')} value={posterNote} />
                </div>
 
@@ -644,12 +777,13 @@ const CatalogPoster = ({
                <p className="text-[10px] uppercase tracking-[0.2em] text-white/80">{text('Open the course overview or player directly by QR')}</p>
             </div>
             <div className="rounded-full border border-black/30 bg-[#ffd633] px-3 py-1 text-[10px] font-black uppercase tracking-[0.22em] text-black">
-               {targetMode === 'player' ? text('Player QR') : targetMode === 'custom' ? text('Custom QR') : text('Overview QR')}
+               {targetMode === 'public' ? text('Public video QR') : targetMode === 'player' ? text('Player QR') : targetMode === 'custom' ? text('Custom QR') : text('Overview QR')}
             </div>
          </div>
       </div>
    </div>
-);
+   );
+};
 
 const PosterBullet = ({ text }: { text: string }) => (
    <div className="flex items-start gap-2">
@@ -697,7 +831,7 @@ const buildPosterSvg = (props: {
 
    // Warning poster items
    const warningItems = [
-      props.targetMode === 'player' ? props.text('Opens the lesson player directly on your device') : props.text('Opens the public course overview page'),
+      props.targetMode === 'public' ? props.text('Scan to watch immediately, no login required') : props.targetMode === 'player' ? props.text('Opens the lesson player directly on your device') : props.text('Opens the public course overview page'),
       props.text('Use for posters, packaging inserts, and showroom displays'),
       props.text("Keep the QR scannable at arm's length"),
       props.text('Print on sticker paper for clean scanning'),

@@ -1,60 +1,34 @@
 import '../css/app.css';
 
-import { createInertiaApp } from '@inertiajs/react';
+import { createInertiaApp, router } from '@inertiajs/react';
 import axios from 'axios';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { createRoot } from 'react-dom/client';
 import { initializeTheme } from './hooks/use-appearance';
 
-const readCookie = (name: string) => {
-   return document.cookie
-      .split('; ')
-      .find((row) => row.startsWith(`${name}=`))
-      ?.split('=')
-      .slice(1)
-      .join('=');
-};
-
 const metaCsrfToken = () => document.querySelector<HTMLMetaElement>('meta[name="csrf-token"]')?.content || '';
 
-const xsrfCookieToken = () => {
-   const xsrfCookie = readCookie('XSRF-TOKEN');
-
-   return xsrfCookie ? decodeURIComponent(xsrfCookie) : '';
-};
-
-const setHeader = (headers: Record<string, unknown> | { set?: (name: string, value: string) => void }, name: string, value: string) => {
-   if (!value) return;
+// rubyshop.co.th (main shop) sets its XSRF-TOKEN cookie on .rubyshop.co.th, so document.cookie here can hold TWO
+// XSRF-TOKEN cookies and the first one may belong to the other app -> 419 Page Expired. Send this app's own token
+// from the meta tag instead (Laravel checks X-CSRF-TOKEN before X-XSRF-TOKEN); the meta tag is kept fresh below.
+const applyCsrfHeaders = (headers: Record<string, unknown> | { set?: (name: string, value: string) => void }) => {
+   const token = metaCsrfToken();
+   if (!token) return;
 
    if (typeof headers.set === 'function') {
-      headers.set(name, value);
+      headers.set('X-CSRF-TOKEN', token);
       return;
    }
 
-   headers[name] = value;
+   (headers as Record<string, unknown>)['X-CSRF-TOKEN'] = token;
 };
 
-const removeHeader = (headers: Record<string, unknown> | { delete?: (name: string) => void }, name: string) => {
-   if (typeof headers.delete === 'function') {
-      headers.delete(name);
-      return;
-   }
-
-   delete headers[name];
-};
-
-const applyCsrfHeaders = (headers: Record<string, unknown> | { set?: (name: string, value: string) => void }) => {
-   const xsrfToken = xsrfCookieToken();
-
-   if (xsrfToken) {
-      removeHeader(headers, 'X-CSRF-TOKEN');
-      setHeader(headers, 'X-XSRF-TOKEN', xsrfToken);
-      return;
-   }
-
-   removeHeader(headers, 'X-XSRF-TOKEN');
-   setHeader(headers, 'X-CSRF-TOKEN', metaCsrfToken());
-};
+// Session token rotates on login/logout done via Inertia; refresh the meta tag from the shared prop.
+router.on('navigate', (event) => {
+   const token = (event.detail.page.props as { csrf_token?: string }).csrf_token;
+   const meta = document.querySelector<HTMLMetaElement>('meta[name="csrf-token"]');
+   if (token && meta) meta.content = token;
+});
 
 axios.defaults.withCredentials = true;
 axios.defaults.xsrfCookieName = 'XSRF-TOKEN';
