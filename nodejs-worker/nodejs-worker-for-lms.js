@@ -19,6 +19,9 @@ app.use(express.urlencoded({ extended: true }));
 const config = {
     ffmpegPath: process.env.FFMPEG_PATH || 'ffmpeg', // Path to FFmpeg binary
     outputDir: process.env.OUTPUT_DIR || '../public/hls', // Output directory for HLS files
+    // Laravel runs in Docker and sends container paths. VIDEO_PATH_MAP="<container prefix>=><host prefix>"
+    // e.g. /var/www/html/storage/app/public=>/var/lib/docker/volumes/videorubyshopcoth_storage_data/_data
+    videoPathMap: (process.env.VIDEO_PATH_MAP || '').split('=>').map((s) => s.trim()),
     laravel: {
         baseUrl: process.env.LARAVEL_BASE_URL || 'https://video.rubyshop.co.th',
         callbackEndpoint: '/api/short-videos/processing-callback'
@@ -119,7 +122,13 @@ async function processVideo(videoId, videoPath, callbackUrl) {
     
     try {
         // Create output directory
-        const outputDir = path.join(__dirname, config.outputDir, videoId.toString());
+        const [mapFrom, mapTo] = config.videoPathMap;
+        if (mapFrom && mapTo && videoPath.startsWith(mapFrom)) {
+            videoPath = mapTo + videoPath.slice(mapFrom.length);
+            console.log('🔁 Mapped container path to host path:', videoPath);
+        }
+        // resolve() (not join) so an absolute OUTPUT_DIR (the hls_data volume) works
+        const outputDir = path.resolve(__dirname, config.outputDir, videoId.toString());
         console.log('📁 Creating output directory:', outputDir);
         await ensureDirectoryExists(outputDir);
         console.log('✅ Output directory ready');

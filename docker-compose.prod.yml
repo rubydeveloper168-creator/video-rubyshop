@@ -11,6 +11,9 @@ services:
     depends_on:
       mysql:
         condition: service_healthy
+    extra_hosts:
+      # HLS worker (nodejs-worker, pm2 on the host :3112). Set VIDEO_PROCESSOR_URL=http://host.docker.internal:3112
+      - "host.docker.internal:host-gateway"
     networks:
       - video_network
     volumes:

@@ -31,7 +31,7 @@ class UpdatePublicShareRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'access_key' => 'required|string|min:3|max:64',
+            'access_key' => 'required|string|min:8|max:64',
         ];
     }
 }
